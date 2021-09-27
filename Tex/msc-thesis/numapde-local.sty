@@ -1,0 +1,67 @@
+%
+% numapde-local.sty
+%
+
+\RequirePackage{setspace}
+\RequirePackage{capt-of}
+\RequirePackage{makeidx}
+\RequirePackage{algpseudocode}
+\RequirePackage{algorithm}
+\RequirePackage{numapde-semantic}
+\RequirePackage{numapde-manifolds}
+\RequirePackage{musicography}
+\RequirePackage[arrow, matrix, curve]{xy}
+\RequirePackage{amssymb}
+
+\newtheorem{alg}{Algorithm}
+
+\DeclareUnicodeCharacter{2212}{-}
+
+%
+% Fill in the following data
+%
+
+\degree{Master of Science}
+\thesis{\GetTranslation{master thesis}} %gets automatically translated if you choose ngerman
+\author{Tom-Christian Riemer}
+\title{Working Title}
+\shorttitle{Working Title} % use this for a shorter title appearing in the header
+
+\studentID{444019}
+\firstsupervisor{Prof. Dr. Martin Stoll}
+\secondsupervisor{Not known yet}
+\submissiondate{\today}
+
+%
+% Set Library - adapt this after you renamed your library.
+%
+\addbibresource{literature-riemer.bib}
+
+%
+% Additional packages
+%
+\RequirePackage{pdfpages}
+\RequirePackage[nottoc]{tocbibind}
+\RequirePackage{varwidth}
+
+%
+% Additional own commands
+% 
+
+\newcommand{\StatexIndent}[1][3]{%
+  \setlength\@tempdima{\algorithmicindent}%
+  \Statex\hskip\dimexpr#1\@tempdima\relax}
+\algdef{S}[WHILE]{WhileNoDo}[1]{\algorithmicwhile\ #1}%
+\makeatother
+
+%
+% Set hyperref - automatically fill author and title, feel free to provide the rest
+%
+\makeatletter
+\hypersetup{
+    pdftitle={\@title},
+    pdfauthor={\@author},
+    pdfsubject={Thesis},
+    pdfkeywords={},
+}
+\makeatother

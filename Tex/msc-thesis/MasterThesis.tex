@@ -1,0 +1,21 @@
+\documentclass[
+    %ngerman,
+    english,
+    %twoside,
+]{numapde-thesis}
+\usepackage{numapde-local}
+\begin{document}
+    \maketitle
+    \cleardoublepage
+    \input{Chapter0/Acknowledgements.tex}
+    \tableofcontents
+
+    \newpage
+    \input{Chapter0/Abstract.tex}
+    \input{Chapter0/Introduction.tex}
+
+
+    \printbibliography[heading=bibintoc, title={Literature}]
+    
+    \includepdf[pages=-]{selbststaendigkeitserklaerung}
+\end{document}
