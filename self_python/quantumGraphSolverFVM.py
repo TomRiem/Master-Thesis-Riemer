@@ -160,7 +160,6 @@ class QuantumGraphSolverFVM(object):
             # Solve equation system
             u[:, k] = Sop.solve(rhs)
 
-            print(u[:, k])
 
         self.u = u
 

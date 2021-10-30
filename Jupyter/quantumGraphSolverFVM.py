@@ -106,7 +106,6 @@ class QuantumGraphSolverFVM(object):
 
         for k in range(1, nt):
 
-            print("Timestep {:d}/{:d}".format(k, nt))
 
             # Assemble right-hand side
             # Assemble advection term
