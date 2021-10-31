@@ -6,76 +6,126 @@ In this chapter we want to specify an iterative scheme that implements the expli
     \item residual loss term for each edge $e \in \mathcal{E}$ \begin{equation*} \phi_{e,r} (X_e) \coloneqq \frac{1}{n_e} \sum_{i=1}^{n_e} (r_{\theta_e} (X_e^i))^2 \end{equation*} where \begin{equation*} r_{\theta_e} (X_e^i) = r_{\theta_e} (x_e^i, t_e^i) = \partial_t \rho_{\theta_{e}} (x_{e}^i , t_{e}^i) - \varepsilon \partial_{xx} \rho_{\theta_e}(x_e^i, t_e^i) - \partial_x [f(\rho_{\theta_e}(x_e^i, t_e^i)) \partial_x V_e(x_e^i, t_e^i)] \end{equation*} for $X_e = \{X_e^i\}_{i=1}^{n_e} = \{(t_e^i, x_e^i)\}_{i=1}^{n_e} \subset [0,\ell_e] \times (0, T)$.
     \item a misfit term enforcing the initial conditions for each edge $e \in \mathcal{E}$ \begin{equation*} \phi_{e,0} (X_{e,0}) \coloneqq \frac{1}{n_0} \sum_{i=1}^{n_0} (\rho_{\theta_e} (0,x_{e,0}^i) - \rho_{e,0}(x_{e,0}^i))^2, \end{equation*} where $X_{e,0} = \{x_{e,0}^i\}_{i=1}^{n_0} \subset [0, \ell_e]$ is a set of boundary points along $t=0$ and $\rho_{e,0}$ \ldots
     \item a misfit term enforcing the Kirchhoff-Neumann conditions for each vertex $v \in \mathcal{V}_\mathcal{K}$ \begin{equation*} \phi_{v,K} (X_{v,b}) \coloneqq \frac{1}{n_b} \sum_{i=1}^{n_b} (\sum_{e \in \mathcal{E}_v} (- \varepsilon \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v))^2, \end{equation*} where $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b} \subset (0,T)$ is a set of time snapshots where the Kirchhoff-Neumann conditions are enforced, $\mathcal{E}_v$ is the set of edges incident to node $v$ and the derivative is taken into the outgoing direction,
-    \item a misfit term enforcing the flux boundary conditions for each vertex $v \in \mathcal{V}_\mathcal{K}$ \begin{align*} \phi_{v,D} (X_{v,b}) & \coloneqq \frac{1}{n_b} \sum_{i=1}^{n_b} ( \sum_{e\in \mathcal{E}_v} (-\varepsilon \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v) + \\ & \quad + \alpha_v(t_{v,b}^i) (1-\rho_v^i) - \beta_v(t_{v,b}^i) \rho_v^i)^2 \end{align*}
+    \item a misfit term enforcing the flux boundary conditions for each vertex $v \in \mathcal{V}_\mathcal{D}$ \begin{align*} \phi_{v,D} (X_{v,b}) & \coloneqq \frac{1}{n_b} \sum_{i=1}^{n_b} ( \sum_{e\in \mathcal{E}_v} (-\varepsilon \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v) + \\ & \quad + \alpha_v(t_{v,b}^i) (1-\rho_v^i) - \beta_v(t_{v,b}^i) \rho_v^i)^2 \end{align*}
     \item a misfit term enforcing the continuity in the vertices $v \in \mathcal{V}_\mathcal{K}$ \begin{equation*} \phi_{v,c} (X_{v,b}) \coloneqq \frac{1}{\abs{\mathcal{E}_v}} \sum_{e \in \mathcal{E}_v} \frac{1}{n_b} \sum_{i=1}^{n_b} ( \rho_{\theta_e} (t_{v,b}^i, v) - \rho_{v}^i)^2, \end{equation*} with $X_{v,b}$ as introduced before. Here, we introduce for each $v \in \mathcal{V}_\mathcal{K}$ some additional variables $\{\rho_{v}^i\}_{i=1}^{n_b}$, that are appended to our parameter set $\theta$ and determined through the optimization process in our model.
 \end{itemize}
 
-\begin{flalign} \label{eq:loss}
-    \Phi(X_{data}) & =  \frac{1}{\abs{\mathcal{V}_\mathcal{D}}} \sum_{v \in \mathcal{V}_\mathcal{D}} \phi_{v,D}(X_{v,b}) + \frac{1}{\abs{\mathcal{V}_\mathcal{K}}} \sum_{v \in \mathcal{V}_\mathcal{K}} \big( \phi_{v,K} (X_{v,b}) + \phi_{v,D}(X_{v,b}) \big) + \\
-    & \quad \frac{1}{\abs{\mathcal{E}}} \sum_{e \in \mathcal{E}} \big( \phi_{e,r} (X_{e,r}) + \phi_{e,0} (X_{e,0}) \big). 
-\end{flalign}
+\begin{align*} \label{eq:loss}
+    \Phi(X_{data}) & =  \frac{1}{\abs{\mathcal{V}_\mathcal{D}}} \sum_{v \in \mathcal{V}_\mathcal{D}} \phi_{v,D}(X_{v,b}) + \frac{1}{\abs{\mathcal{V}_\mathcal{K}}} \sum_{v \in \mathcal{V}_\mathcal{K}} \big( \phi_{v,K} (X_{v,b}) + \phi_{v,c}(X_{v,b}) \big) + \\
+    & \quad + \frac{1}{\abs{\mathcal{E}}} \sum_{e \in \mathcal{E}} \big( \phi_{e,r} (X_{e,r}) + \phi_{e,0} (X_{e,0}) \big). 
+\end{align*}
 
 \subsection{Backpropagation in FNN}
 
 \begin{equation*}
-    a^{[1]}(x,t) = \begin{pmatrix} x \\ t \end{pmatrix} \in \mathbb{R}^2
+    a^{[0]}(x,t) = \begin{pmatrix} x \\ t \end{pmatrix} \in \mathbb{R}^2
 \end{equation*}
 
 \begin{equation*}
     a^{[l]}(x,t) = \sigma^{[l]} (z^{[l]}(x,t)) = \sigma^{[l]} (W^{[l]} a^{[l-1]}(x,t) + b^{[l]}) \in \mathbb{R}^{n_l}, 
 \end{equation*}
 
-where $W^{[l]} \in \mathbb{R}^{n_l \times n_{l-1}}, \; b^{[l]} \in \mathbb{R}^{n_l}$ and $z^{[l]}(x,t) = W^{[l]} a^{[l-1]}(x,t) + b^{[l]} \in \mathbb{R}^{n_l}$ for $l = 2, \ldots, L$.
+where $W^{[l]} \in \mathbb{R}^{n_l \times n_{l-1}}, \; b^{[l]} \in \mathbb{R}^{n_l}$ and $z^{[l]}(x,t) = W^{[l]} a^{[l-1]}(x,t) + b^{[l]} \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$.
 
 \begin{equation*}
     \rho_{\theta_e}(x, t) = a^{[L]}(x,t) = \sigma^{[L]} (W^{[L]} a^{[L-1]}(x,t) + b^{[L]}) \in \mathbb{R}^{1} 
 \end{equation*}
 
-
-
-
 \begin{align*}
     \partial_x \rho_{\theta_e}(x, t) & =  \partial_x a^{[L]}(x,t) = \partial_x \sigma^{[L]} (W^{[L]} a^{[L-1]}(x,t) + b^{[L]}) = \\
-    & =  \frac{\mathrm{d}}{\mathrm{d} z} \sigma^{[L]} (z^{[L]}(x,t)) \, \cdot \, \frac{\mathrm{d}}{\mathrm{d} x} z^{[L]}(x,t) = \\ 
-    & =  \frac{\mathrm{d}}{\mathrm{d} z} \sigma^{[L]} (z^{[L]}(x,t)) \, \cdot \, W^{[L]} \, \cdot \, \frac{\mathrm{d}}{\mathrm{d} x} a^{[L-1]}(x,t) = \\
+    & =  \frac{\mathrm{d}}{\mathrm{d} z^{[L]}} \sigma^{[L]} (z^{[L]}(x,t)) \, \cdot \, \frac{\mathrm{d}}{\mathrm{d} a^{[L]}} z^{[L]}(x,t) = \\ 
+    & =  \frac{\mathrm{d}}{\mathrm{d} z^{[L]}} \sigma^{[L]} (z^{[L]}(x,t)) \, \cdot \, W^{[L]} \, \cdot \, \frac{\mathrm{d}}{\mathrm{d} x} a^{[L-1]}(x,t) = \\
     & =  \ldots = \\
-    & =  \frac{\mathrm{d}}{\mathrm{d} z} \sigma^{[L]} (z^{[L]}(x,t)) \, \cdot \, W^{[L]} \, \cdot \, \frac{\mathrm{d}}{\mathrm{d} z} \sigma^{[L-1]} (z^{[L-1]}(x,t)) \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \\
-    & \quad \cdot \, \frac{\mathrm{d}}{\mathrm{d} z} \sigma^{[2]} (z^{[2]}(x,t)) \, \cdot \, W^{[2]} \, \cdot \,\frac{\mathrm{d}}{\mathrm{d} x} a^{[1]}(x,t) 
+    & =  \frac{\mathrm{d}}{\mathrm{d} z^{[L]}} \sigma^{[L]} (z^{[L]}(x,t)) \, \cdot \, W^{[L]} \, \cdot \, \frac{\mathrm{d}}{\mathrm{d} z^{[L-1]}} \sigma^{[L-1]} (z^{[L-1]}(x,t)) \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \\
+    & \quad \cdot \, \frac{\mathrm{d}}{\mathrm{d} z^{[1]}} \sigma^{[1]} (z^{[1]}(x,t)) \, \cdot \, W^{[1]} \, \cdot \,\frac{\mathrm{d}}{\mathrm{d} x} a^{[0]}(x,t) 
 \end{align*}
     
-
-
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} x} a^{[1]}(x,t) = \frac{\mathrm{d}}{\mathrm{d} x} \begin{pmatrix} x \\ t \end{pmatrix} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}
+    \frac{\mathrm{d}}{\mathrm{d} x} a^{[0]}(x,t) = \frac{\mathrm{d}}{\mathrm{d} x} \begin{pmatrix} x \\ t \end{pmatrix} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}
 \end{equation*}
 
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} z} \sigma^{[l]} (z^{[l]}(x,t)) = D^{[l]} \in \mathbb{R}^{n_l \times n_l}, \quad D_{i, i}^{[l]} = {\sigma^{[l]}}^{\prime} (z_{i}^{[l]})
+    \frac{\mathrm{d}}{\mathrm{d} z^{[l]}} \sigma^{[l]} (z^{[l]}(x,t)) = D^{[l]} \in \mathbb{R}^{n_l \times n_l}, \quad D_{i, i}^{[l]} = {\sigma^{[l]}}^{\prime} (z_{i}^{[l]})
+\end{equation*}
+
+(diagonal matrix, since we apply the activation function component-wise)
+
+\begin{equation*}
+    \partial_x \rho_{\theta_e}(x, t) = D^{[L]} \, \cdot \, W^{[L]} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[1]} \, \cdot \, W^{[1]} \, \cdot \, \begin{pmatrix} 1 \\ 0 \end{pmatrix} \in \mathbb{R}
+\end{equation*}
+
+\begin{equation*}
+    \partial_t \rho_{\theta_e}(x, t) = D^{[L]} \, \cdot \, W^{[L]} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[1]} \, \cdot \, W^{[1]} \, \cdot \, \begin{pmatrix} 0 \\ 1 \end{pmatrix} 
 \end{equation*}
 
 
 \begin{equation*}
-    \partial_x \rho_{\theta_e}(x, t) = D^{[L]} \, \cdot \, W^{[L]} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[2]} \, \cdot \, W^{[2]} \, \cdot \, \begin{pmatrix} 1 \\ 0 \end{pmatrix} \in \mathbb{R}
+    \partial_x [f(\rho_{\theta_e}(x, t)) \partial_x V_e(x, t)] = \frac{\mathrm{d}}{\mathrm{d} \rho_{\theta_e}} f(\rho_{\theta_e}(x, t)) \partial_x \rho_{\theta_e}(x, t) \partial_x V_e(x, t) + f(\rho_{\theta_e}(x, t)) \partial_{xx} V_e(x, t)
 \end{equation*}
 
-\begin{equation*}
-    \partial_t \rho_{\theta_e}(x, t) = D^{[L]} \, \cdot \, W^{[L]} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[2]} \, \cdot \, W^{[2]} \, \cdot \, \begin{pmatrix} 0 \\ 1 \end{pmatrix} 
-\end{equation*}
+I suppose we use $f(\rho_e) = \rho_e(1-\rho_e) \Rightarrow f^{\prime}(\rho_e) = 1 - 2 \rho_e$. Of course, $\partial_x V_e(x, t)$ and $\partial_{xx} V_e(x, t)$ still remain to be computed. 
 
-Derivatives I need to compute:
+
 
 \begin{equation*}
     \partial_{x x} \rho_{\theta_e}(x, t) = ???
 \end{equation*}
 
+Attempt 1: Suppose $\partial_x \rho_{\theta_e}(x, t)$ is computed correctly and the activation function on each layer is $L-1$ times continuously differentiable
+
+\begin{align*}
+    \partial_{x x} \rho_{\theta_e}(x, t) & = \partial_{x} \partial_{x} \rho_{\theta_e}(x, t) = \\
+    & = \partial_{x} [D^{[L]} \, \cdot \, W^{[L]} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[1]} \, \cdot \, W^{[1]} \, \cdot \, (1, 0)^{\mathrm{T}}]
+\end{align*}
+
+Only $D^{[1]}, \ldots, D^{[L]}$ depend on $x$ (and we probably have to apply the product rule $L-1$ times). We first take the derivative $D^{[1]}$ with respect to $x$. Since all $D^{[l]}$ are diagonal matrices, we only consider the diagonal elements $D_{i, i}^{[l]} = {\sigma^{[l]}}^{\prime} (z_{i}^{[l]}) \in \mathbb{R}$.  
+
+\begin{align*}
+    \frac{\mathrm{d}}{\mathrm{d} x} {\sigma^{[1]}}^{\prime} (z_{i}^{[1]}) & = \frac{\mathrm{d}}{\mathrm{d} z_{i}^{[1]}} {\sigma^{[1]}}^{\prime} (z_{i}^{[1]}) \frac{\mathrm{d}}{\mathrm{d} x} z_{i}^{[1]} = {\sigma^{[1]}}^{\prime \prime} (z_{i}^{[1]}) \frac{\mathrm{d}}{\mathrm{d} x} (W^{[1]} a^{[0]}(x,t) + b^{[1]})_i = \\
+    & = {\sigma^{[1]}}^{\prime \prime} (z_{i}^{[1]}) \frac{\mathrm{d}}{\mathrm{d} x} \left[ \sum^{n_0}_{j=1} W^{[1]}_{i,j} a^{[0]}_{j}(x,t) + b^{[1]}_i \right] = \\
+    & = {\sigma^{[1]}}^{\prime \prime} (z_{i}^{[1]}) \sum^{n_0}_{j=1} W^{[1]}_{i,j} \frac{\mathrm{d}}{\mathrm{d} x} a^{[0]}_{j}(x,t) = \\
+    & = {\sigma^{[1]}}^{\prime \prime} (z_{i}^{[1]}) \left\langle W^{[1]}_{i, \colon}, \frac{\mathrm{d}}{\mathrm{d} x} a^{[0]}(x,t)  \right\rangle = \\
+    & = {\sigma^{[1]}}^{\prime \prime} (W^{[1]}_{i, 1} + b^{[1]}_i) W^{[1]}_{i, 1}
+\end{align*}
+
+Okay, that wasn't bad. You can certainly continue it iteratively. 
+
+But what about this long matrix product? Does the product rule apply here? If so, then we have to apply it $L-1$ times? And then we have to differentiate a selected matrix (probably $D^{[L]}$) $L-1$ times. Great.
+
+$\Rightarrow$ Product rule does not apply as for real-valued functions. Here, one should fall back on AD. 
+
+
+\textbf{Derivative of the loss function $\Phi$ with respect to model parameters $\theta_e$}
+
+Since $\Phi$ is a sum of various other loss functions, we consider the derivatives of the individual loss functions $\phi_{e,r}, \phi_{e,0}, \phi_{v,K}, \phi_{v,D}, \phi_{v,c}$. 
+
+\begin{align*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \phi_{e,r} & = \frac{2}{n_e} \sum_{i=1}^{n_e} \frac{\mathrm{d}}{\mathrm{d} \theta_e} r_{\theta_e} (X_e^i) = \\
+    & = \frac{2}{n_e} \sum_{i=1}^{n_e} \frac{\mathrm{d}}{\mathrm{d} \theta_e} \left[ \partial_t \rho_{\theta_{e}} (x_{e}^i , t_{e}^i) - \varepsilon \partial_{xx} \rho_{\theta_e}(x_e^i, t_e^i) - \partial_x [f(\rho_{\theta_e}(x_e^i, t_e^i)) \partial_x V_e(x_e^i, t_e^i)] \right]
+\end{align*}
+
+Derivatives that I still have to calculate:
+
 \begin{equation*}
-    \partial_x [f(\rho_{\theta_e}(x, t)) \partial_x V_e(x, t)] = ???
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e}(x, t) \Rightarrow \text{just Backprop}
 \end{equation*}
 
 \begin{equation*}
-    \partial_{w_{j, k}}  = ???
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_x \rho_{\theta_e}(x, t) \Rightarrow \text{Bias vanishes}
 \end{equation*}
 
 \begin{equation*}
-    \partial_{w_{j, k}} [f(\rho_{\theta_e}(x, t)) \partial_x V_e(x, t)] = ???
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_t \rho_{\theta_e}(x, t) \Rightarrow \text{Bias vanishes}
+\end{equation*}
+
+\begin{equation*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_{xx} \rho_{\theta_e}(x, t) \Rightarrow \text{Help}
+\end{equation*}
+
+\begin{equation*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} f(\rho_{\theta_e}(x, t)) = \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e}(x, t) - 2 \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e}(x, t)
+\end{equation*}
+
+\begin{equation*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} [\frac{\mathrm{d}}{\mathrm{d} \rho_{\theta_e}} f(\rho_{\theta_e}(x, t)) \partial_x \rho_{\theta_e}(x, t) \partial_x V_e(x, t)] \Rightarrow \text{This looks fun}
 \end{equation*}
