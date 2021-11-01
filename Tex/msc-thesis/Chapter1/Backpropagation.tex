@@ -78,7 +78,7 @@ Attempt 1: Suppose $\partial_x \rho_{\theta_e}(x, t)$ is computed correctly and 
     & = \partial_{x} [D^{[L]} \, \cdot \, W^{[L]} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[1]} \, \cdot \, W^{[1]} \, \cdot \, (1, 0)^{\mathrm{T}}]
 \end{align*}
 
-Only $D^{[1]}, \ldots, D^{[L]}$ depend on $x$ (and we probably have to apply the product rule $L-1$ times). We first take the derivative $D^{[1]}$ with respect to $x$. Since all $D^{[l]}$ are diagonal matrices, we only consider the diagonal elements $D_{i, i}^{[l]} = {\sigma^{[l]}}^{\prime} (z_{i}^{[l]}) \in \mathbb{R}$.  
+Only $D^{[1]}, \ldots, D^{[L]}$ depend on $x$. We first take the derivative $D^{[1]}$ with respect to $x$. Since all $D^{[l]}$ are diagonal matrices, we only consider the diagonal elements $D_{i, i}^{[l]} = {\sigma^{[l]}}^{\prime} (z_{i}^{[l]}) \in \mathbb{R}$.  
 
 \begin{align*}
     \frac{\mathrm{d}}{\mathrm{d} x} {\sigma^{[1]}}^{\prime} (z_{i}^{[1]}) & = \frac{\mathrm{d}}{\mathrm{d} z_{i}^{[1]}} {\sigma^{[1]}}^{\prime} (z_{i}^{[1]}) \frac{\mathrm{d}}{\mathrm{d} x} z_{i}^{[1]} = {\sigma^{[1]}}^{\prime \prime} (z_{i}^{[1]}) \frac{\mathrm{d}}{\mathrm{d} x} (W^{[1]} a^{[0]}(x,t) + b^{[1]})_i = \\
@@ -99,10 +99,32 @@ $\Rightarrow$ Product rule does not apply as for real-valued functions. Here, on
 
 Since $\Phi$ is a sum of various other loss functions, we consider the derivatives of the individual loss functions $\phi_{e,r}, \phi_{e,0}, \phi_{v,K}, \phi_{v,D}, \phi_{v,c}$. 
 
+\begin{equation*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \phi_{e,r} = \frac{2}{n_e} \sum_{i=1}^{n_e} r_{\theta_e} (X_e^i) \frac{\mathrm{d}}{\mathrm{d} \theta_e} r_{\theta_e} (X_e^i) 
+\end{equation*}
+
+\begin{equation*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} r_{\theta_e} (X_e^i) =  \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_t \rho_{\theta_{e}} (x_{e}^i , t_{e}^i) - \varepsilon \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_{xx} \rho_{\theta_e}(x_e^i, t_e^i) - \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_x [f(\rho_{\theta_e}(x_e^i, t_e^i)) \partial_x V_e(x_e^i, t_e^i)] 
+\end{equation*}
+
+\begin{equation*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \phi_{e,0} (X_{e,0}) = \frac{2}{n_0} \sum_{i=1}^{n_0} (\rho_{\theta_e} (0,x_{e,0}^i) - \rho_{e,0}(x_{e,0}^i)) \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e} (0,x_{e,0}^i)
+\end{equation*}
+
 \begin{align*}
-    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \phi_{e,r} & = \frac{2}{n_e} \sum_{i=1}^{n_e} \frac{\mathrm{d}}{\mathrm{d} \theta_e} r_{\theta_e} (X_e^i) = \\
-    & = \frac{2}{n_e} \sum_{i=1}^{n_e} \frac{\mathrm{d}}{\mathrm{d} \theta_e} \left[ \partial_t \rho_{\theta_{e}} (x_{e}^i , t_{e}^i) - \varepsilon \partial_{xx} \rho_{\theta_e}(x_e^i, t_e^i) - \partial_x [f(\rho_{\theta_e}(x_e^i, t_e^i)) \partial_x V_e(x_e^i, t_e^i)] \right]
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \phi_{v,K} (X_{v,b}) & = \frac{2}{n_b} \sum_{i=1}^{n_b} (\sum_{e \in \mathcal{E}_v} (- \varepsilon \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v)) \cdot \\ 
+    & \quad \cdot ((- \varepsilon \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + \frac{\mathrm{d}}{\mathrm{d} \theta_e} f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v))
 \end{align*}
+
+\begin{align*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \phi_{v,D} (X_{v,b}) & = \frac{2}{n_b} \sum_{i=1}^{n_b} ( \sum_{e\in \mathcal{E}_v} (-\varepsilon \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v) + \\ 
+    & \quad + \alpha_v(t_{v,b}^i) (1-\rho_v^i) - \beta_v(t_{v,b}^i) \rho_v^i )  \cdot \\
+    & \quad \cdot ((-\varepsilon \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + \frac{\mathrm{d}}{\mathrm{d} \theta_e} f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v))
+\end{align*}
+
+\begin{equation*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \phi_{v,c} (X_{v,b}) \frac{2}{\abs{\mathcal{E}_v}} \sum_{e \in \mathcal{E}_v} \frac{1}{n_b} \sum_{i=1}^{n_b} ( \rho_{\theta_e} (t_{v,b}^i, v) - \rho_{v}^i) \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e} (t_{v,b}^i, v)
+\end{equation*}
 
 Derivatives that I still have to calculate:
 
@@ -126,6 +148,30 @@ Derivatives that I still have to calculate:
     \frac{\mathrm{d}}{\mathrm{d} \theta_e} f(\rho_{\theta_e}(x, t)) = \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e}(x, t) - 2 \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e}(x, t)
 \end{equation*}
 
+\begin{align*}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} & [\frac{\mathrm{d}}{\mathrm{d} \rho_{\theta_e}} f(\rho_{\theta_e}(x, t)) \partial_x \rho_{\theta_e}(x, t) \partial_x V_e(x, t)] = \\
+    \\ \quad & = \frac{\mathrm{d}}{\mathrm{d} {\rho_{\theta_e}}^2} f(\rho_{\theta_e}(x, t)) \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e}(x, t) \partial_x \rho_{\theta_e}(x, t) \partial_x V_e(x, t) + \\
+    \\ \quad & + \frac{\mathrm{d}}{\mathrm{d} \rho_{\theta_e}} f(\rho_{\theta_e}(x, t)) \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_x \rho_{\theta_e}(x, t) \partial_x V_e(x, t)
+\end{align*}
+
+
+
+\subsection{Backpropagation in ResNet}
+
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} \theta_e} [\frac{\mathrm{d}}{\mathrm{d} \rho_{\theta_e}} f(\rho_{\theta_e}(x, t)) \partial_x \rho_{\theta_e}(x, t) \partial_x V_e(x, t)] \Rightarrow \text{This looks fun}
+    a^{[1]}(x,t) = \sigma^{[1]} (W^{[1]} a^{[0]}(x,t) + b^{[1]}) \in \mathbb{R}^{m}, 
 \end{equation*}
+
+where $W^{[1]} \in \mathbb{R}^{m \times 2}$ and $b^{[1]} \in \mathbb{R}^{m}$.
+
+\begin{equation*}
+    a^{[l]}(x,t) = a^{[l-1]}(x,t) + h \, \sigma^{[l]} (z^{[l]}(x,t)) = a^{[l-1]}(x,t) + h \, \sigma^{[l]} (W^{[l]} a^{[l-1]}(x,t) + b^{[l]}) \in \mathbb{R}^{m}, 
+\end{equation*}
+
+for $l = 2, \ldots, L$, where $W^{[2]}, \ldots, W^{[L]} \in \mathbb{R}^{m \times m}$ and $b^{[2]}, \ldots, b^{[L]} \in \mathbb{R}^{m}$.
+
+\begin{equation*}
+    \rho_{\theta_e}(x, t) = \rho_{\theta_e}(s) = w \cdot a^{[L]}(s) + \frac{1}{2} s^{\mathrm{T}} A s + c^{\mathrm{T}} s 
+\end{equation*}
+
+where $w \in \mathbb{R}$, $A \in \mathbb{R}^{2 \times 2}$ and $c \in \mathbb{R}^2$.
