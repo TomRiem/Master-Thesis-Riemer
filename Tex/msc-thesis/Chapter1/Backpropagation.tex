@@ -104,7 +104,7 @@ Okay, that wasn't bad. You can certainly continue it iteratively.
 
 But what about this long matrix product? Does the product rule apply here? If so, then we have to apply it $L-1$ times? And then we have to differentiate a selected matrix (probably $D^{[L]}$) $L-1$ times. Great.
 
-$\Rightarrow$ Product rule does not apply as for real-valued functions. Here, one should fall back on AD. 
+$\Rightarrow$ If we consider the matrix product component-wise, then the product rule must actually be applied $L-1 \times n_{L-1} \times n_{L-2} \times \ldots \times n_{2}$ times for sigma in the second derivative.  
 
 
 \textbf{Derivative of the loss function $\Phi$ with respect to model parameters $\theta_e$}
