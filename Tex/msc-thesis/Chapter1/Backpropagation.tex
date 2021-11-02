@@ -58,6 +58,18 @@ where $W^{[l]} \in \mathbb{R}^{n_l \times n_{l-1}}, \; b^{[l]} \in \mathbb{R}^{n
     \partial_t \rho_{\theta_e}(x, t) = D^{[L]} \, \cdot \, W^{[L]} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[1]} \, \cdot \, W^{[1]} \, \cdot \, \begin{pmatrix} 0 \\ 1 \end{pmatrix} 
 \end{equation*}
 
+If we set $s = (x, t)^{\mathrm{T}}$ we can write the gradient of $\rho_{\theta_e}(s)$ as
+
+\begin{equation*}
+    \nabla_s \rho_{\theta_e}(s) = {W^{[1]}}^{\mathrm{T}} \, \cdot \, D^{[1]} \, \cdot \, {W^{[2]}}^{\mathrm{T}} \, \cdot \, D^{[2]} \, \cdot \, \ldots \, \cdot \, {W^{[L]}}^{\mathrm{T}} \, \cdot \, D^{[L]},
+\end{equation*}
+
+which we compute in the Backpropagation algorithm and get
+
+\begin{equation*}
+    {\nabla_s \rho_{\theta_e}(s)}^{\mathrm{T}} \cdot \begin{pmatrix} 1 \\ 0 \end{pmatrix} = \partial_x \rho_{\theta_e}(x, t) \quad \text{and} \quad {\nabla_s \rho_{\theta_e}(s)}^{\mathrm{T}} \cdot \begin{pmatrix} 0 \\ 1 \end{pmatrix} = \partial_t \rho_{\theta_e}(x, t)
+\end{equation*}
+
 
 \begin{equation*}
     \partial_x [f(\rho_{\theta_e}(x, t)) \partial_x V_e(x, t)] = \frac{\mathrm{d}}{\mathrm{d} \rho_{\theta_e}} f(\rho_{\theta_e}(x, t)) \partial_x \rho_{\theta_e}(x, t) \partial_x V_e(x, t) + f(\rho_{\theta_e}(x, t)) \partial_{xx} V_e(x, t)
