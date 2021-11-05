@@ -141,19 +141,19 @@ Since $\Phi$ is a sum of various other loss functions, we consider the derivativ
 Derivatives that I still have to calculate:
 
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e}(x, t) \Rightarrow \text{just Backprop}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \rho_{\theta_e}(x, t) \Rightarrow \textbf{AD}
 \end{equation*}
 
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_x \rho_{\theta_e}(x, t) 
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_x \rho_{\theta_e}(x, t) \Rightarrow \textbf{AD}
 \end{equation*}
 
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_t \rho_{\theta_e}(x, t) 
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_t \rho_{\theta_e}(x, t) \Rightarrow \textbf{AD}
 \end{equation*}
 
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_{xx} \rho_{\theta_e}(x, t) \Rightarrow \text{Help}
+    \frac{\mathrm{d}}{\mathrm{d} \theta_e} \partial_{xx} \rho_{\theta_e}(x, t) \Rightarrow \textbf{AD}
 \end{equation*}
 
 \begin{equation*}
@@ -183,7 +183,92 @@ where $W^{[1]} \in \mathbb{R}^{m \times 2}$ and $b^{[1]} \in \mathbb{R}^{m}$.
 for $l = 2, \ldots, L$, where $W^{[2]}, \ldots, W^{[L]} \in \mathbb{R}^{m \times m}$ and $b^{[2]}, \ldots, b^{[L]} \in \mathbb{R}^{m}$.
 
 \begin{equation*}
-    \rho_{\theta_e}(x, t) = \rho_{\theta_e}(s) = w \cdot a^{[L]}(s) + \frac{1}{2} s^{\mathrm{T}} A s + c^{\mathrm{T}} s 
+    \rho_{\theta_e}(x, t) = \rho_{\theta_e}(s) = w^{\mathrm{T}} a^{[L]}(s) + \frac{1}{2} s^{\mathrm{T}} A s + c^{\mathrm{T}} s 
 \end{equation*}
 
-where $w \in \mathbb{R}$, $A \in \mathbb{R}^{2 \times 2}$ and $c \in \mathbb{R}^2$.
+where $s = (x, t)^{\mathrm{T}} \in \mathbb{R}^{2}$, $w \in \mathbb{R}^{m}$, $A \in \mathbb{R}^{2 \times 2}$ and $c \in \mathbb{R}^2$.
+
+\textbf{Gradient:}
+
+\begin{equation*}
+    \nabla_s \rho_{\theta_e}(s) = \nabla_s a^{[L]}(s) \, w + A s + c
+\end{equation*}
+
+We set
+
+\begin{equation*}
+    D^{[l]} = \mathrm{diag} \left( \frac{\mathrm{d}}{\mathrm{d}z^{[l]}} \sigma^{[l]} (z^{[l]}) \right) \in \mathbb{R}^{m \times m}, \quad D_{i, i}^{[l]} = {\sigma^{[l]}}^{\prime} (z_{i}^{[l]})
+\end{equation*}
+
+\begin{align*}
+    \nabla_s a^{[L]}(s) \, w & = \delta^{[1]}  \\
+    \delta^{[1]} & = {W^{[1]}}^{\mathrm{T}} D^{[1]} \, \delta^{[2]} \\
+    \delta^{[2]} & = \delta^{[3]} + h \, {W^{[2]}}^{\mathrm{T}} D^{[2]} \, \delta^{[3]} \\
+    &\vdots\\
+    \delta^{[l]} & = \delta^{[l+1]} + h \, {W^{[l]}}^{\mathrm{T}} D^{[l]} \, \delta^{[l+1]} \\
+    &\vdots\\
+    \delta^{[L]} & = w + h \, {W^{[L]}}^{\mathrm{T}} D^{[L]} \, w
+\end{align*}
+
+
+\textbf{Hessian:}
+
+First my derivation:
+
+Ruthotto computes the Laplacian of the potential model with respect to the spatial variable $x$. For this he uses the trace of the Hessian matrix of our model $\rho_{\theta_e}(s)$, i.e. 
+
+\begin{align*}
+    \Delta_x \rho_{\theta_e}(s) & = \mathrm{tr}(E^{\mathrm{T}} \, \nabla^{2}_s \rho_{\theta_e}(s) \, E) = \\
+    & = \mathrm{tr}(E^{\mathrm{T}} \, (\nabla^{2}_s a^{[L]}(s) \, w + A) \, E) = \\
+    & = \mathrm{tr}(E^{\mathrm{T}} \, \nabla^{2}_s a^{[L]}(s) \, w \, E) + \mathrm{tr}(E^{\mathrm{T}} \,  A \, E) = \\
+    & = \Delta_x (a^{[L]}(s) \, w) + \mathrm{tr}(E^{\mathrm{T}} \,  A \, E)
+\end{align*}
+
+where the columns of $E \in \mathbb{R}^{(d+1) \times d}$ are given by the first $d$ standard basis vectors in $R^{d+1}$ so that only the second derivative of the spatial coordinates $x \in \mathbb{R}^d$ is computed. In our case we use $E = (1, 0)^{\mathrm{T}} \in \mathbb{R}^{2}$. \\
+Ruthotto sets
+
+\begin{align*}
+    \Delta_x (a^{[L]}(s) \, w) & = t^{[0]} + h \, \sum^{L}_{l=1} t^{[l]} = \mathrm{tr}(\vartheta^{[0]}) + h \, \sum^{L}_{l=1} \mathrm{tr}(\vartheta^{[l]}) = \\
+    & = \mathrm{tr} \left( \vartheta^{[0]} + h \, \sum^{L}_{l=1} \vartheta^{[l]} \right) = \mathrm{tr} \left( \nabla^{2}_x a^{[L]}(s) \, w \right)
+\end{align*}
+
+\begin{equation*}
+    \partial_{xx} a^{[L]}(s) w = \nabla^{2}_x a^{[L]}(s) w = E^{\mathrm{T}} \, \nabla^{2}_s a^{[L]}(s) \, w \, E = \vartheta^{[0]} + h \, \sum^{L}_{l=1} \vartheta^{[l]}
+\end{equation*}
+
+where 
+
+\begin{equation*}
+    \vartheta^{[0]} = E^T {W^{[1]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[1]}}^{\prime \prime}(W^{[1]} s + b^{[1]}) \odot \delta^{[2]}) W^{[1]} E
+\end{equation*}
+
+\begin{equation*}
+    \vartheta^{[l]} = {J^{[l-1]}}^{\mathrm{T}} {W^{[l]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[l]}}^{\prime \prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]}) \odot \delta^{[l+1]}) W^{[l]} J^{[l-1]}
+\end{equation*}
+
+where 
+
+\begin{equation*}
+    J^{[l-1]} = J_x(a^{[l-1]}(s)) = \left( \partial_x a^{[l-1]}_1(s), \ldots, \partial_x a^{[l-1]}_m(s) \right)^{\mathrm{T}} \in \mathbb{R}^{m}
+\end{equation*}
+
+
+Now to the Hessian as it has been implemented: 
+
+\begin{align*}
+    \vartheta^{[1]} & = h \, {W^{[1]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[1]}}^{\prime \prime}(W^{[1]} a^{[0]}(s) + b^{[1]}) \odot \delta^{[2]}) W^{[1]} + \\
+    & \quad + \left( I + h \, {J^{[1]}}^{\mathrm{T}} \right) \, \left( \left(I + h \, {J^{[1]}}^{\mathrm{T}} \right) \, \vartheta^{[2]} \right)^{\mathrm{T}} \\ 
+    &\vdots\\
+    \vartheta^{[l]} & = h \, {W^{[l]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[l]}}^{\prime \prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]}) \odot \delta^{[l+1]}) W^{[l]} + \\
+    & \quad + \left( I + h \, {J^{[l]}}^{\mathrm{T}} \right) \, \left( \left(I + h \, {J^{[l]}}^{\mathrm{T}} \right) \, \vartheta^{[l+1]} \right)^{\mathrm{T}} \\ 
+    &\vdots\\
+    \vartheta^{[L-1]} & = h \, {W^{[L-1]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[L-1]}}^{\prime \prime}(W^{[L-1]} a^{[L-2]}(s) + b^{[L-1]}) \odot \delta^{[L]}) W^{[L-1]} + \\
+    & \quad + \left( I + h \, {J^{[L-1]}}^{\mathrm{T}} \right) \, \left( \left(I + h \, {J^{[L-1]}}^{\mathrm{T}} \right) \, \vartheta^{[L]} \right)^{\mathrm{T}} \\
+    \vartheta^{[L]} &  = h \, {W^{[L]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[L]}}^{\prime \prime}(W^{[L]} a^{[L-1]}(s) + b^{[L]}) \odot w) W^{[L]} 
+\end{align*}
+
+where 
+
+\begin{equation*}
+    {J^{[l]}}^{\mathrm{T}} A = {W^{[L]}}^{\mathrm{T}} \left( {\sigma^{[L]}}^{\prime}(W^{[L]} a^{[L-1]}(s) + b^{[L]}) \odot A \right)
+\end{equation*}
