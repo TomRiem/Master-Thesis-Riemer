@@ -106,6 +106,20 @@ But what about this long matrix product? Does the product rule apply here? If so
 
 $\Rightarrow$ If we consider the matrix product component-wise, then the product rule must actually be applied $L-1 \times n_{L-1} \times n_{L-2} \times \ldots \times n_{2}$ times for $\frac{\mathrm{d}}{\mathrm{d} z^{[l]}_i} \sigma^{[l]}(z^{[l]}_i)$ in the second derivative.  
 
+\textbf{Ruthotto:}
+
+\begin{align*}
+    \nabla^{2} \rho_{\theta_e}(s) & = \vartheta^{[1]} \\
+    \vartheta^{[1]} & = {W^{[1]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[1]}}^{\prime \prime}(W^{[1]} a^{[0]}(s) + b^{[1]}) \odot \delta^{[2]}) W^{[1]} + \\
+    & \quad + {W^{[1]}}^{\mathrm{T}} \left( \mathrm{diag}({\sigma^{[1]}}^{\prime}(W^{[1]} a^{[0]}(s) + b^{[1]}) \, \vartheta^{[2]} \, \mathrm{diag}({\sigma^{[1]}}^{\prime}(W^{[1]} a^{[0]}(s) + b^{[1]}) \right) W^{[1]} \\
+    & \vdots \\
+    \vartheta^{[l]} & = {W^{[l]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[l]}}^{\prime \prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]}) \odot \delta^{[l+1]}) W^{[l]} + \\
+    & \quad + {W^{[l]}}^{\mathrm{T}} \left( \mathrm{diag}({\sigma^{[l]}}^{\prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]}) \, \vartheta^{[l+1]} \, \mathrm{diag}({\sigma^{[l]}}^{\prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]}) \right) W^{[l]} \\
+    & \vdots \\
+    \vartheta^{[L]} & = {W^{[L]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[L]}}^{\prime \prime}(W^{[L]} a^{[L-1]}(s) + b^{[L]})) W^{[1]}
+\end{align*}
+
+
 
 \textbf{Derivative of the loss function $\Phi$ with respect to model parameters $\theta_e$}
 
