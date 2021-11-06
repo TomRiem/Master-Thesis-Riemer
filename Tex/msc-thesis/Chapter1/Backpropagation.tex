@@ -108,15 +108,36 @@ $\Rightarrow$ If we consider the matrix product component-wise, then the product
 
 \textbf{Ruthotto:}
 
+For $n_L = 1$ we have
+
 \begin{align*}
-    \nabla^{2} \rho_{\theta_e}(s) & = \vartheta^{[1]} \\
-    \vartheta^{[1]} & = {W^{[1]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[1]}}^{\prime \prime}(W^{[1]} a^{[0]}(s) + b^{[1]}) \odot \delta^{[2]}) W^{[1]} + \\
-    & \quad + {W^{[1]}}^{\mathrm{T}} \left( \mathrm{diag}({\sigma^{[1]}}^{\prime}(W^{[1]} a^{[0]}(s) + b^{[1]}) \, \vartheta^{[2]} \, \mathrm{diag}({\sigma^{[1]}}^{\prime}(W^{[1]} a^{[0]}(s) + b^{[1]}) \right) W^{[1]} \\
+    \delta^{[L]} & = {W^{[L]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[L]}}^{\prime}(W^{[L]} a^{[L-1]}(s) + b^{[L]})) = {W^{[L]}}^{\mathrm{T}} D^{[L]} \in \mathbb{R}^{n_{L-1}} \\
+    \delta^{[l]} & = {W^{[l]}}^{\mathrm{T}} D^{[l]} \cdot \, \delta^{[l+1]} \, \cdot \, \ldots \,  \cdot \, \delta^{[L]} \in \mathbb{R}^{n_{l-1}} \quad \text{for} \quad l = 2, \ldots, L-1
+\end{align*}
+
+We note that for $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^{m}$, $c, d \in \mathbb{R}^{n}$
+
+\begin{align*}
+    \mathrm{diag}(b) \, \cdot \, A &= b \, \odot \, A \in \mathbb{R}^{m \times n} \\
+    A \, \cdot \, \mathrm{diag}(c) &= A \, \odot \, c^{\mathrm{T}} \in \mathbb{R}^{m \times n} \\
+    \mathrm{diag}(b) \, \cdot \, A \, \cdot \, \mathrm{diag}(c) &= b \, \odot \, A \, \odot \, c^{\mathrm{T}} \in \mathbb{R}^{m \times n} \\
+    \mathrm{diag}(c) \, \cdot \, d &= c \, \odot \, d \in \mathbb{R}^{n} \\
+    c^{\mathrm{T}} \, \cdot \, \mathrm{diag}(d) &= c^{\mathrm{T}} \, \odot \, d^{\mathrm{T}} \in \mathbb{R}^{1 \times n} \\
+\end{align*}
+
+We set 
+
+\begin{equation*}
+    H^{[l]} = \mathrm{diag}({\sigma^{[l]}}^{\prime \prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]})) \in \mathbb{R}^{n_l \times n_l}, \quad (H^{[l]})_{i, i} = {\sigma^{[l]}}^{\prime \prime} (z_{i}^{[l]})
+\end{equation*}
+
+\begin{align*}
+    \nabla^{2} \rho_{\theta_e}(s) & = \vartheta^{[1]} \in \mathbb{R}^{2 \times 2} \\
+    \vartheta^{[1]} & = {W^{[1]}}^{\mathrm{T}} \left( \mathrm{diag}(H^{[1]} \delta^{[2]}) + D^{[1]} \vartheta^{[2]} D^{[1]} \right) W^{[1]} \\
     & \vdots \\
-    \vartheta^{[l]} & = {W^{[l]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[l]}}^{\prime \prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]}) \odot \delta^{[l+1]}) W^{[l]} + \\
-    & \quad + {W^{[l]}}^{\mathrm{T}} \left( \mathrm{diag}({\sigma^{[l]}}^{\prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]}) \, \vartheta^{[l+1]} \, \mathrm{diag}({\sigma^{[l]}}^{\prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]}) \right) W^{[l]} \\
+    \vartheta^{[l]} & = {W^{[l]}}^{\mathrm{T}} \left( \mathrm{diag}(H^{[l]} \delta^{[l+1]}) + D^{[l]} \vartheta^{[l+1]} D^{[l]} \right) W^{[l]} \in \mathbb{R}^{n_{l-1} \times n_{l-1}} \\
     & \vdots \\
-    \vartheta^{[L]} & = {W^{[L]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[L]}}^{\prime \prime}(W^{[L]} a^{[L-1]}(s) + b^{[L]})) W^{[1]}
+    \vartheta^{[L]} & = {W^{[L]}}^{\mathrm{T}} H^{[L]} W^{[L]} \in \mathbb{R}^{n_{L-1} \times n_{L-1}}
 \end{align*}
 
 
