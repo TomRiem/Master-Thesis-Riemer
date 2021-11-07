@@ -118,6 +118,7 @@ For $n_L = 1$ we have
 We note that for $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^{m}$, $c, d \in \mathbb{R}^{n}$
 
 \begin{align*}
+    d \, \odot \, c &= c \, \odot \, d \in \mathbb{R}^{n} \\
     \mathrm{diag}(b) \, \cdot \, A &= b \, \odot \, A \in \mathbb{R}^{m \times n} \\
     A \, \cdot \, \mathrm{diag}(c) &= A \, \odot \, c^{\mathrm{T}} \in \mathbb{R}^{m \times n} \\
     \mathrm{diag}(b) \, \cdot \, A \, \cdot \, \mathrm{diag}(c) &= b \, \odot \, A \, \odot \, c^{\mathrm{T}} \in \mathbb{R}^{m \times n} \\
@@ -242,6 +243,7 @@ We set
     &\vdots\\
     \delta^{[l]} & = \delta^{[l+1]} + h \, {W^{[l]}}^{\mathrm{T}} D^{[l]} \, \delta^{[l+1]} \\
     &\vdots\\
+    \delta^{[L-1]} & = \delta^{[L]} + h \, {W^{[L-1]}}^{\mathrm{T}} D^{[L-1]} \, \delta^{[L]} \\
     \delta^{[L]} & = w + h \, {W^{[L]}}^{\mathrm{T}} D^{[L]} \, w
 \end{align*}
 
@@ -291,19 +293,16 @@ where
 Now to the Hessian as it has been implemented: 
 
 \begin{align*}
-    \vartheta^{[1]} & = h \, {W^{[1]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[1]}}^{\prime \prime}(W^{[1]} a^{[0]}(s) + b^{[1]}) \odot \delta^{[2]}) W^{[1]} + \\
-    & \quad + \left( I + h \, {J^{[1]}}^{\mathrm{T}} \right) \, \left( \left(I + h \, {J^{[1]}}^{\mathrm{T}} \right) \, \vartheta^{[2]} \right)^{\mathrm{T}} \\ 
+    \vartheta^{[1]} & = h \, {W^{[1]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[1]} \delta^{[2]} \right) W^{[1]} + \\
+    & \quad + \left( I + h \, {W^{[1]}}^{\mathrm{T}} D^{[1]} \right) \, \left( \left( I + h \, {W^{[1]}}^{\mathrm{T}} D^{[1]} \right) \, \vartheta^{[2]} \right)^{\mathrm{T}} \\ 
     &\vdots\\
-    \vartheta^{[l]} & = h \, {W^{[l]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[l]}}^{\prime \prime}(W^{[l]} a^{[l-1]}(s) + b^{[l]}) \odot \delta^{[l+1]}) W^{[l]} + \\
-    & \quad + \left( I + h \, {J^{[l]}}^{\mathrm{T}} \right) \, \left( \left(I + h \, {J^{[l]}}^{\mathrm{T}} \right) \, \vartheta^{[l+1]} \right)^{\mathrm{T}} \\ 
+    \vartheta^{[l]} & = h \, {W^{[l]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[l]} \delta^{[l+1]} \right) W^{[l]} + \\
+    & \quad + \left( I + h \, {W^{[l]}}^{\mathrm{T}} D^{[l]} \right) \, \left( \left( I + h \, {W^{[l]}}^{\mathrm{T}} D^{[l]} \right) \, \vartheta^{[l+1]} \right)^{\mathrm{T}} \\ 
+    \vartheta^{[l]} & = h \, {W^{[l]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[l]} \delta^{[l+1]} \right) W^{[l]} + \\
+    & \quad + \left( I + h \, {W^{[l]}}^{\mathrm{T}} D^{[l]} \right) \, \vartheta^{[l+1]}  \left( I + h \,  D^{[l]} {W^{[l]}}^{\mathrm{T}} \right) \\ 
     &\vdots\\
-    \vartheta^{[L-1]} & = h \, {W^{[L-1]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[L-1]}}^{\prime \prime}(W^{[L-1]} a^{[L-2]}(s) + b^{[L-1]}) \odot \delta^{[L]}) W^{[L-1]} + \\
-    & \quad + \left( I + h \, {J^{[L-1]}}^{\mathrm{T}} \right) \, \left( \left(I + h \, {J^{[L-1]}}^{\mathrm{T}} \right) \, \vartheta^{[L]} \right)^{\mathrm{T}} \\
-    \vartheta^{[L]} &  = h \, {W^{[L]}}^{\mathrm{T}} \mathrm{diag}({\sigma^{[L]}}^{\prime \prime}(W^{[L]} a^{[L-1]}(s) + b^{[L]}) \odot w) W^{[L]} 
+    \vartheta^{[L-1]} & = h \, {W^{[L-1]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[L-1]} \delta^{[L]} \right) W^{[L-1]} + \\
+    & \quad + \left( I + h \, {W^{[L-1]}}^{\mathrm{T}} D^{[L-1]} \right) \, \left( \left( I + h \, {W^{[L-1]}}^{\mathrm{T}} D^{[L-1]} \right) \, \vartheta^{[L]} \right)^{\mathrm{T}} \\
+    \vartheta^{[L]} &  = h \, {W^{[L]}}^{\mathrm{T}} \mathrm{diag}(H^{[L]} w) W^{[L]} 
 \end{align*}
 
-where 
-
-\begin{equation*}
-    {J^{[l]}}^{\mathrm{T}} A = {W^{[L]}}^{\mathrm{T}} \left( {\sigma^{[L]}}^{\prime}(W^{[L]} a^{[L-1]}(s) + b^{[L]}) \odot A \right)
-\end{equation*}
