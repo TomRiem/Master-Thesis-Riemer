@@ -299,7 +299,7 @@ Now to the Hessian as it has been implemented:
     \vartheta^{[l]} & = h \, {W^{[l]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[l]} \delta^{[l+1]} \right) W^{[l]} + \\
     & \quad + \left( I + h \, {W^{[l]}}^{\mathrm{T}} D^{[l]} \right) \, \left( \left( I + h \, {W^{[l]}}^{\mathrm{T}} D^{[l]} \right) \, \vartheta^{[l+1]} \right)^{\mathrm{T}} \\ 
     \vartheta^{[l]} & = h \, {W^{[l]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[l]} \delta^{[l+1]} \right) W^{[l]} + \\
-    & \quad + \left( I + h \, {W^{[l]}}^{\mathrm{T}} D^{[l]} \right) \, \vartheta^{[l+1]}  \left( I + h \,  D^{[l]} {W^{[l]}}^{\mathrm{T}} \right) \\ 
+    & \quad + \left( I + h \, {W^{[l]}}^{\mathrm{T}} D^{[l]} \right) \, \vartheta^{[l+1]}  \left( I + h \,  D^{[l]} {W^{[l]}} \right) \\ 
     &\vdots\\
     \vartheta^{[L-1]} & = h \, {W^{[L-1]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[L-1]} \delta^{[L]} \right) W^{[L-1]} + \\
     & \quad + \left( I + h \, {W^{[L-1]}}^{\mathrm{T}} D^{[L-1]} \right) \, \left( \left( I + h \, {W^{[L-1]}}^{\mathrm{T}} D^{[L-1]} \right) \, \vartheta^{[L]} \right)^{\mathrm{T}} \\
