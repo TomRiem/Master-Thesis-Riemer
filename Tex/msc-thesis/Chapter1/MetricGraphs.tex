@@ -1,11 +1,13 @@
 \section{Metric Graphs}
 
 We define a graph $\Gamma$ as an ordered pair $(\mathcal{V}, \mathcal{E})$, where $\mathcal{V} = \{v_i\}$ is a finite or countably infinite set of points, which we call vertices, and $\mathcal{E} = \{e_j\}$ is a set of segments connecting some of the vertices, which we call edges. In the following we will use the notation $E \coloneqq \left\lvert \mathcal{E} \right\rvert$ for the number of edges and $E \coloneqq \left\lvert \mathcal{E} \right\rvert$ for the number of vertices. \\
-A vertex $w \in \mathcal{V}$ is adjacent to a vertex $v \in \mathcal{V}$, denoted by $v \sim w$, if a suitable edge $e \in \mathcal{E}$ exists, so that $w$ can be reached from $v$ via this edge $e$. The notation $v \in e$ means that $v \in \mathcal{V}$ is a vertex of the edge $e \in \mathcal{V}$. In the following we assume that a graph has no loops, which are edges that connect a vertex to itself, i.e. $v \sim v$, and no multi-edges, which are several equal edges between two vertices. \\
+A vertex $w \in \mathcal{V}$ is adjacent to a vertex $v \in \mathcal{V}$, denoted by $v \sim w$, if a suitable edge $e \in \mathcal{E}$ exists, so that $w$ can be reached from $v$ via this edge $e$. The notation $v \in e$ means that $v \in \mathcal{V}$ is a vertex of the edge $e \in \mathcal{E}$. In the following we assume that a graph has no loops, which are edges that connect a vertex $v \in \mathcal{V}$ to itself, i.e. $v \sim v$, and no multi-edges, which are several equal edges between two vertices. \\
 A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is non-directed, if each of its edges $e \in \mathcal{E}$ connects two vertices $v, w \in \mathcal{V}$ and no direction is given to it. This means, if the vertices $v, w \in \mathcal{V}$ are connected by an edge $e \in \mathcal{E}$, that the vertex $v$ is adjacent to the vertex $w$, as well as the other way around, i.e. $w \sim v$ and $v \sim w$. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is called directed graph, if each of its edges $e \in \mathcal{E}$ is assigned a direction, which means that each edge can only be followed in one direction. Therefore, the edges of a directed graph can be defined as ordered pairs of vertices , where the first vertex is called the origin vertex and the second vertex is called the end vertex of the corresponding edge. 
 
 Directed edges will be called bonds. The set of all bonds is denoted by B. We will use the shorthand notation B := |B| for the total number of bonds in a directed graph Γ.
 The order of the two connected vertices is unimportant.
+
+Here, an entry  𝑎𝑖,𝑗>0  indicates that there is an edge starting in vertex  𝑖  and ending in vertex  𝑗  with length  𝑎𝑖,𝑗 
 
 
 Dies verdeutlicht, dass jede Kante des Graphen nur in eine Richtung durchlaufen werden kann.
@@ -19,9 +21,18 @@ Ist eine Verbindung zweier Knoten ein Pfeil, so ist der Graph gerichtet und die 
 
 Wird eine Kante im Graphen hingegen als einfache Verbindung zwischen zwei Knoten dargestellt, ist der Graph ungerichtet und es muss nicht auf die Richtung geachtet werden.
 
+So far all our definitions have dealt with a combinatorial graph. Here we
+introduce a notion that makes Γ a topological and metric object.
+
+Most frequently, in our considerations a non-directed graph will be
+considered as a digraph by assigning two bonds b and b with opposite
+directions to each edge e, as shown in Figure 2. We denote the resulting
+directed graph by Γ. 
 
 On the other hand, in
 most of the text graphs will be considered as 1D complexes, and thus
 edges will be treated as 1D segments (or could be thought of as physical
 “wires”). Such graphs will be equipped with additional structures that
 will make them metric
+
+A metric graph is a graph consisting of a set {\displaystyle V}V of vertices and a set {\displaystyle E}E of edges where each edge {\displaystyle e=(v_{1},v_{2})\in E}e=(v_1,v_2)\in E has been associated with an interval {\displaystyle [0,L_{e}]}[0,L_e] so that {\displaystyle x_{e}}x_{e} is the coordinate on the interval, the vertex {\displaystyle v_{1}}v_{1} corresponds to {\displaystyle x_{e}=0}x_e=0 and {\displaystyle v_{2}}v_{2} to {\displaystyle x_{e}=L_{e}}x_e=L_e or vice versa. The choice of which vertex lies at zero is arbitrary with the alternative corresponding to a change of coordinate on the edge. The graph has a natural metric: for two points {\displaystyle x,y}x,y on the graph, {\displaystyle \rho (x,y)}\rho(x,y) is the shortest distance between them where distance is measured along the edges of the graph.
