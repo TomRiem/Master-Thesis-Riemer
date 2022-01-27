@@ -1,55 +1,37 @@
 \section{Metric Graphs}
 
-We define a graph $\Gamma$ as an ordered pair $(\mathcal{V}, \mathcal{E})$, where $\mathcal{V} = \{v_i\}$ is a finite or countably infinite set of points, which we call vertices, and $\mathcal{E} = \{e_j\}$ is a set of segments connecting some of the vertices, which we call edges. In the following we will use the notation $E \coloneqq \left\lvert \mathcal{E} \right\rvert$ for the number of edges and $E \coloneqq \left\lvert \mathcal{E} \right\rvert$ for the number of vertices. \\
-Each edge $e \in \mathcal{E}$ can be identified with a pair $(v, w)$ of vertices $v, w \in \mathcal{V}$. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is called directed graph, if each of its edges $e \in \mathcal{E}$ is assigned a direction, which means that each edge can only be followed in one direction. In this case the order of the pair of vertices describing an edge e is important. The edges of a directed graph are called directed edges and can be defined as ordered pairs of vertices , where the first vertex is called the origin vertex and the second vertex is called the end vertex of the corresponding edge. A graph is non-directed if each of its edges can be followed in both directions. In this case, the order of the two connected vertices describing an edge is unimportant. \\
-A vertex $w \in \mathcal{V}$ is adjacent to a vertex $v \in \mathcal{V}$, denoted by $v \sim w$, if a suitable edge $e \in \mathcal{E}$ exists, so that $w$ can be reached from $v$ via this edge $e$. In the following we assume that a graph has no loops, which are edges that connect a vertex $v \in \mathcal{V}$ to itself, i.e. $v \sim v$, and no multi-edges, which are several equal edges between two vertices. A graph Γ is fully specified by its |V| × |V| adjacency matrix AΓ. The elements of the adjacency matrix are given by
+We define a graph $\Gamma$ as an ordered pair $(\mathcal{V}, \mathcal{E})$, where $\mathcal{V} = \{v_i\}$ is a finite set of points, which we call vertices, and $\mathcal{E} = \{e_j\}$ is a set of segments connecting some of the vertices, which we call edges. In the following we will use the notation $E \coloneqq \left\lvert \mathcal{E} \right\rvert$ for the number of edges and $V \coloneqq \left\lvert \mathcal{V} \right\rvert$ for the number of vertices. \\
+Each edge $e \in \mathcal{E}$ can be identified with a pair $(v, w)$ of vertices $v, w \in \mathcal{V}$, which it connects. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is called directed graph, if each of its edges $e \in \mathcal{E}$ is assigned a direction, which means that each edge can only be followed in one direction. In this case the order of the pair of vertices $(v, w)$ describing an edge $e$ is important, so that the set of edges $\mathcal{E}$ can be uniquely described as a set of ordered pairs $\mathcal{E} = \{e_i\}_{i = 1, \ldots, E} = \{(v^{o}_{i}, v^{t}_{i})\}_{i = 1, \ldots, E}$, where the first vertex $v^{o}_{i}$ is called the origin vertex and the second vertex $v^{t}_{i}$ is called the terminal vertex of the corresponding edge $e_i$. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is non-directed if each of its edges $e \in \mathcal{E}$ can be followed in both directions. In this case, the order of the two connected vertices describing an edge is unimportant, i.e. $e = (v, w) = (w, v)$, $v, w \in \mathcal{V}$. \\
+A vertex $w \in \mathcal{V}$ is adjacent to a vertex $v \in \mathcal{V}$, denoted by $v \sim w$, if a suitable edge $e \in \mathcal{E}$ exists, so that $w$ can be reached from $v$ via this edge $e$. In the following we assume that a graph has no loops, which are edges that connect a vertex $v \in \mathcal{V}$ to itself, i.e. $v \sim v$, and no multi-edges, which are several equal edges between two vertices, i.e. $e_1, e_2 \in \mathcal{E}$ and $e_1= e_2$. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ with $\mathcal{V} = \{v_i\}_{i = 1, \ldots, V}$ is fully specified by its $V \times V$ adjacency matrix $A^{\Gamma}$. The elements of the adjacency matrix are given by
 \begin{equation}
     \label{adjacency matrix}
-    A_{u, v}= \begin{cases}1 & \text { if } u \sim v \\ 0 & \text { otherwise } \end{cases}
+    A^{\Gamma}_{i, j}= \begin{cases} 1 & \text { if } v_i \sim v_j \\ 0 & \text { otherwise. } \end{cases}
 \end{equation}
-One sees immediately that the adjacency matrix of an undirected graph is symmetric and that of a directed graph is not. \\
-%degreematrix
-A vertex is incident to an edge, denoted by $v \in e$, if the vertex $v \in \mathcal{V}$ is one of the two vertices the edge $e \in \mathcal{E}$ connects. %deutsches Wikipedia  https://de.wikipedia.org/wiki/Inzidenzmatrix
-The unoriented incidence matrix (or simply incidence matrix) of an undirected graph is a {\displaystyle n\times m}n\times m matrix B,
+One sees immediately that the adjacency matrix of an undirected graph is symmetric, since a vertex $v \in \mathcal{V}$ is adjacent to another vertex $w \in \mathcal{V}$ exactly when the other way round is also true, i.e. $v \sim w \Leftrightarrow w \sim v$. \\
+The degree $d_{v_i}$ of a vertex $v_i \in \mathcal{V}$ is the number of edges emanating from it, i.e. $d_{v_i} = \sum_{v_j \in \mathcal{V}} A_{i, j}$. All degrees are assumed to be finite. We will denote by $D^{\Gamma}$ the degree matrix of the graph, which is a diagonal $V \times V$ matrix with the entries
+\begin{equation}
+    \label{degree matrix}
+    D^{\Gamma}_{i, j} = d_{v_i} \, \delta_{v_j, v_i}
+\end{equation}
+where $\delta_{v_j, v_i}$ is the Kronecker delta. \\
+A vertex is incident to an edge, denoted by $v \in e$, if the vertex $v \in \mathcal{V}$ is one of the two vertices the edge $e \in \mathcal{E}$ connects. We define for an undirected graph $\Gamma = (\mathcal{V}, \mathcal{E})$ with $\mathcal{V} = \{v_i\}_{i = 1, \ldots, V}$ and $\mathcal{E} = \{e_i\}_{i = 1, \ldots, E}$ the $V \times E$ incidence matrix $B^{\Gamma}$ by  
+\begin{equation}
+    \label{incidence matrix undirected}
+    B^{\Gamma}_{i, j}= \begin{cases} 1 & \text { if } v_i \in e_j \\ 0 & \text { otherwise } \end{cases}
+\end{equation}
+and for a directed graph $\Gamma = (\mathcal{V}, \mathcal{E})$ with $\mathcal{V} = \{v_i\}_{i = 1, \ldots, V}$ and $\mathcal{E} = \{e_i\}_{i = 1, \ldots, E}$ we define the $V \times E$ incidence matrix $B^{\Gamma}$ by 
+\begin{equation}
+    \label{incidence matrix undirected}
+    B^{\Gamma}_{i, j}= \begin{cases} 1 & \text { if } e_j = (v_i, \cdot) \\ -1 & \text { if } e_j = (\cdot, v_i) \\ 0 & \text { if } v_i \notin e_j. \end{cases}
+\end{equation}
 
+% We also denote by $\mathcal{E}_v$ the set of all edges incident to the vertex $v$ (i.e., containing $v$). It is assumed that the degree (valence) dv = |Ev| of any vertex v is finite and positive. We hence exclude vertices with no edges coming in or going out.
 
+So far we have considered graphs as discrete combinatorial objects. From now on we consider graphs as 1-dimensional complexes and the edges will be treated as 1-dimensional segments. Roughly speaking, we now imagine the edges $\mathcal{E}$ of a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ not as abstract relations between the vertices $\mathcal{V}$, but rather as physical “wires” connecting them. For that we add a structure that equips $\Gamma$ with a topology and metric. 
 
+\begin{definition}\label{metric graph}
+    A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is said to be a metric graph, if each of its edges $e \in \mathcal{E}$ is assigned a positive length $l_e > 0$.
+\end{definition}
 
-A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is non-directed, if each of its edges $e \in \mathcal{E}$ connects two vertices $v, w \in \mathcal{V}$ and no direction is given to it. This means, if the vertices $v, w \in \mathcal{V}$ are connected by an edge $e \in \mathcal{E}$, that the vertex $v$ is adjacent to the vertex $w$, as well as the other way around, i.e. $w \sim v$ and $v \sim w$. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is called directed graph, if each of its edges $e \in \mathcal{E}$ is assigned a direction, which means that each edge can only be followed in one direction. Therefore, the edges of a directed graph can be defined as ordered pairs of vertices , where the first vertex is called the origin vertex and the second vertex is called the end vertex of the corresponding edge. 
+%Having the length assigned, an edge e will be identified with a finite or infinite segment [0, le] of the real line with the natural coordinate xe along it. In most cases we will drop the subscript in the coordinate and call it x, which should not lead to any confusion. This enables one to interpret the graph Γ as a topological space (simplicial complex) that is the union of all edges where the ends corresponding to the same vertex are identified
 
-Directed edges will be called bonds. The set of all bonds is denoted by B. We will use the shorthand notation B := |B| for the total number of bonds in a directed graph Γ.
-The order of the two connected vertices is unimportant.
-
-Here, an entry  𝑎𝑖,𝑗>0  indicates that there is an edge starting in vertex  𝑖  and ending in vertex  𝑗  with length  𝑎𝑖,𝑗 
-
-
-Dies verdeutlicht, dass jede Kante des Graphen nur in eine Richtung durchlaufen werden kann.
-
-Kanten in einem ungerichteten Graphen bezeichnet man als „ungerichtete Kanten“. Eine ungerichtete Kante ist demnach eine Menge von zwei Knoten. Mitunter wird der Begriff auch auf gerichtete Graphen ausgeweitet, um auszudrücken, dass zwei Knoten „a“ und „b“ sowohl durch die Kante {\displaystyle \left(a,b\right)}\left(a,b\right) als auch durch die Kante {\displaystyle \left(b,a\right)}\left(b,a\right) verbunden sind.
-
-Kanten in einem gerichteten Graphen bezeichnet man als „gerichtete Kanten“. Sie besitzt also im Gegensatz zu einer ungerichteten Kante eine Orientierung. Für eine Kante {\displaystyle e=\left(a,b\right)}e=\left(a,b\right) wird der Knoten {\displaystyle a}a Startknoten und der Knoten {\displaystyle b}b Endknoten der Kante genannt. Eine gerichtete Kante wird auch „Bogen“ oder „Pfeil“ genannt. Zwei Kanten {\displaystyle e_{1}}e_{1}, {\displaystyle e_{2}}e_{2} mit {\displaystyle e_{1}=\left(a,b\right)}e_{1}=\left(a,b\right) und {\displaystyle e_{2}=\left(b,a\right)}e_{2}=\left(b,a\right) heißen „gegenläufig“ oder „antiparallel“.
-
-
-Ist eine Verbindung zweier Knoten ein Pfeil, so ist der Graph gerichtet und die Kante darf nur in einer Richtung genutzt werden. Wie du siehst, ist es dir im gerichteten Graphen beispielsweise nicht erlaubt, vom Knoten B zum Knoten A zu gehen, da die Kante nur in die entgegengesetzte Richtung zeigt.
-
-Wird eine Kante im Graphen hingegen als einfache Verbindung zwischen zwei Knoten dargestellt, ist der Graph ungerichtet und es muss nicht auf die Richtung geachtet werden.
-
-So far all our definitions have dealt with a combinatorial graph. Here we
-introduce a notion that makes Γ a topological and metric object.
-
-Most frequently, in our considerations a non-directed graph will be
-considered as a digraph by assigning two bonds b and b with opposite
-directions to each edge e, as shown in Figure 2. We denote the resulting
-directed graph by Γ. 
-
-On the other hand, in
-most of the text graphs will be considered as 1D complexes, and thus
-edges will be treated as 1D segments (or could be thought of as physical
-“wires”). Such graphs will be equipped with additional structures that
-will make them metric
-
-A metric graph is a graph consisting of a set {\displaystyle V}V of vertices and a set {\displaystyle E}E of edges where each edge {\displaystyle e=(v_{1},v_{2})\in E}e=(v_1,v_2)\in E has been associated with an interval {\displaystyle [0,L_{e}]}[0,L_e] so that {\displaystyle x_{e}}x_{e} is the coordinate on the interval, the vertex {\displaystyle v_{1}}v_{1} corresponds to {\displaystyle x_{e}=0}x_e=0 and {\displaystyle v_{2}}v_{2} to {\displaystyle x_{e}=L_{e}}x_e=L_e or vice versa. The choice of which vertex lies at zero is arbitrary with the alternative corresponding to a change of coordinate on the edge. The graph has a natural metric: for two points {\displaystyle x,y}x,y on the graph, {\displaystyle \rho (x,y)}\rho(x,y) is the shortest distance between them where distance is measured along the edges of the graph.
-
-% Adjazenzmatrix
-% Inzidenzmatrix
-% Gradmatrix
