@@ -1,2 +1,61 @@
 \section{Drift-Diffusion Equations on Metric Graphs}
-Will come soon \ldots
+
+We start our discussion introducing the concept of a metric graph in more detail.  A metric graph is an undirected graph that consists of a set of vertices $\mathcal{V}$ and edges $\mathcal{E}$ where in contrast to combinatorial graphs a length $l_e$ is assigned to each edge $e\in \mathcal{E}.$  Each edge $e \in \mathcal{E}$ connects a pair of nodes $(v^e_a,v^e_b)$ with $v^e_a,v^e_b\in \mathcal{V}$. We also introduce a normal vector $n_e(v)$ to each edge defined via $n_e(v^e_a) = -1$ and $n_e(v^e_b) = 1$. \\
+On a metric graph, it makes sense to consider differential operators defined on each edge, and we will focus on non-linear drift-diffusion equations
+\begin{equation}
+    \label{eq:strong_pde}
+    \partial_t \rho_e  = \partial_x (\varepsilon \partial_x \rho_e - f(\rho_e) \partial_x V_e), \quad e \in \mathcal{E},
+\end{equation}
+where $\rho_e \colon e \times (0,T) \to \mathbb{R}_{+}$ describes, on each edge, the concentration of some quantity while $V_e\colon e \times (0,T) \to \mathbb{R}_{+}$ is a given potential and $\varepsilon > 0$ a given constant, typically small. Furthermore, $f\colon \mathbb{R}_{+} \to \mathbb{R}_{+}$ satisfies $f(0) = f(1) = 0$. We define the flux in a spatial point $x \in e$ as 
+\begin{align} 
+    \label{eq:flux} 
+    J_e(x) \coloneqq - \varepsilon \partial_x \rho_e (x) + f(\rho_e(x)) \partial_x V_e(x).
+\end{align}
+A typical choice for $f$ will be $f(\rho_e) = \rho_e(1-\rho_e)$ in the following. 
+%\janB{Könnten wir hier mal ein konkretes Beispiel angeben, was ich auch zum Testen der Implementierung nehmen kann? Also vielleicht irgendwas mit $f(u) = u \, (1-u)$?}
+%\janB{Bemerkung Identifikation Kante $e$ mit Intervall $[0,\ell_e]$}
+
+% with a potential function $\cc$, and on each edge $e\in \mathcal{E}$ one can formulate
+% a differential equation of the form
+% \begin{equation*}
+% 	(\mathcal{H}y|_e)(x_e) = f|_e(x_e)\ \text{for all}\ x_e\in (0,L_e),
+% \end{equation*}
+% where the functions $f|_e\colon (0,L_e)\to\mathbb{R}$, $e\in \mathcal{E}$, are given source terms.
+% Here, $x_e$ are local coordinates associated to the edge $e$.
+% With a slight abuse of notation we will sometimes evaluate $y|_e$ in
+% one of the vertices $v\in \mathcal{V}$ of $e$. Depending on the orientation of the local coordinate $x_e$
+% we then mean either $y|_e(0)$ or $y|_e(L_e)$.
+To make \cref{eq:strong_pde} a well-posed problem, we need to add initial-conditions as well as coupling conditions on the vertices. 
+%Additionally, we can impose boundary or vertex conditions to couple these equations.
+%There are of course several different vertex conditions and we will distinguish among two different types. 
+For vertices $v \in \mathcal{V}_\mathcal{K} \subset \mathcal{V}$, we apply \emph{homogeneous Neumann--Kirchhoff conditions}, i.\,e., there holds
+\begin{equation}
+\label{eq:Kirchhoff_Neumann_condition}
+    \sum_{e\in \mathcal{E}_v}J_e(v) n_e (v)=0.
+\end{equation}
+Additionally, we ask the solution to be continuous over vertices, i.e. 
+\begin{align}
+    \rho_e(v) = \rho_{e'}(v) \quad \text{ for all }v \in \mathcal{V}_\mathcal{K},\; e,\,e' \in \mathcal{E}_v
+\end{align}
+with $\mathcal{E}_v$ the edge set incident to the vertex $v$.
+In vertices $v\in \mathcal{V}_\mathcal{D}\coloneqq\mathcal{V}\setminus \mathcal{V}_\mathcal{K}$ the solution $\rho$ fulfills \emph{flux boundary conditions}
+\begin{equation}
+\label{eq:Dirichlet_conditions}
+    \sum_{e\in \mathcal{E}_v}J_e(v) n_e (v)=-\alpha_v(t) (1-\rho_v) + \beta_v(t) \rho_v,\ \text{for all}\ v \in \mathcal{V}_\mathcal{D}, e \in \mathcal{E}_v,
+\end{equation}
+where 
+$\alpha_v\colon(0,T) \to \mathbb{R}_{+}, \, \beta_v \colon (0,T) \to \mathbb{R}_{+}$, ${v \in \mathcal{V}_\mathcal{D}}$
+% \in \mathbb{R}_{+}^{n_\mathcal{D}}$ and $\beta = (\beta_v)_{v \in \mathcal{V}_\mathcal{D}} \in \mathbb{R}_{+}^{n_\mathcal{D}}$, $n_\mathcal{D} \coloneqq |\mathcal{V}_\mathcal{D}|$, 
+are functions prescribing the rate of influx of mass into the network ($\alpha_v$) as well as the velocity of mass leaving the network ($\beta_v$) at the boundary vertices. Note that this choice ensures that the bounds $0 \le \rho_e \le 1$ are preserved. In typical situations, boundary vertices are either of influx- or of outflux type, i.e. $\alpha_v \beta_v = 0$ for all $v \in \mathcal{V}_\mathcal{D}$.
+
+
+The Kirchhoff-Neumann conditions are the natural boundary conditions for the differential operator \eqref{eq:strong_pde}, as they ensure that mass enters or leaves the system only via the boundary nodes $\mathcal{V}_\mathcal{D}$ for which either $\alpha_v$ or $\beta_v$ is positive. 
+%
+Having introduced the complete continuous model, we state the following existence and uniqueness result. Details on the exact definition of the spaces and a sketch of the proof can be found in Section \ref{sec:math_setting}
+\begin{theorem} Given initial data $\rho_0 \in L^2(\Gamma)$ s.t. $0 \le \rho_0 \le 1$ a.e. on $\mathcal{E}$, there exists a unique weak solution $\rho \in L^2(0,T; H^1(\Gamma)) \cap H^1(0,T; (H^1)^*(\Gamma))$ s.t.
+	\begin{align*}
+		\sum_{e \in \mathcal{E}} \left(\int_e  \partial_t \rho_e \varphi_e \;dx + \int_e \partial_x \rho_e\partial_x \varphi_e \;dx\right) + \sum_{v \in \mathcal{V}_D} (-\alpha_v(t) (1-\rho_v) + \beta_v(t) \rho_v)\varphi(v) = 0,
+	\end{align*}
+	for all testfunction $\varphi \in H^1(\Gamma)$.
+\end{theorem}
+
