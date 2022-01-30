@@ -1,8 +1,38 @@
 \section{Metric Graphs}
 
 We define a graph $\Gamma$ as an ordered pair $(\mathcal{V}, \mathcal{E})$, where $\mathcal{V} = \{v_i\}$ is a finite set of points, which we call vertices, and $\mathcal{E} = \{e_j\}$ is a set of segments connecting some of the vertices, which we call edges. In the following we will use the notation $E \coloneqq \left\lvert \mathcal{E} \right\rvert$ for the number of edges and $V \coloneqq \left\lvert \mathcal{V} \right\rvert$ for the number of vertices. \\
-Each edge $e \in \mathcal{E}$ can be identified with a pair $(v, w)$ of vertices $v, w \in \mathcal{V}$, which it connects. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is called directed graph, if each of its edges $e \in \mathcal{E}$ is assigned a direction, which means that each edge can only be followed in one direction. In this case the order of the pair of vertices $(v, w)$ describing an edge $e$ is important, so that the set of edges $\mathcal{E}$ can be uniquely described as a set of ordered pairs $\mathcal{E} = \{e_i\}_{i = 1, \ldots, E} = \{(v^{o}_{i}, v^{t}_{i})\}_{i = 1, \ldots, E}$, where the first vertex $v^{o}_{i}$ is called the origin vertex and the second vertex $v^{t}_{i}$ is called the terminal vertex of the corresponding edge $e_i$. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is non-directed if each of its edges $e \in \mathcal{E}$ can be followed in both directions. In this case, the order of the two connected vertices describing an edge is unimportant, i.e. $e = (v, w) = (w, v)$, $v, w \in \mathcal{V}$. \\
-A vertex $w \in \mathcal{V}$ is adjacent to a vertex $v \in \mathcal{V}$, denoted by $v \sim w$, if a suitable edge $e \in \mathcal{E}$ exists, so that $w$ can be reached from $v$ via this edge $e$. In the following we assume that a graph has no loops, which are edges that connect a vertex $v \in \mathcal{V}$ to itself, i.e. $v \sim v$, and no multi-edges, which are several equal edges between two vertices, i.e. $e_1, e_2 \in \mathcal{E}$ and $e_1= e_2$. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ with $\mathcal{V} = \{v_i\}_{i = 1, \ldots, V}$ is fully specified by its $V \times V$ adjacency matrix $A^{\Gamma}$. The elements of the adjacency matrix are given by
+Each edge $e \in \mathcal{E}$ can be identified with a pair $(v, w)$ of vertices $v, w \in \mathcal{V}$, which it connects. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is called directed graph, if each of its edges $e \in \mathcal{E}$ is assigned a direction, which means that each edge can only be followed in one direction. In this case, the order of the pair of vertices $(v, w)$ describing an directed edge $e$ is important, so that the set of directed edges $\mathcal{E}$ can be uniquely described as a set of ordered pairs $\mathcal{E} = \{e_i\}_{i = 1, \ldots, E} = \{(v^{o}_{i}, v^{t}_{i})\}_{i = 1, \ldots, E}$, where the first vertex $v^{o}_{i}$ is called the origin vertex and the second vertex $v^{t}_{i}$ is called the terminal vertex of the corresponding edge $e_i$. 
+
+The origin and terminal points of a bond are specified via functions  and , i.e. a bond b begins at vertex  and ends at . We define the set of incoming bonds at a vertex v as the set of bonds satisfying t(b) = v. If o(b) = v, the bond b is called outgoing at vertex v.
+
+A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is non-directed if each of its edges $e \in \mathcal{E}$ can be followed in both directions. In this case, the order of the two connected vertices describing an edge is unimportant, i.e. $e = (v, w) = (w, v)$, $v, w \in \mathcal{V}$. \\
+
+\begin{figure}[H]
+    \begin{subfigure}[b]{0.4\textwidth}
+        \begin{tikzpicture}[main/.style = {draw, circle}] 
+            \node[main] (1) {$x_1$}; 
+        \end{tikzpicture}
+        \caption{Non-directed graph.}
+        \label{fig:f1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \begin{tikzpicture}[main/.style = {draw, circle}] 
+            \node[main] (1) {$x_1$}; 
+        \end{tikzpicture}
+        \caption{Directed graph.}
+        \label{fig:f2}
+    \end{subfigure}
+    \caption{Graphs.}
+\end{figure}
+
+Most frequently, in our considerations a non-directed graph will be considered as a digraph by assigning two bonds b and b with opposite directions to each edge e, as shown in Figure 2. We denote the resulting directed graph by 
+
+% Graphik
+
+The graph  satisfies the condition that at each vertex  v the numbers of incoming and outgoing bonds are equal: (the notation dv := dv/2 will be used in this situation). The set of bonds of  is symmetric in the sense that  if and only if there is another bond such that o(b) = t(b) and t(b) = o(b). The bond b is called the reversal of b. The operation of reversal is reflexive: b = b.
+\\
+A vertex $w \in \mathcal{V}$ is adjacent to a vertex $v \in \mathcal{V}$, denoted by $v \sim w$, if a suitable edge $e \in \mathcal{E}$ exists, so that $w$ can be reached from $v$ via this edge $e$. In the following we assume that a graph has no loops, which are edges that connect a vertex $v \in \mathcal{V}$ to itself, i.e. $v \sim v$, and no multi-edges, which are several equal edges between two vertices, i.e. $e_1, e_2 \in \mathcal{E}$ and $e_1 = e_2$. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ with $\mathcal{V} = \{v_i\}_{i = 1, \ldots, V}$ is fully specified by its $V \times V$ adjacency matrix $A^{\Gamma}$. The elements of the adjacency matrix are given by
 \begin{equation}
     \label{adjacency matrix}
     A^{\Gamma}_{i, j}= \begin{cases} 1 & \text { if } v_i \sim v_j \\ 0 & \text { otherwise. } \end{cases}
@@ -14,6 +44,9 @@ The degree $d_{v_i}$ of a vertex $v_i \in \mathcal{V}$ is the number of edges em
     D^{\Gamma}_{i, j} = d_{v_i} \, \delta_{v_j, v_i}
 \end{equation}
 where $\delta_{v_j, v_i}$ is the Kronecker delta. \\
+
+The number of incoming (respectively, outgoing) bonds at a vertex v is called incoming (resp.outgoing) degree of v and denoted  (resp. dov). Clearly, dov + div = dv.
+
 A vertex is incident to an edge, denoted by $v \in e$, if the vertex $v \in \mathcal{V}$ is one of the two vertices the edge $e \in \mathcal{E}$ connects. We define for an undirected graph $\Gamma = (\mathcal{V}, \mathcal{E})$ with $\mathcal{V} = \{v_i\}_{i = 1, \ldots, V}$ and $\mathcal{E} = \{e_i\}_{i = 1, \ldots, E}$ the $V \times E$ incidence matrix $B^{\Gamma}$ by  
 \begin{equation}
     \label{incidence matrix undirected}
@@ -27,7 +60,11 @@ and for a directed graph $\Gamma = (\mathcal{V}, \mathcal{E})$ with $\mathcal{V}
 
 % We also denote by $\mathcal{E}_v$ the set of all edges incident to the vertex $v$ (i.e., containing $v$). It is assumed that the degree (valence) dv = |Ev| of any vertex v is finite and positive. We hence exclude vertices with no edges coming in or going out.
 
-So far we have considered graphs as discrete combinatorial objects. From now on we consider graphs as 1-dimensional complexes and the edges will be treated as 1-dimensional segments. Roughly speaking, we now imagine the edges $\mathcal{E}$ of a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ not as abstract relations between the vertices $\mathcal{V}$, but rather as physical “wires” connecting them. For that we add a structure that equips $\Gamma$ with a topology and metric. 
+So far we have considered graphs as discrete combinatorial objects. From now on we consider graphs as 1-dimensional complexes and the edges will be treated as 1-dimensional segments. If one considers graphs as 1D complexes, which we will often do, there exists a natural projection that maps the points x
+
+%Grafik
+
+Roughly speaking, we now imagine the edges $\mathcal{E}$ of a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ not as abstract relations between the vertices $\mathcal{V}$, but rather as physical “wires” connecting them. For that we add a structure that equips $\Gamma$ with a topology and metric. 
 
 \begin{definition}\label{metric graph}
     A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is said to be a metric graph, if each of its edges $e \in \mathcal{E}$ is assigned a positive length $l_e > 0$.
