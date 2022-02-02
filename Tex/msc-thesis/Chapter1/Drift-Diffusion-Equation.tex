@@ -1,61 +1,58 @@
 \section{Drift-Diffusion Equations on Metric Graphs}
+\label{ch1:sec2}
 
-We start our discussion introducing the concept of a metric graph in more detail.  A metric graph is an undirected graph that consists of a set of vertices $\mathcal{V}$ and edges $\mathcal{E}$ where in contrast to combinatorial graphs a length $l_e$ is assigned to each edge $e\in \mathcal{E}.$  Each edge $e \in \mathcal{E}$ connects a pair of nodes $(v^e_a,v^e_b)$ with $v^e_a,v^e_b\in \mathcal{V}$. We also introduce a normal vector $n_e(v)$ to each edge defined via $n_e(v^e_a) = -1$ and $n_e(v^e_b) = 1$. \\
-On a metric graph, it makes sense to consider differential operators defined on each edge, and we will focus on non-linear drift-diffusion equations
-\begin{equation}
-    \label{eq:strong_pde}
-    \partial_t \rho_e  = \partial_x (\varepsilon \partial_x \rho_e - f(\rho_e) \partial_x V_e), \quad e \in \mathcal{E},
+traffic flow on networks The main inspiration is that of understanding traffic behavior in urban context in order to answer
+
+In the case of complex dynamics observed within the network, metric graphs provide a natural representation as both the edge length is incorporated into the modeling as well as a partial differential equation defined on the graph
+
+This corresponds to the ideas originally introduced in the context of fluid models. A very prominent fluidlike traffic flow model is the Lighthill-Whitham-Richards model (LWR model) by Lighthill and Whitham (1955) and Richards (1956), w
+
+Classically, the network models of transportation systems are assumed to be static, but these models do not allow a correct simulation of heavily congested urban road networks. For this reason, traffic engineers have been studying dynamic traffic assignment or within-day models, thus rendering necessary the use of time advancing mathematical models (traffic simulation models). These models, principally created from static network traffic assignments, can be roughly classified in microscopic, mesoscopic and macroscopic (see [10] and the references therein). The main problems of this approach consist in the fact that it does not properly reproduce the backward propagation of shocks and in the difficulty of collecting experimental data to test the models. Various other ideas have been developed by researchers studying traffic from other perspectives, see for instance [9, 38, 63, 68, 89, 91, 106]. In many cases, the attention was focused on a single road or on small portions of an urban network
+
+In the 1950s James Lighthill and Gerald Whitham, two experts in fluiddynamics, (and independently P. Richards) thought that the equations describing the flow of water could also describe the flow of car traffic. These equations in fluid dynamics are a set of partial differential equations known as the Euler or Navier-Stokes equations, expressing the conservation of mass, momentum and energy. The basic idea is to look at large scales so to consider cars as small particles and their density as the main quantity to be considered.
+
+
+
+In any case, it is reasonable to assume the conservation of the number of cars, thus leading again to a conservation law. As traffic jams display sharp discontinuities, there is a correspondence between traffic jams and shock waves. Therefore, fluid-dynamic models for traffic flow seem the most appropriate to detect some phenomena as shocks formation and propagation on roads, since solutions can develop discontinuities in a finite time even starting from smooth initial data (
+
+
+
+
+The model is posed on a directed metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, where each edge $b \in \mathcal{E} = \mathcal{B}$ is equipped with a length $\ell_b > 0$ and a differential operator
+\begin{equation} 
+    \label{eq:Hamiltonian}
+    \mathcal{H}_b(x,t) \coloneqq \partial_t \rho_b  - \partial_x (\varepsilon \partial_x \rho_b + f(\rho_b) \partial_x V_b).
 \end{equation}
-where $\rho_e \colon e \times (0,T) \to \mathbb{R}_{+}$ describes, on each edge, the concentration of some quantity while $V_e\colon e \times (0,T) \to \mathbb{R}_{+}$ is a given potential and $\varepsilon > 0$ a given constant, typically small. Furthermore, $f\colon \mathbb{R}_{+} \to \mathbb{R}_{+}$ satisfies $f(0) = f(1) = 0$. We define the flux in a spatial point $x \in e$ as 
-\begin{align} 
+From now on we denote the ordered pair of vertices connected by a bond $b$ by $(v^{o}_b, v^{t}_b)$ and introduce a normal vector $n_b(v)$ to each bond defined via $n_b(v^{o}_b) = -1$ and $n_b(v^{t}_b) = 1$. In \cref{eq:Hamiltonian}, $\rho_e \colon e \times (0,T) \to \mathbb{R}_{+}$ describes, on each edge, the concentration of some quantity while $V_e \colon e \times (0,T) \to \mathbb{R}_{+}$ is a given potential, that may vary from edge to edge, and $\varepsilon > 0$ a given constant, typically small. The function $f \colon \mathbb{R}_{+} \to \mathbb{R}_{+}$ is called mobility, satisfies $f(0) = f(1) = 0$ and its simplest choice is $f(\rho_e) = \rho_e$, i.e. linear transport. However, in many applications, the density is now allowed to exceed a maximal value (e.g. due to finite size effects). If this value is scaled to one, a choice of $f$ that obeys $f(1) = 0$ will ensure that solutions to \eqref{eq:Hamiltonian} will satisfy this bound for all times. A typical choice for $f$ will be $f(\rho_e) = \rho_e(1-\rho_e)$ in the following. \\
+To make \cref{eq:Hamiltonian} a well-posed problem, we need to add initial-conditions as well as coupling conditions on the vertices. On the set of interior vertices $v \in \mathcal{V}_\mathcal{K} \subset \mathcal{V}$, we apply homogeneous Kirchhoff-Neumann coupling conditions, i.e., there holds
+\begin{equation}
+    \label{eq:Kirchhoff_Neumann_condition}
+    \sum_{e\in \mathcal{E}_v} J_e(v) n_e (v)=0,
+\end{equation}
+where $J_e \colon [0, \ell_e] \to \mathbb{R}$ is defined as the flux in a spatial point $x \in e$ via 
+\begin{equation} 
     \label{eq:flux} 
     J_e(x) \coloneqq - \varepsilon \partial_x \rho_e (x) + f(\rho_e(x)) \partial_x V_e(x).
-\end{align}
-A typical choice for $f$ will be $f(\rho_e) = \rho_e(1-\rho_e)$ in the following. 
-%\janB{Könnten wir hier mal ein konkretes Beispiel angeben, was ich auch zum Testen der Implementierung nehmen kann? Also vielleicht irgendwas mit $f(u) = u \, (1-u)$?}
-%\janB{Bemerkung Identifikation Kante $e$ mit Intervall $[0,\ell_e]$}
-
-% with a potential function $\cc$, and on each edge $e\in \mathcal{E}$ one can formulate
-% a differential equation of the form
-% \begin{equation*}
-% 	(\mathcal{H}y|_e)(x_e) = f|_e(x_e)\ \text{for all}\ x_e\in (0,L_e),
-% \end{equation*}
-% where the functions $f|_e\colon (0,L_e)\to\mathbb{R}$, $e\in \mathcal{E}$, are given source terms.
-% Here, $x_e$ are local coordinates associated to the edge $e$.
-% With a slight abuse of notation we will sometimes evaluate $y|_e$ in
-% one of the vertices $v\in \mathcal{V}$ of $e$. Depending on the orientation of the local coordinate $x_e$
-% we then mean either $y|_e(0)$ or $y|_e(L_e)$.
-To make \cref{eq:strong_pde} a well-posed problem, we need to add initial-conditions as well as coupling conditions on the vertices. 
-%Additionally, we can impose boundary or vertex conditions to couple these equations.
-%There are of course several different vertex conditions and we will distinguish among two different types. 
-For vertices $v \in \mathcal{V}_\mathcal{K} \subset \mathcal{V}$, we apply \emph{homogeneous Neumann--Kirchhoff conditions}, i.e., there holds
-\begin{equation}
-\label{eq:Kirchhoff_Neumann_condition}
-    \sum_{e\in \mathcal{E}_v}J_e(v) n_e (v)=0.
 \end{equation}
-Additionally, we ask the solution to be continuous over vertices, i.e. 
-\begin{align}
-    \rho_e(v) = \rho_{e'}(v) \quad \text{ for all }v \in \mathcal{V}_\mathcal{K},\; e,\,e' \in \mathcal{E}_v
-\end{align}
-with $\mathcal{E}_v$ the edge set incident to the vertex $v$.
-In vertices $v\in \mathcal{V}_\mathcal{D}\coloneqq\mathcal{V}\setminus \mathcal{V}_\mathcal{K}$ the solution $\rho$ fulfills \emph{flux boundary conditions}
+Additionally, we ask the solution to be continuous on the set of interior vertices, i.e. 
 \begin{equation}
-\label{eq:Dirichlet_conditions}
+    \rho_e(v) = \rho_{e'}(v) \quad \text{ for all }v \in \mathcal{V}_\mathcal{K},\; e,\,e' \in \mathcal{E}_v
+\end{equation}
+with $\mathcal{E}_v$ the edge set incident to the vertex $v$. \\
+On the set of exterior vertices $v \in \mathcal{V}_\mathcal{D} \coloneqq \mathcal{V} \setminus \mathcal{V}_\mathcal{K}$ the solution $\rho$ should fulfills the flux boundary conditions
+\begin{equation}
+    \label{eq:Dirichlet_conditions}
     \sum_{e\in \mathcal{E}_v}J_e(v) n_e (v)=-\alpha_v(t) (1-\rho_v) + \beta_v(t) \rho_v,\ \text{for all}\ v \in \mathcal{V}_\mathcal{D}, e \in \mathcal{E}_v,
 \end{equation}
-where 
-$\alpha_v\colon(0,T) \to \mathbb{R}_{+}, \, \beta_v \colon (0,T) \to \mathbb{R}_{+}$, ${v \in \mathcal{V}_\mathcal{D}}$
-% \in \mathbb{R}_{+}^{n_\mathcal{D}}$ and $\beta = (\beta_v)_{v \in \mathcal{V}_\mathcal{D}} \in \mathbb{R}_{+}^{n_\mathcal{D}}$, $n_\mathcal{D} \coloneqq |\mathcal{V}_\mathcal{D}|$, 
-are functions prescribing the rate of influx of mass into the network ($\alpha_v$) as well as the velocity of mass leaving the network ($\beta_v$) at the boundary vertices. Note that this choice ensures that the bounds $0 \le \rho_e \le 1$ are preserved. In typical situations, boundary vertices are either of influx- or of outflux type, i.e. $\alpha_v \beta_v = 0$ for all $v \in \mathcal{V}_\mathcal{D}$.
+where $\alpha_v \colon (0,T) \to \mathbb{R}_{+}, \, \beta_v \colon (0,T) \to \mathbb{R}_{+}$, ${v \in \mathcal{V}_\mathcal{D}}$ are functions prescribing the rate of influx of mass into the network ($\alpha_v$) as well as the velocity of mass leaving the network ($\beta_v$) at the boundary vertices. Note that this choice ensures that the bounds $0 \le \rho_e \le 1$ are preserved. In typical situations, boundary vertices are either of influx- or of outflux type, i.e. $\alpha_v \beta_v = 0$ for all $v \in \mathcal{V}_\mathcal{D}$. \\
+The Kirchhoff-Neumann conditions are the natural boundary conditions for the differential operator \eqref{eq:Hamiltonian}, as they ensure that mass enters or leaves the system only via the boundary vertices $\mathcal{V}_\mathcal{D}$ for which either $\alpha_v$ or $\beta_v$ is positive. \\
+Having introduced the complete continuous model, we state the following existence and uniqueness result. Details on the exact definition of the spaces and a sketch of the proof can be found in Section 
 
-
-The Kirchhoff-Neumann conditions are the natural boundary conditions for the differential operator \eqref{eq:strong_pde}, as they ensure that mass enters or leaves the system only via the boundary nodes $\mathcal{V}_\mathcal{D}$ for which either $\alpha_v$ or $\beta_v$ is positive. 
-%
-Having introduced the complete continuous model, we state the following existence and uniqueness result. Details on the exact definition of the spaces and a sketch of the proof can be found in Section \ref{sec:math_setting}
-\begin{theorem} Given initial data $\rho_0 \in L^2(\Gamma)$ s.t. $0 \le \rho_0 \le 1$ a.e. on $\mathcal{E}$, there exists a unique weak solution $\rho \in L^2(0,T; H^1(\Gamma)) \cap H^1(0,T; (H^1)^*(\Gamma))$ s.t.
+\begin{theorem} 
+    Given initial data $\rho_0 \in L^2(\Gamma)$ s.t. $0 \le \rho_0 \le 1$ a.e. on $\mathcal{E}$, there exists a unique weak solution $\rho \in L^2(0,T; H^1(\Gamma)) \cap H^1(0,T; (H^1)^*(\Gamma))$ s.t.
 	\begin{align*}
-		\sum_{e \in \mathcal{E}} \left(\int_e  \partial_t \rho_e \varphi_e \;dx + \int_e \partial_x \rho_e\partial_x \varphi_e \;dx\right) + \sum_{v \in \mathcal{V}_D} (-\alpha_v(t) (1-\rho_v) + \beta_v(t) \rho_v)\varphi(v) = 0,
+		\sum_{e \in \mathcal{E}} \left(\int_e  \partial_t \rho_e \mathcal{V}arphi_e \;dx + \int_e \partial_x \rho_e\partial_x \mathcal{V}arphi_e \;dx\right) + \sum_{v \in \mathcal{V}_D} (-\alpha_v(t) (1-\rho_v) + \beta_v(t) \rho_v)\mathcal{V}arphi(v) = 0,
 	\end{align*}
-	for all testfunction $\varphi \in H^1(\Gamma)$.
+	for all testfunction $\mathcal{V}arphi \in H^1(\Gamma)$.
 \end{theorem}
 

@@ -156,11 +156,21 @@ Roughly speaking, we now imagine the edges $\mathcal{E}$ of a graph $\Gamma = (\
 In most cases, when this does not lead to any confusion, we will drop the subscript of the coordinate $x_b$ and denote it just by $x$. From \cref{metric graph} and \cref{fig3} it is clear that a metric graph can directed or non-irected or it can be a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ that contains both directed and undirected edges, i.e. $\mathcal{B} \subsetneqq \mathcal{E}$. Of course, in the case of a non-directed edge $e = (v, w)$, one must then determine at which of the two vertices $x_e = 0$ and at which $x_e = l_e$ applies. \\
 For some considerations it makes sense that the lengths of all edges are equal, which justifies the following notion:
 
-\begin{definition}[{\cite[Definition~1.3.2.]{BerkolaikoKuchment:2013}}]\label{metric graph}
+\begin{definition}[{\cite[Definition~1.3.2.]{BerkolaikoKuchment:2013}}]\label{metric graph equilateral}
     A metric graph $\Gamma$ is said to be equilateral, if the lengths of all its bonds (equivalently, edges) are equal: $l_b \equiv l$.
 \end{definition}
+
+% Here, $x_e$ are local coordinates associated to the edge $e$.
 
 %Having the length assigned, an edge e will be identified with a finite or infinite segment [0, le] of the real line with the natural coordinate xe along it. In most cases we will drop the subscript in the coordinate and call it x, which should not lead to any confusion. This enables one to interpret the graph Γ as a topological space (simplicial complex) that is the union of all edges where the ends corresponding to the same vertex are identified
 
 %So, now one can imagine the graph Γ as a one-dimensional simplicial complex, each 1D simplex (edge) of which is equipped with a smooth structure, with singularities arising at junctions (vertices) 
+
+
+\begin{definition}[{\cite[Definition~1.4.1.]{BerkolaikoKuchment:2013}}]
+    \label{quantum graph}
+    Quantum graph is a metric graph equipped with a differential operator $\mathcal{H}$ (Hamiltonian), accompanied by “appropriate” vertex conditions. That is, a quantum graph $\Gamma$ is a triple $(\text{metric graph } \Gamma, \; \text{Hamiltonian } \mathcal{H}, \; \text{vertex conditions})$.
+\end{definition}
+
+%bis Seite 16
 

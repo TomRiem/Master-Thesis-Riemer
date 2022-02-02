@@ -1,3 +1,98 @@
 \chapter{A Finite Volume Method}
+\label{ch3}
 
-Will come soon \ldots
+We want to compare the method studied in the previous sections with a finite volume method. Throughout this section we assume $V_e$ to be affine linear and write $d_e = \partial_x V_e$. The edge set incident to a vertey $v\in \mathcal{V}$ is denoted by $\mathcal{E}_v$ and we distinguish among $\mathcal{E}_v^{\text{in}}\ \coloneqq \{e\in \mathcal{E}\colon e=(\widetilde v,v)\ \text{for some}\ \widetilde v\in \mathcal{V}\}$ and $\mathcal{E}_v^{\text{out}} = \mathcal{E} \setminus \mathcal{E}_v^{\text{in}}$. The control volumes are defined as follows. To each edge $e\in \mathcal{E}$ we associate an equidistant grid of the parameter domain
+\begin{equation*}
+	0 = x^e_{1/2} < x^e_{3/2} <\ldots < x^e_{n_e+1/2} = L_e
+\end{equation*}
+with $h=x_{k+\frac12} - x_{k-\frac12}$, and introduce the intervals $I_k^e = (x_{k-1/2}, x_{k+1/2})$ for all $k=1,\ldots,n_e$. We introduce the following control volumes for our finite volume method,
+\begin{itemize}
+	\item the interior edge intervals $I_2^e,\ldots,I_{n_e-1}^e$ for
+	each $e\in \mathcal{E}$.
+	\item the vertex patch $I^v = \big(\cup_{e\in \mathcal{E}_v^{\text{in}}} I_{n_e}^n\big)
+	\cup \big(\cup_{e\in \mathcal{E}_v^{\text{out}}} I_1^n\big)$,
+\end{itemize}
+and the semi-discrete approximation $\rho_h \colon [0,T]\times\Gamma\to\mathbb{R}$ of the problem \eqref{eq:Hamiltonian}--\eqref{eq:Dirichlet_conditions} can be expressed by the volume avergaes
+\begin{align*}	
+	\rho^{v}= |I_v|^{-1}\int_{I^v}\rho_h\d x, \qquad
+	\rho_k^{r,n} = |I_k^e|^{-1}\int_{I_k^e} \rho_h\d x,\ k=2,\ldots,n_e-1,
+\end{align*}
+for all $v\in \mathcal{V}$ and $e\in \mathcal{E}$. With the definition of the vertex patches we strongly enforce the continuity in the graph nodes. The flux function in a grid node $J(x^e_{k+1/2})$ is approximated by
+\begin{equation*}
+	J_{k+1/2}^e = -\varepsilon\,\frac{\rho_{k+1}^e-\rho_k^e}{h_e}
+	+ F^e_{k+1/2},
+\end{equation*}
+where $F^e_{k+1/2}$ is a numerical flux for the transport term which must be chosen to guaratee consistency and stability of the numerical method. Here, we use the Lax-Friedrichs flux defined by
+\begin{equation*}
+	F^e_{k+1/2} = \frac12 (f(\rho_k^e) + f(\rho_{k+1}^e))\,d_e - \frac{\alpha_k^e}2
+	(\rho_{k+1}^e - \rho_k^e) 
+\end{equation*}
+with some stabilization parameter $\alpha_k^e$.
+
+Integration over a control volumes $I_k^e$, $k=2,\ldots,n_e-1$, and $I^v$, $v\in \mathcal{V}$, yields the equation
+\begin{align*}
+	h_e\,\partial_t \rho_k^e - J^e_{k-1/2} + J^e_{k+1/2} &= 0 \\
+	\sum_{e\in \mathcal{E}_v} h_e\,\partial_t \rho^v
+	- \sum_{e\in \mathcal{E}_v^{\text{in}}} J^e_{n_e-1/2} 
+	+ \sum_{e\in \mathcal{E}_v^{\text{out}}} J^e_{3/2} &= 0
+\end{align*}
+and insertion of the approximate flux function yields
+\begin{align*}
+	h_e\,\partial_t \rho_k^e + \varepsilon\,\frac{-\rho_{k-1}^e +
+	2\rho_k^e - \rho_{k+1}^e}{h_e} - F_{k-1/2}^e + F_{k+1/2}^e &= 0
+	  \\
+	\sum_{e\in \mathcal{E}_v} h_e\partial_t\rho^v
+	+ \sum_{e\in \mathcal{E}_v^{\text{in}}}
+	\left(\varepsilon\,\frac{\rho^v-\rho_{n_e-1}^e}{h_e} -
+	F^e_{n_e-1/2}\right)
+	+ \sum_{e\in \mathcal{E}_v^{\text{out}}}
+	\left(\varepsilon\,\frac{\rho^v-\rho_2^e}{h_e} + F^e_{3/2}\right)
+	&= 0
+\end{align*}
+for all $k=2,\ldots,n_e-1,\ e\in \mathcal{E}$ and $v\in \mathcal{V}$. Note that the integral over the cell patch is realized edge-wise. The accumulated contributions from the integration-by-parts formula at the vertex $v$ vanish due to the Kirchhoff-Neumann vertex conditions \eqref{eq:Kirchhoff_Neumann_condition}. Incorporate inflow- and outflow boundary conditions.
+
+To derive a fully-discrete scheme we integrate the above equations over the intervals $[t_n,t_{n+1})$, $n=1,\ldots,n_t-1$ of an equidistant time grid $\{t_n\coloneqq \tau\,n\colon n=0,\ldots,n_t\}$ with temporal discretization parameter $\tau = T/n_t$. We use appropriate quadrature formulas, more precisely, the rectangle rule using the evaluation point $t_{n+1}$ for the diffusion terms and the point $t_n$ for the transport terms. In other words, we evaluate the diffusion terms implicitly and the (nonlinear) transport term explicitly. Introducing the notation $\rho^{v,n} = \rho^v|_{[t_n,t_{n+1})}$ and $\rho_k^{e,n} = \rho_k^e|_{[t_n,t_{n+1})}$ yields the following set of equations: \textcolor{red}{Set $\rho^{e,n+1}_{n_e} = \rho^{v,n+1}$ and the same for $\rho^{e,n+1}_1$.}
+\begin{subequations}
+    \label{eq:fully_discrete_fvm}
+    \begin{align}
+        h_e\,\partial_t \rho_k^{e,n+1} + \varepsilon\,\frac{-\rho_{k-1}^{e,n+1} +
+        2\rho_k^{e,n+1} - \rho_{k+1}^{e,n+1}}{h_e} - F_{k-1/2}^{e,n} +
+        F_{k+1/2}^{e,n} &= 0 \\	
+        \sum_{e\in \mathcal{E}_v} h_e\partial_t\rho^{v,n+1}
+        + \sum_{e\in \mathcal{E}_v^{\text{in}}}
+        \left(\varepsilon\,\frac{\rho^{v,n+1}-\rho_{n_e-1}^{e,n+1}}{h_e} -
+        F^{e,n}_{n_e-1/2}\right)
+        + \sum_{e\in \mathcal{E}_v^{\text{out}}}
+        \left(\varepsilon\,\frac{\rho^{v,n+1}-\rho_2^{e,n+1}}{h_e} + F^{e,n}_{3/2}\right)
+        &= 0
+    \end{align}
+\end{subequations}
+for all $k=2,\ldots,n_e-1,\ e\in \mathcal{E}$, $v\in \mathcal{V}$ and $n=0,\ldots,n_t-1$. The initial data are established by
+\begin{equation*}
+	\rho_k^{e,0}=\pi_{I_k^e}(\rho_0),\qquad \rho^{v,0} = \pi_{I^v}(\rho_0),
+\end{equation*}
+where $\pi_M$ denotes the $L^2$-projection onto the constant functions on a subset $M\subset \Gamma$. Note that this set of equations is linear in the unknowns in the new time point $\rho_k^{e,n+1}$, $k=2,\ldots,n_e-1$, $e\in \mathcal{E}$ and $\rho^{v,n+1}$, $v\in \mathcal{V}$. The fully-discrete approximation $\rho_{\tau\,h}\colon [0,T]\times \Gamma\to \mathbb{R}$ then reads
+\begin{align*}
+	\rho_{\tau\,h}(t,x) &= \rho_h^n(x)\ \text{if}\ t\in [t_n,t_{n+1}),\\
+	\text{with}\qquad \rho_h^n(x) &= \rho^{v,n},\ x\in I^v,\quad \rho_h^n(x)
+	= \rho_k^{e,n}, x\in I_k^e.
+\end{align*}
+
+This numerical scheme preserves the following important properties known from the continous setting.
+\begin{theorem}
+    The solution of \eqref{eq:fully_discrete_fvm}, $\rho_{\tau\,h}$ satisfies the following
+    properties:
+    \begin{enumerate}[label=\roman*)]
+        \item The scheme is mass conserving, i.e., if $\alpha_v\equiv \beta_v\equiv 0$ for all $v\in \mathcal{V}_{\mathcal{D}}$,
+        then there holds
+        \begin{equation*}
+            \int_\Gamma\rho_h^n\d x = \int_\Gamma\rho_h^0\d x\qquad\forall n=1,\ldots,n_t.
+        \end{equation*}
+        \item The scheme is bound-preserving, i.e., there holds
+        \begin{equation*}
+            \rho_{\tau\,h}(t,x)\in [0,1]\qquad \forall t\in [0,T],
+            x\in \Gamma.
+        \end{equation*}
+    \end{enumerate}
+\end{theorem}
+
