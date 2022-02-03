@@ -143,7 +143,8 @@ So far we have considered graphs as discrete combinatorial objects. From now on 
 
 Roughly speaking, we now imagine the edges $\mathcal{E}$ of a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ not as abstract relations between the vertices $\mathcal{V}$, but rather as physical “wires” connecting them. For that we add a structure that equips $\Gamma$ with a topology and metric. 
 
-\begin{definition}[{\cite[Definition~1.3.1.]{BerkolaikoKuchment:2013}}]\label{metric graph}
+\begin{definition}[{\cite[Definition~1.3.1.]{BerkolaikoKuchment:2013}}]
+    \label{metric graph}
     A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is said to be a metric graph, if 
     \begin{enumerate}
         \item each bond $b$ is assigned a positive length $l_b \in (0, \infty)$;
@@ -153,18 +154,23 @@ Roughly speaking, we now imagine the edges $\mathcal{E}$ of a graph $\Gamma = (\
     \end{enumerate}
 \end{definition}
 
-In most cases, when this does not lead to any confusion, we will drop the subscript of the coordinate $x_b$ and denote it just by $x$. From \cref{metric graph} and \cref{fig3} it is clear that a metric graph can directed or non-irected or it can be a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ that contains both directed and undirected edges, i.e. $\mathcal{B} \subsetneqq \mathcal{E}$. Of course, in the case of a non-directed edge $e = (v, w)$, one must then determine at which of the two vertices $x_e = 0$ and at which $x_e = l_e$ applies. \\
+Here, $x_b$ are local coordinates associated to the edge $b$. In most cases, when this does not lead to any confusion, we will drop the subscript of the coordinate $x_b$ and denote it just by $x$. From \cref{metric graph} and \cref{fig3} it is clear that a metric graph can be directed or non-irected or it can be a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ that contains both directed and undirected edges, i.e. $\mathcal{B} \subsetneqq \mathcal{E}$. Of course, in the case of a non-directed edge $e = (v, w)$, one must then determine at which of the two vertices $x_e = 0$ and at which $x_e = l_e$ applies. \\
 For some considerations it makes sense that the lengths of all edges are equal, which justifies the following notion:
 
-\begin{definition}[{\cite[Definition~1.3.2.]{BerkolaikoKuchment:2013}}]\label{metric graph equilateral}
+\begin{definition}[{\cite[Definition~1.3.2.]{BerkolaikoKuchment:2013}}]
+    \label{metric graph equilateral}
     A metric graph $\Gamma$ is said to be equilateral, if the lengths of all its bonds (equivalently, edges) are equal: $l_b \equiv l$.
 \end{definition}
 
-% Here, $x_e$ are local coordinates associated to the edge $e$.
+The introduction of a length $\ell_e$ for each edge $e$ of a graph $\Gamma$ enables us to interpret the graph $\Gamma$ as a topological space that is the union of all edges where the ends corresponding to the same vertex are identified. We note that in the following the graphs are not assumed to be embedded into a Euclidean space or a Riemannian manifold in any way. A graph with a finite number of vertices and edges, whose edges all have finite lengths will be called compact and it is also compact as a topological space. \\
+Any metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$ can be equipped with a natural metric. If a sequence of edges $\{ e_i \}_{i = 1, \ldots, n} \subset \mathcal{E}$ forms a path, its length is defined as $\sum^{n}_{i=1} \ell_i < \infty$. For two vertices $v, w \in \mathcal{V}$, the distance $\mathrm{dist}(v,w)$ is defined as the minimal length of the path connecting them. One should notice that the points of a metric graph $\Gamma$ are not only its vertices, but all intermediate points $x_e \in e$ on the edges $e \in \mathcal{E}$ as well. Since along each edge $e$ the distance is determined by the coordinate $x_e$, it is easy to define the distance $\mathrm{dist}(x_{e_1},x_{e_2})$ between two points $x_{e_1} \in [0, \ell_{e_1}]$ and $x_{e_2} \in [0, \ell_{e_2}]$, $e_1, e_2 \in \mathcal{E}$, of the graph that are not necessarily vertices. When we speak about functions $f \colon \Gamma \to \mathbb{R}$ on graphs, we consider them defined on all points of each edge and not only on the vertices. By introducing a metric or distance between two points of a metric graph $\Gamma$, we can define the space of continuous functions $C(\Gamma)$. The resence of the coordinate $x_e$ along the edges $e \in \mathcal{E}$ enables one to define in the natural way the Lebesgue measure $dx$ on the graph. Having this measure, one can define the following function spaces on $\Gamma$:
 
-%Having the length assigned, an edge e will be identified with a finite or infinite segment [0, le] of the real line with the natural coordinate xe along it. In most cases we will drop the subscript in the coordinate and call it x, which should not lead to any confusion. This enables one to interpret the graph Γ as a topological space (simplicial complex) that is the union of all edges where the ends corresponding to the same vertex are identified
+\begin{definition}[{\cite[Definition~1.4.1.]{BerkolaikoKuchment:2013}}]
+    \label{function spaces}
+    Quantum graph is a metric graph equipped with a differential operator $\mathcal{H}$ (Hamiltonian), accompanied by “appropriate” vertex conditions. That is, a quantum graph $\Gamma$ is a triple $(\text{metric graph } \Gamma, \; \text{Hamiltonian } \mathcal{H}, \; \text{vertex conditions})$.
+\end{definition}
 
-%So, now one can imagine the graph Γ as a one-dimensional simplicial complex, each 1D simplex (edge) of which is equipped with a smooth structure, with singularities arising at junctions (vertices) 
+The continuity condition imposed on functions from the Sobolev space H1($\Gamma$) means that any function f from this space assumes the same value at a vertex v on all edges adjacent to v, and thus f(v) is uniquely defined. This is a natural condition for one-dimensional H1-functions, which are known to be continuous in the standard 1D setting.
 
 
 \begin{definition}[{\cite[Definition~1.4.1.]{BerkolaikoKuchment:2013}}]
