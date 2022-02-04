@@ -1,7 +1,7 @@
 {
     "cSpell.words": [
-        "Lipschitz",
         "adjointness",
+        "anymore",
         "armijo",
         "bfgs",
         "bijective",
@@ -24,9 +24,11 @@
         "goldfarb",
         "homeomorphic",
         "infimum",
+        "Kirchhoff",
         "koszul",
         "lbfgs",
         "linesearch",
+        "Lipschitz",
         "lrbfgs",
         "manopt",
         "memoryless",
@@ -51,6 +53,8 @@
         "submanifold",
         "superlinear",
         "superlinearly",
+        "where",
+        "which",
         "woodbury",
         "zoutendijk"
     ]

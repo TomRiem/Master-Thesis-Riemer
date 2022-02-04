@@ -5,7 +5,7 @@ This chapter is dedicated to the introduction of the basic principles about metr
 
 We define a graph $\Gamma$ as an ordered pair $(\mathcal{V}, \mathcal{E})$, where $\mathcal{V} = \{v_i\}$ is a finite set of points, which we call vertices, and $\mathcal{E} = \{e_j\}$ is a set of segments connecting some of the vertices, which we call edges. In the following we will use the notation $E \coloneqq \left\lvert \mathcal{E} \right\rvert$ for the number of edges and $V \coloneqq \left\lvert \mathcal{V} \right\rvert$ for the number of vertices. \\
 Each edge $e \in \mathcal{E}$ can be identified with a pair $(v, w)$ of vertices $v, w \in \mathcal{V}$, which it connects. An edge $e \in \mathcal{E}$ is called a directed edge if a direction is assigned to it, which means that this edge $e = (v, w)$ can only be followed in one direction. In this case, the order of the pair of vertices $(v, w)$ describing a directed edge $e$ is important. Directed edges are also called bonds, which is why we will denote the set of all directed edges of a graph by $\mathcal{B}$, directed edges with $b \in \mathcal{B}$ and the number of directed edges with $B \coloneqq \left\lvert \mathcal{B} \right\rvert$ in the following. The set of bonds $\mathcal{B}$ can be uniquely described as a set of ordered pairs of vertices $\mathcal{B} = \{b_i\}_{i = 1, \ldots, B} = \{(v^{o}_{i}, v^{t}_{i})\}_{i = 1, \ldots, B}$, where the first vertex $v^{o}_{i}$ is called the origin vertex and the second vertex $v^{t}_{i}$ is called the terminal vertex of the corresponding bond $b_i$. These origin and terminal vertices of a bond can be specified via functions $o \colon \mathcal{B} \to \mathcal{V}$ and $t \colon \mathcal{B} \to \mathcal{V}$, i.e. a bond $b = (v^{o}, v^{t})$ begins at $o(b) = v^{o}$ and ends at $t(b) = v^{t}$. We define the set of incoming bonds at a vertex $v$ as the set of bonds satisfying $t(b) = v$, if $o(b) = v$, the bond $b$ is called outgoing at the vertex $v$. \\
-If all edges of a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ are bonds, i.e. $\mathcal{E} = \mathcal{B}$, then we call this graph $\Gamma$ a directed graph. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is called non-directed if it does not have any bonds, which means that each of its edges $e \in \mathcal{E}$ can be followed in both directions. In this case, the order of the two connected vertices describing a non-directed edge is unimportant, i.e. $e = (v, w) = (w, v)$ with $v, w \in \mathcal{V}$. \\
+If all edges of a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ are bonds, i.e. $\mathcal{E} = \mathcal{B}$, then we call this graph $\Gamma$ a directed graph. A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is called non-directed if it does not have any bonds, which means that each of its edges $e \in \mathcal{E}$ can be followed in both directions. In this case, the order of the two connected vertices describing a non-directed edge is not important, i.e. $e = (v, w) = (w, v)$ with $v, w \in \mathcal{V}$. \\
 In general, graphs are represented as one-dimensional drawings of points and lines, where the points represent the vertices and the lines represent the edges. \cref{fig1:f1} shows an non-directed graph. In a directed graph, an arrow at the end of an edge indicates which direction is assigned to the corresponding edge, as shown in \cref{fig1:f2}. 
 
 \begin{figure}[H]
@@ -147,36 +147,62 @@ Roughly speaking, we now imagine the edges $\mathcal{E}$ of a graph $\Gamma = (\
     \label{metric graph}
     A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is said to be a metric graph, if 
     \begin{enumerate}
-        \item each bond $b$ is assigned a positive length $l_b \in (0, \infty)$;
-        \item the lengths of the bonds that are reversals of each other are assumed to be equal, i.e. $l_b = l_{\overline{b}}$, and thus the length $l_e$ of an edge $e$ is also defined (by the projection $\pi$, see \cref{fig3});
-        \item a coordinate $x_b \in [0, l_b]$ increasing in the direction of the bond is assigned on each bond;
-        \item the relation $x_{\overline{b}} = l_b − x_b$ holds between the coordinates on mutually reversed bonds (in other words, $x_{\overline{b}}$ and $l_b − x_b$ are mapped to the same point on $e$ by the projection $\pi$, see \cref{fig3}).
+        \item each bond $b$ is assigned a positive length $\ell_b \in (0, \infty)$;
+        \item the lengths of the bonds that are reversals of each other are assumed to be equal, i.e. $\ell_b = \ell_{\overline{b}}$, and thus the length $\ell_e$ of an edge $e$ is also defined (by the projection $\pi$, see \cref{fig3});
+        \item a coordinate $x_b \in [0, \ell_b]$ increasing in the direction of the bond is assigned on each bond;
+        \item the relation $x_{\overline{b}} = \ell_b − x_b$ holds between the coordinates on mutually reversed bonds (in other words, $x_{\overline{b}}$ and $\ell_b − x_b$ are mapped to the same point on $e$ by the projection $\pi$, see \cref{fig3}).
     \end{enumerate}
 \end{definition}
 
-Here, $x_b$ are local coordinates associated to the edge $b$. In most cases, when this does not lead to any confusion, we will drop the subscript of the coordinate $x_b$ and denote it just by $x$. From \cref{metric graph} and \cref{fig3} it is clear that a metric graph can be directed or non-irected or it can be a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ that contains both directed and undirected edges, i.e. $\mathcal{B} \subsetneqq \mathcal{E}$. Of course, in the case of a non-directed edge $e = (v, w)$, one must then determine at which of the two vertices $x_e = 0$ and at which $x_e = l_e$ applies. \\
+Here, $x_b$ are local coordinates associated to the edge $b$. In most cases, when this does not lead to any confusion, we will drop the subscript of the coordinate $x_b$ and denote it just by $x$. From \cref{metric graph} and \cref{fig3} it is clear that a metric graph can be directed or non-directed or it can be a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ that contains both directed and non-directed edges, i.e. $\mathcal{B} \subsetneqq \mathcal{E}$. Of course, in the case of a non-directed edge $e = (v, w)$, one must then determine at which of the two vertices $x_e = 0$ and at which $x_e = \ell_e$ applies. \\
 For some considerations it makes sense that the lengths of all edges are equal, which justifies the following notion:
 
 \begin{definition}[{\cite[Definition~1.3.2.]{BerkolaikoKuchment:2013}}]
     \label{metric graph equilateral}
-    A metric graph $\Gamma$ is said to be equilateral, if the lengths of all its bonds (equivalently, edges) are equal: $l_b \equiv l$.
+    A metric graph $\Gamma$ is said to be equilateral, if the lengths of all its bonds (equivalently, edges) are equal: $\ell_b \equiv l$.
 \end{definition}
 
 The introduction of a length $\ell_e$ for each edge $e$ of a graph $\Gamma$ enables us to interpret the graph $\Gamma$ as a topological space that is the union of all edges where the ends corresponding to the same vertex are identified. We note that in the following the graphs are not assumed to be embedded into a Euclidean space or a Riemannian manifold in any way. A graph with a finite number of vertices and edges, whose edges all have finite lengths will be called compact and it is also compact as a topological space. \\
-Any metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$ can be equipped with a natural metric. If a sequence of edges $\{ e_i \}_{i = 1, \ldots, n} \subset \mathcal{E}$ forms a path, its length is defined as $\sum^{n}_{i=1} \ell_i < \infty$. For two vertices $v, w \in \mathcal{V}$, the distance $\mathrm{dist}(v,w)$ is defined as the minimal length of the path connecting them. One should notice that the points of a metric graph $\Gamma$ are not only its vertices, but all intermediate points $x_e \in e$ on the edges $e \in \mathcal{E}$ as well. Since along each edge $e$ the distance is determined by the coordinate $x_e$, it is easy to define the distance $\mathrm{dist}(x_{e_1},x_{e_2})$ between two points $x_{e_1} \in [0, \ell_{e_1}]$ and $x_{e_2} \in [0, \ell_{e_2}]$, $e_1, e_2 \in \mathcal{E}$, of the graph that are not necessarily vertices. When we speak about functions $f \colon \Gamma \to \mathbb{R}$ on graphs, we consider them defined on all points of each edge and not only on the vertices. By introducing a metric or distance between two points of a metric graph $\Gamma$, we can define the space of continuous functions $C(\Gamma)$. The resence of the coordinate $x_e$ along the edges $e \in \mathcal{E}$ enables one to define in the natural way the Lebesgue measure $dx$ on the graph. Having this measure, one can define the following function spaces on $\Gamma$:
+Any metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$ can be equipped with a natural metric. If a sequence of edges $\{ e_i \}_{i = 1, \ldots, n} \subset \mathcal{E}$ forms a path, its length is defined as $\sum^{n}_{i=1} \ell_i < \infty$. For two vertices $v, w \in \mathcal{V}$, the distance $\mathrm{dist}(v,w)$ is defined as the minimal length of the path connecting them. One should notice that the points of a metric graph $\Gamma$ are not only its vertices, but all intermediate points $x_e \in e$ on the edges $e \in \mathcal{E}$ as well. Since along each edge $e$ the distance is determined by the coordinate $x_e$, it is easy to define the distance $\mathrm{dist}(x_{e_1},x_{e_2})$ between two points $x_{e_1} \in [0, \ell_{e_1}]$ and $x_{e_2} \in [0, \ell_{e_2}]$, $e_1, e_2 \in \mathcal{E}$, of the graph that are not necessarily vertices. When we speak about functions $f \colon \Gamma \to \mathbb{R}$ on graphs, we consider them defined on all points of each edge and not only on the vertices. By introducing a metric or distance between two points of a metric graph $\Gamma$, we can define the space of continuous functions $C(\Gamma)$. The presence of the coordinate $x_e$ along the edges $e \in \mathcal{E}$ enables one to define in the natural way the Lebesgue measure $dx$ on the graph. Having this measure, one can define $L_2(\e)$, the space of measurable functions $f \colon e \to \mathbb{R}$ for which its absolute value is Lebesgue square integrable, i.e.
+\begin{equation*}
+    \lVert f \rVert^{2}_{L_2(e)} = \int_e \lvert f(x) \rvert^2 \, dx < \infty.
+\end{equation*}
+The space $L_2(\Gamma)$ on $\Gamma = (\mathcal{V}, \mathcal{E})$ then consists of all functions that are measurable and square integrable on each edge $e \in \mathcal{E}$, such that 
+\begin{equation*} 
+    \lVert f \rVert^{2}_{L_2(\Gamma)} \coloneqq \sum_{e \in \mathcal{E}} \lVert f \rVert^{2}_{L_2(e)} < \infty.
+\end{equation*} 
+In other words, $L_2(\Gamma)$ is the orthogonal direct sum of spaces $L_2(e)$, i.e. $L_2(\Gamma) = \bigotimes_{e \in \mathcal{E}} L_2(e)$. Of course, both $L_2(e)$ and $L_2(\Gamma)$ are Hilbert spaces. \\
+Consequently, the Sobolev space $H^1 (e) = $ can also be defined for an edge
+\begin{equation*}
+    \lVert f \rVert^{2}_{L_2(e)} = \int_e \lvert f(x) \rvert^2 + \lvert \nabla f(x) \rvert^2 \, dx < \infty.
+\end{equation*}
+The Sobolev space $H^1 (\Gamma)$ consists of all continuous functions on $\Gamma$ that belong to $H^1 (e)$ for each edge $e$ and such that 
+\begin{equation*} 
+    \lVert f \rVert^{2}_{H^1 (\Gamma)} \coloneqq \sum_{e \in \mathcal{E}} \lVert f \rVert^{2}_{H^1 (e)} < \infty
+\end{equation*}
+This means that the space $H^1 (\Gamma)$ can be defined as $H^1 (\Gamma) = = \bigotimes_{e \in \mathcal{E}} H^1 (e)\cap C^{0}(\Gamma)$.\\
+The continuity condition imposed on functions from the Sobolev space $H^1 (\Gamma)$ means that any function $f$ from this space assumes the same value at a vertex $v \in \mathcal{V}$ on all edges adjacent to this vertex $v$, and thus $f(v)$ is uniquely defined. This is a natural condition for one-dimensional $H^1$-functions, which are known to be continuous in the standard 1-dimensional setting. \\
 
-\begin{definition}[{\cite[Definition~1.4.1.]{BerkolaikoKuchment:2013}}]
-    \label{function spaces}
-    Quantum graph is a metric graph equipped with a differential operator $\mathcal{H}$ (Hamiltonian), accompanied by “appropriate” vertex conditions. That is, a quantum graph $\Gamma$ is a triple $(\text{metric graph } \Gamma, \; \text{Hamiltonian } \mathcal{H}, \; \text{vertex conditions})$.
-\end{definition}
-
-The continuity condition imposed on functions from the Sobolev space H1($\Gamma$) means that any function f from this space assumes the same value at a vertex v on all edges adjacent to v, and thus f(v) is uniquely defined. This is a natural condition for one-dimensional H1-functions, which are known to be continuous in the standard 1D setting.
-
-
+With all the definitions above, we see that it makes sense to consider differential operators defined on a metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, by which we mean that we consider a differential operator on each edge. This operator will be called the Hamiltonian. An example of this would be the one-dimensional Schrödinger operator
+\begin{equation*}
+    (\mathcal{H} \, f)(x) = -\frac{\mathrm{d}^2 f}{\mathrm{d} x^2}(x) + V(x)f(x)
+\end{equation*}
+with a potential function $V$. Then, one can formulate a differential equation for each edge $e \in \mathcal{E}$ of the form
+\begin{equation*}
+    (\mathcal{H} \, f |_e)(x_e) = g|_e(x_e), \quad \text{for all  } x_e \in (0, \ell_e)
+\end{equation*}
+where the functions $g|_e \colon (0, \ell_e) \to \mathbb{R}$ are given source terms. We note that for this operator the direction of the edge is irrelevant. This is not the case if one wants to include first order derivative terms. Then we need to assume the graph to be directed and consider bonds $b \in \mathcal{B}$ and the corresponding coordinates. \\
+The classical case of differential operators on an interval, which we can understand as a graph with one edge and two vertices, makes clear that the definition of a differential operator on a metric graph is not complete until its domain is described. The domain description should involve smoothness conditions along the edges and some appropriate boundary value conditions at the vertices, which we will call vertex conditions in the following and are an analogue of boundary conditions for a single interval. The addition of conditions justifies the introduction of the following notion
 \begin{definition}[{\cite[Definition~1.4.1.]{BerkolaikoKuchment:2013}}]
     \label{quantum graph}
     Quantum graph is a metric graph equipped with a differential operator $\mathcal{H}$ (Hamiltonian), accompanied by “appropriate” vertex conditions. That is, a quantum graph $\Gamma$ is a triple $(\text{metric graph } \Gamma, \; \text{Hamiltonian } \mathcal{H}, \; \text{vertex conditions})$.
 \end{definition}
-
-%bis Seite 16
+We introduce the most well-known vertex conditions, which are called Kirchhoff-Neumann conditions and require: 
+\begin{equation}
+    \label{eq:Kirchhoff-Neumann_general}
+    \begin{cases} 
+        f(x) \text{ is continuous on } \Gamma \\ \text{and} \\  \text{at each vertex } v \in \mathcal{V} \text{ one has } \sum_{e \in \mathcal{E}_v} \frac{\mathrm{d} f}{\mathrm{d} x_e}(v) = 0
+    \end{cases}
+\end{equation}
+The derivatives are assumed to be taken in the directions away from the vertex, which we will call the outgoing directions. The first condition of \cref{eq:Kirchhoff-Neumann_general} is called the continuity condition while the second is sometimes termed the current conservation condition.
 
