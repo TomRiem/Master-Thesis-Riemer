@@ -35,6 +35,8 @@
         "nonconvex",
         "nondegenerate",
         "nonsingular",
+        "perceptron",
+        "perceptrons",
         "pseudoinvers",
         "rbfgs",
         "rdfp",
