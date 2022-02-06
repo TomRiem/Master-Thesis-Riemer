@@ -87,7 +87,16 @@ propagation of information through the network.
 
 In artificial neural networks, topology refers to the structure of the network. This generally means how many artificial neurons are located on how many layers and how they are connected to each other. Artificial neurons can be connected in many ways to form an artificial neural network. In many models, neurons are arranged in layers one behind the other; 
 
+From a practical point of view, a network "learns" mainly by modifying the weights and biases of the neurons.
 
+
+This generally means how many artificial neurons are on how many layers, and how they are connected to each other. Artificial neurons can be connected in many ways to form an artificial neural network. In many models, neurons are arranged in layers; a network with only one trainable neuron layer is called a single-layer network.
+
+Using a graph, the neurons can be represented as vertices and their connections as edges. The inputs are sometimes also represented as nodes.
+
+The rearmost layer of the network, whose neuron outputs are usually the only ones visible outside the network, is called the output layer. Layers before this are referred to as the hidden layer.
+
+There are pure feedforward networks in which a layer is only ever connected to the next higher layer. In addition, there are networks in which connections are allowed in both directions. The appropriate network structure is usually found using the method of trial and error, which can be supported by evolutionary algorithms and error feedback.
 
 
 Indeed,
