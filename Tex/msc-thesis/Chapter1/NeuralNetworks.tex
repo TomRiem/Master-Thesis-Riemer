@@ -2,24 +2,12 @@
 \label{ch1:sec3}
 
 In this section we introduce artificial neural networks, usually called neural networks, which are computing systems inspired by the biological neural networks that constitute animal brains. It has been shown that these systems can be used very well as classifiers as well as regressors or function approximators. \\
-These neural networks are based on simplified models of biological neurons, which are special cells within the nervous system which transmit information to other nerve, muscle, or gland cells. 
-
-The connections of the biological neuron are modeled as
-weights. A positive weight reflects an excitatory connection, while negative values mean
-inhibitory connections. All inputs are modified by a weight and summed. This activity is
-referred to as a linear combination. Finally, an activation function controls the amplitude of the
-output.
-
-An ANN is based on a collection of connected units or nodes called artificial neurons, which loosely model the neurons in a biological brain. Each connection, like the synapses in a biological brain, can transmit a signal to other neurons.
-
-The "signal" at a connection is a real number, and the output of each neuron is computed by some non-linear function of the sum of its inputs.
-
-The first mathematical model for a single neuron, termed the perceptron, was described in \cite{Rosenblatt:1958} and is still in use today. We want to use perceptrons and the neural networks constructed from them to generate function values (output) that approximate the values of the solution to our differential equation from data (input) that will be the domain of our differential equation. \\
+These neural networks are based on simplified models of biological neurons, which are special cells within the nervous system which transmit information to other nerve cells. Each of these artificial neurons receives data as input. These inputs of one neuron are modified by weights and summed. Finally, an activation function controls the amplitude of the output. The artificial neurons are connected to each other. A single neuron may be connected to many other neurons and the total number of neurons and connections in a network may be extensive. The connections of the biological neuron are modelled as weights, where a positive weight reflects an excitatory connection, while negative values mean inhibitory connections. Each connection, like the synapses in a biological brain, can transmit a signal to other neurons, where the signal is a real number. The other neurons connected to that neuron receive this real number as part of their input and repeat the process. However, artificial neural networks are more about an abstraction of that information processing, less about replicating biological neural networks and neurons. The first mathematical model for a single neuron, termed the perceptron, was described in \cite{Rosenblatt:1958} and is still in use today. We want to use perceptrons and the neural networks constructed from them to generate function values (output) that approximate the values of the solution to our differential equation from data (input) that will be the domain of our differential equation. \\
 We now describe how a perceptron transforms a reel-valued input into a one-dimensional output, as illustrated in \cref{fig4}. Let there be $n$ input values $x_1, \ldots, x_n \in \mathbb{R}$, which can be understood as the entries of a vector $x \in \mathbb{R}^n$. First one forms a biased linear combination with the input values, i.e. 
 \begin{equation*}
     a = \sum^{n}_{i=1} w_i x_i + b = w^{\mathrm{T}} x + b,
 \end{equation*}
-where $w_1, \ldots, w_n \in \mathbb{R}$ are called weights and $b \in \mathbb{R}$ is called bias. In general, these weights are learned through an amount of data. Then an activation function $\sigma \colon \mathbb{R} \to \mathbb{R}$, which is non-linear, is applied to $a$, so that the output of the neuron becomes
+where $w_1, \ldots, w_n \in \mathbb{R}$ are called weights and $b \in \mathbb{R}$ is called bias. In general, these weights and the bias are learned through data. Then an activation function $\sigma \colon \mathbb{R} \to \mathbb{R}$, which is non-linear, is applied to the weighted sum $a$, so that the output of the neuron becomes
 \begin{equation*}
     z = \sigma(\sum^{n}_{i=1} w_i x_i + b) = \sigma(w^{\mathrm{T}} x + b) = \sigma(a).
 \end{equation*}
@@ -36,21 +24,26 @@ The choice of activation function is determined by the nature of the input and t
 \begin{equation*}
     \sigma(x) = \begin{cases} 1 & \text{if } x \geq 0, \\ 0 & \text{if } x < 0, \end{cases}
 \end{equation*}
-then the perceptron coincides with a linear support vector classifier, see 
-They are generally required to be monotone
-increasing, continuous, and at least piecewise smooth. 
-The non-linear functions used in neural networks include the rectified linear unit, commonly used in recent years, as well as the more conventional sigmoids, such as the hyberbolic tangent, 
-
-At present, the most popular non-linear function is the rectified linear unit (ReLU), which is simply the half-wave rectifier. In past decades, neural nets used smoother non-linearities, such as , but the ReLU typically learns much faster in networks with many layers, allowing training of a deep supervised network without unsupervised pre-training28
-
+then the perceptron coincides with a linear support vector classifier, see \cite[Chapter~7]{Bishop:2006}. \\
+The activation function can be any non-constant, non-linear function, but those generally used are monotone increasing, continuous, and at least piecewise smooth. At present, the most popular activation function is the rectified linear unit, abbreviated ReLu, \cref{ReLu}. In recent decades, smoother activation functions have been used, such as the sigmoid function, \cref{Sigmoid}, or the hyperbolic tangent function, \cref{TanH}, \cite{}.
 \begin{align}
-    \sigma(y) &=\tanh (y)=\frac{\exp (y)-\exp (-y)}{\exp (y)+\exp (-y)} & & \text { hyperbolic tangent } \\
-    \sigma(y) &=\frac{1}{1+\exp (-y)} & & \text { logistic (soft step) } \\
-    \sigma(y) &=\max \{y, 0\} & & \text { rectified linear unit (ReLU) } \\
-    \sigma(y ; a) &=\max \{y, 0\}+\min \{a y, 0\} & & \text { parametric rectified linear unit (PReLU) } \\
-    \sigma(y) &=\frac{y}{1+\exp (-y)} & & \text { swish function. }
+    \sigma(y) &=\max \{y, 0\} & & \text{ rectified linear unit (ReLU) } \label{ReLu} \\
+    \sigma(y) &=\frac{1}{1+\exp (-y)} & & \text{ sigmoid } \label{Sigmoid} \\
+    \sigma(y) &=\tanh (y)=\frac{\exp (y)-\exp (-y)}{\exp (y)+\exp (-y)} & & \text{ hyperbolic tangent } \label{TanH}
 \end{align}
+A single perceptron can already be understood as a neural network, but it still has many limitations. Above all, the dimension of the output is limited to $1$. If one wants to create a multi-dimensional output, one arranges several perceptrons in a layer by distributing the input to exactly as many perceptrons as one needs the dimension of the output. Suppose the input has dimension $n$ and the output should have dimension $m$. Then the weights of the $m$ perceptrons are arranged as a matrix $W \in \mathbb{R}^{m \times n}$, where each row corresponds to the $n$ weights of each perceptron, i.e. $w^{i} \in \mathbb{R}^n$ for all $i = 1, \ldots, m$. The biases of the $m$ perceptrons are represented as a vector $b \in \mathbb{R}^m$. The weighted sum of the input $x \in \mathbb{R}^n$ with the addition of a bias for each perceptron can be computed as  
+\begin{equation}
+    a = W x + b \in \mathbb{R}^m,
+\end{equation}
+which is also known as the propagation function. 
 
+
+
+
+Frank Rosenblatt showed that a simple perceptron with two input values and a single output neuron can be used to represent the simple logical operators AND, OR and NOT. However, Marvin Minsky and Seymour Papert proved in 1969 that a single-layer perceptron cannot resolve the XOR operator (linear separability problem). This led to a standstill in artificial neural network research.
+
+The inability of a single neuron to model any reasonably complicated function with binary output3
+has led to the idea of creating networks of neurons, known as articial neural networks (ANNs).
 
 After mentioning the XOR problem, which cannot be handled by perceptrons with one layer, we introduce multilayer perceptrons. 
 
@@ -73,10 +66,12 @@ The backpropagation procedure to compute the gradient of an objective function w
 
 Many applications of deep learning use feedforward neural network architectures (Fig. 1), which learn to map a fixed-size input (for example, an image) to a fixed-size output (for example, a probability for each of several categories). To go from one layer to the next, a set of units compute a weighted sum of their inputs from the previous layer and pass the result through a non-linear function. At present, the most popular non-linear function is the rectified linear unit (ReLU), which is simply the half-wave rectifier. In past decades, neural nets used smoother non-linearities, such as , but the ReLU typically learns much faster in networks with many layers, allowing training of a deep supervised network without unsupervised pre-training28. Units that are not in the input or output layer are conventionally called hidden units. The hidden layers can be seen as distorting the input in a non-linear way so that categories become linearly separable by the last layer 
 
+
+In artificial neural networks, topology refers to the structure of the network. This generally means how many artificial neurons are located on how many layers and how they are connected to each other. Artificial neurons can be connected in many ways to form an artificial neural network. In many models, neurons are arranged in layers one behind the other; 
+
 Perceptron
 Activation Function
 One layer
-XOR Problem
 Neural Network
 FNN
 %ResNet
