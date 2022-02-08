@@ -52,87 +52,77 @@ The same activation function will be used in all neurons of layer l, which is wh
 We draw attention to the fact that the activation function $\sigma_l$ can vary from layer to layer by using the index $l$. The transformation of the input $x^{l-1} \in \mathbb{R}^{n_{l-1}}$ in the $l$-th layer can then be written as
 \begin{equation}
     \label{action layer}
-    \mathbb{R}^{n^{l-1}} \ni \underbrace{x^{l-1}}_{\text{input of layer } l} \mapsto x^{l}:=\underbrace{\sigma_{l}\left( W^{l} x^{l-1} + b^{l} \right)}_{\text {output of layer } l}=: F_{l} \left(x^{l-1}, W^{l}, b^{l} \right) \in \mathbb{R}^{n^{l}}, 
+    \mathbb{R}^{n^{l-1}} \ni \underbrace{x^{l-1}}_{\text{input of layer } l} \mapsto x^{l}:=\underbrace{\sigma_{l}\left( W^{l} x^{l-1} + b^{l} \right)}_{\text{output of layer } l}=: F_{l} \left(x^{l-1}, W^{l}, b^{l} \right) \in \mathbb{R}^{n^{l}}, 
 \end{equation}
-where we express the entire process with the map $F_l \colon \mathbb{R}^{n^{l-1}} \times \mathbb{R}^{n_l \times n_{l-1}} \times \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$. \\
+where we identify the entire process in layer $l$ with a map $F_l \colon \mathbb{R}^{n_{l-1}} \times \mathbb{R}^{n_l \times n_{l-1}} \times \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$. \\
 
-In artificial neural networks, topology refers to the structure of the network. This generally means how many artificial neurons are located on how many layers and how they are connected to each other. Artificial neurons can be connected in many ways to form an artificial neural network. 
-
-In many models, neurons are arranged in layers one behind the other; 
-
-
-
-
-
-In particular, we shall restrict our attention to the specific class of neural networks that have proven to be of greatest practical value, namely the multilayer
-perceptron
-
-Deep-learning methods are representation-learning methods with multiple levels of representation, obtained by composing simple but non-linear modules that each transform the representation at one level (starting with the raw input) into a representation at a higher, slightly more abstract level. With the composition of enough such transformations, very complex functions can be learned.
-
-A so-called feed-forward neural network, abbreviated by FNN, consists of the composition of several of these layer-wise actions. The term feed-forward means that the information only flows in one direction, i.e. there are only connections from the neurons of one layer to the neurons of the next layer and no skipping or backward connections. It is also known as a multilayer perceptron, although this name can be misleading as the artificial neurons are usually not the perceptrons as introduced in 3. To simplify the notation of FNNs, we introduce a so-called input layer with $l=0$, which only receives external data and does not change the input and is the first layer of the network. The number of neurons in this layer corresponds to the dimension of the input. From now on, we will refer to the last layer of a general neural network, which produces the ultimate result, as the output layer. The number of neurons in this layer is equal to the dimension that the desired output should have. If an FNN has more than one layer, we refer to all layers between the input layer and the output layer as hidden layers. \\ 
-Usually, an FNN is fully connected, which means that the output of each neuron in one layer would be passed to all neurons in the following layer. 
-
-
-
-So far we have treated the weights and biases in a very abstract way and have not gone into how to determine them. 
-
-
-Single layer and unlayered networks are also used. 
-
-In addition, there are networks in which connections are allowed in both directions. The appropriate network structure is usually found using the method of trial and error, which can be supported by evolutionary algorithms and error feedback.
-
-
-
-
-
-Using a graph, the neurons can be represented as vertices and their connections as edges. The inputs are sometimes also represented as nodes.
-
-
+There are many ways in which artificial neurons or layers of neurons are partitioned and connected to each other to form an artificial neural network. In this context, the term topology refers to the structure of the network, which means how many artificial neurons are located on how many layers and how they are connected to each other. However, we should focus our interest on a very specific topology of neural networks, which forms a specific class of neural networks that have proven to be of greatest practical value, namely feed-forward neural networks, abbreviated by FNN, which consist of the composition of the layer-wise action \cref{action layer}. The term feed-forward means that the information only flows in one direction, i.e. there are only connections from the neurons of one layer to the neurons of the next layer and no skipping or backward connections. Furthermore, FNNs are in general fully connected, which means that the output of each neuron in one layer would be passed to all neurons in the following layer. FNNs are also known as multilayer perceptrons, although this name can be misleading as the artificial neurons are usually not the perceptrons as introduced in \cite{Rosenblatt:1958}. \\
+To simplify the notation of FNNs, we introduce a so-called input layer with $l=0$, which only receives external data and does not change the input and is the first layer of the network. The number of neurons in this layer corresponds to the dimension of the input. From now on, we will refer to the last layer of a general neural network, which produces the ultimate result, as the output layer. The number of neurons in this layer is equal to the dimension that the desired output should have. If an FNN has more than one layer, we refer to all layers between the input layer and the output layer as hidden layers. \\ 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.2]{img/diagram-20220206.png}
     \end{center}
-    \caption{Illustration of an artificial neural network with $L=3$ layers.}
+    \caption{Illustration of a feed-forward neural network with $L=3$ layers.}
     \label{fig5}
 \end{figure}
-
-
-
-\begin{equation*}
+Neural networks can generally be represented as graphs, where the neurons are represented as vertices and the connections of the neurons are represented as edges. The input layer is sometimes also represented as a layer of vertices. An example of an FNN is illustrated in \cref{fig5}, where the network has $L=3$ layers and therefore $2$ hidden layers. The mapping of the input $x = x^0 \in \mathbb{R}^{n_0}$ to the output $y = x^3 \in \mathbb{R}^{n_3}$ by the network is given by 
+\begin{equation}
+    \label{forward propagation of information}
     \begin{aligned}
-        y &=\sigma^{(3)}\left(\left(W^{(3)}\right)^{\top} \sigma^{(2)}\left(\left(W^{(2)}\right)^{\top} \sigma^{(1)}\left(\left(W^{(1)}\right)^{\top} x^{(0)}+b^{(1)}\right)+b^{(2)}\right)+b^{(3)}\right) \\
-        &=F^{(3)}\left(F^{(2)}\left(F^{(1)}\left(x^{(0)}, W^{(1)}, b^{(1)}\right), W^{(2)}, b^{(2)}\right), W^{(3)}, b^{(3)}\right) \\
-        &=: F\left(x^{(0)}, W^{(1)}, b^{(1)}, W^{(2)}, b^{(2)}, W^{(3)}, b^{(3)}\right) .
+        y &=\sigma_{3} \left( W^{3} \sigma_{2} \left(  W^{2} \sigma_{1} \left( W^{1} x^{0}+b^{1}\right)+b^{2}\right)+b^{3}\right) \\
+        &=F_{3}\left(F_{2}\left(F_{1}\left(x^{0}, W^{1}, b^{1}\right), W^{2}, b^{2}\right), W^{3}, b^{3}\right) \\
+        &= F \left( x^{0}, W^{1}, b^{1}, W^{2}, b^{2}, W^{3}, b^{3} \right) \\
+        & = F(x^{0}, W, b).
     \end{aligned}
+\end{equation}
+The process \cref{forward propagation of information} is in general called model prediction of the corresponding neural network and can be interpreted as a forward propagation of information through the neural network. From now on, we will abbreviate the model prediction of a neural network with $F(x, W, b)$, where $x = x^0$ is the input, $W = \{ W^l \}_{l = 1, \ldots, L}$ is the total of all weight matrices and $b = \{ b^l \}_{l = 1, \ldots, L}$ is the total of all bias vectors used in the network. It becomes clear that the activation functions $\sigma_l$ should be non-linear. Otherwise, the output $x^3$ is a linear function of the input $x^0$ and all layers can be combined into one output layer. \\
+
+The neural network illustrated in \cref{fig5} can now transform values from the space $\mathbb{R}^{n_0}$ to values from space $\mathbb{R}^{n_3}$. Now the question arises how this FNN learns to solve regression problems or to approximate smooth functions $f \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_3}$. The necessary procedure is appropriately called (machine) learning. From a practical point of view, learning for a neural network means that the weights and biases of the single neurons are adjusted in such a way that for the given input the desired output is produced by the network. The most common types of machine learning are supervised learning and unsupervised learning. \\
+For supervised learning, it is assumed that a so-called training data set $S = \{ (x_i, y_i) \}_{i = 1, \ldots, N}$ is given, which consists of ordered pairs of inputs $x_i$ and outputs $y_i$ of the function which should be approximated, where the output $y_i$ is the actual function value of the function to be learned for the respective input value $x_i$. The learning task is to produce the desired output $y_i$ for each input $x_i$ with the corresponding neural network. For this purpose, a cost function is defined that compares the target output values $y_i$ with the outputs generated by the network $F(x_i, W, b)$. This is in general achieved by considering the mean squared error, abbreviated MSE, which tries to minimize the average squared error between the generated outputs $F(x_i, W, b)$ and the target outputs $y_i$. Then one tries to choose the weights $W = \{ W^l \}_{l = 1, \ldots, L}$ and biases $b = \{ b^l \}_{l = 1, \ldots, L}$ so that the MSE over all data pairs $\{ (x_i, y_i) \}_{i = 1, \ldots, N}$ can be kept as small as possible. This can be defined as the following optimization problem: 
+\begin{equation*}
+    \begin{gathered}
+        \text{ Minimize } \underbrace{\frac{1}{N}}_{\text{normalization factor}} \sum_{i=1}^{N} \lVert \underbrace{F\left(x_{i}, W^{1}, b^{1}, \ldots, W^{L}, b^{L}\right)}_{\text{model prediction }} - \underbrace{y_{i}}_{\text{actual data }} \rVert^{2}_2 \\
+        \\
+        \text{ where }\left(W^{l}, b^{l}\right) \in \mathbb{R}^{n_l \times n_{l-1}} \times \mathbb{R}^{n_l}, \quad l=1, \ldots, L .
+    \end{gathered}
 \end{equation*}
+Of course, loss functions other than the MSE can be used, but the MSE has become the most common because of the differentiability it provides. \\
+For unsupervised learning, only input values are given as training data, i.e. $S = \{ x_i \}_{i = 1, \ldots, N}$. In this form of machine learning, the network tries to recognise structures in the given input values. For this purpose, a cost function $C$ of the input data $x_i$ and the network's output $F(x_i, W, b)$ is defined, which is dependent on the task of the function to be approximated, such as the input domain, and any a priori assumptions, such as the implicit properties or characteristics of the function to be approximated and its arguments. One also tries to minimize the mean over all cost functions applied on $x_i$ and $F(x_i, W, b)$ with respect to the weights $W = \{ W^l \}_{l = 1, \ldots, L}$ and the biases $b = \{ b^l \}_{l = 1, \ldots, L}$, which leads to the following optimization problem:
+\begin{equation*}
+    \begin{gathered}
+        \text{ Minimize } \; \frac{1}{N} \sum_{i=1}^{N}  C \left( F \left( x_{i}, W^{1}, b^{1}, \ldots, W^{L}, b^{L}\right), x_i \right) \\
+        \\
+        \text{ where } \; \left(W^{l}, b^{l}\right) \in \mathbb{R}^{n_l \times n_{l-1}} \times \mathbb{R}^{n_l}, \quad l=1, \ldots, L .
+    \end{gathered}
+\end{equation*}
+
+
+The cost function can be much more complicated. Its form depends on the application:
+
+
+
+In unsupervised learning, input data is given along with the cost function, some function of the data x and the network's output. The cost function is dependent on the task (the model domain) and any a priori assumptions (the implicit properties of the model, its parameters and the observed variables).
+
+
+The (learning) machine tries to recognise patterns in the input data that deviate from the structureless noise.[1] An artificial neural network is guided by the similarity to the input values and adapts the weights accordingly.
+
+During the learning phase, an unsupervised network tries to mimic the data it's given and uses the error in its mimicked output to correct itself (ie. correct its weights  biases).
+
+The hope is that through mimicry, which is an important mode of learning in people, the machine is forced to build a compact internal representation of its world and then generate imaginative content from it.
+
+
+
 
 
 The more complex the problem to be solved with the help of the neural network is, the more layers are needed. 
 
-The process of evaluating (5.7) can then be interpreted as a forward
-propagation of information through the network.
+We note that the type of activation function is not learned from the data, therefore it is not in the arguments of F or F in either 3 or 4. The type of activation function, like the number of layers and the number of neurons for a layer, is a so-called hyperparameter and is determined in advance by the user. 
+
+We would like to point out that in both optimization problems the activation functions do not appear as optimization variables. This is because hyperparameters are generally not learned. 
+Choosing the right hyperparameters is extremely difficult, generally they are discovered by trial and error. 
 
 
-
-From a practical point of view, a network "learns" mainly by modifying the weights and biases of the neurons.
-
-
-
-
-
-
-
-
-
-
-
-
-
-The most common form of machine learning, deep or not, is supervised learning.
-
-
-
-
+Deep-learning methods are representation-learning methods with multiple levels of representation, obtained by composing simple but non-linear modules that each transform the representation at one level (starting with the raw input) into a representation at a higher, slightly more abstract level. With the composition of enough such transformations, very complex functions can be learned.
 
 
 We compute an objective function that measures the error (or distance) between the output scores and the desired pattern of scores. The machine then modifies its internal adjustable parameters to reduce  this error. These adjustable parameters, often called weights, are real numbers that can be seen as ‘knobs’ that define the input–output function of the machine. In a typical deep-learning system, there may be hundreds of millions of these adjustable weights, and hundreds of millions of labelled examples with which to train the machine. To properly adjust the weight vector, the learning algorithm computes a gradient vector that, for each weight, indicates by what amount the error would increase or decrease if the weight were increased by a tiny amount. The weight vector is then adjusted in the opposite direction to the gradient vector. 
