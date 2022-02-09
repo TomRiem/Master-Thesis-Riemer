@@ -1,7 +1,7 @@
 \section{Neural Networks as Function Approximators}
 \label{ch1:sec3}
 
-In this section we introduce artificial neural networks, usually just called neural networks, which are computing systems inspired by the biological neural networks that constitute animal brains. They can be used to model complex relationships between inputs and outputs or to find patterns in data. It has been shown that these systems can be used very well as classifiers as well as regressors or function approximators. \\
+In this section we describe artificial neural networks, usually just called neural networks, which are computing systems inspired by the biological neural networks that constitute animal brains. They can be used to model complex relationships between inputs and outputs or to find patterns in data. It has been shown that these systems can be used very well as classifiers as well as regressors or function approximators. \\
 Artificial neural networks are based on simplified models of biological neurons, which are special cells within the nervous system which transmit information to other nerve cells. Each of these artificial neurons receives an input value, e.g. a real-valued vector, modifies it with weights and forms a biased sum. Subsequently, an activation function controls the amplitude of the output. These artificial neurons, or just neurons, are connected to each other. A single neuron may be connected to many other neurons and the total number of neurons and connections in a network may be extensive. The connections of the biological neuron are modelled as weights. Each weight determines one neuron's influence on another, a positive weight reflects an excitatory connection, while a negative weight means an inhibitory connection. The other neurons connected to this neuron take the output of this neuron as part of their input and modify it with the weight of the corresponding connection. Then the whole process is repeated. \\
 However, artificial neural networks are more about an abstraction of that information processing, less about replicating biological neural networks and neurons. In 1958, the psychologist Frank Rosenblatt invented the first mathematical model for a single neuron, termed perceptron, in \cite{Rosenblatt:1958}, which was also the first artificial neural network. We want to use artificial neurons based on the perceptron and the neural networks constructed from them to approximate the function values of the solution of the differential equation.  \\
 Let us We describe how a single artificial neuron transforms a reel-valued input into a one-dimensional output, as illustrated in \cref{fig4}. Let there be $n$ input values $x_1, \ldots, x_n \in \mathbb{R}$, which can be understood as the entries of a vector $x \in \mathbb{R}^n$. First one forms a biased linear combination with the input values, i.e. 
@@ -111,7 +111,7 @@ During the learning phase, an unsupervised network tries to mimic the data it's 
 The hope is that through mimicry, which is an important mode of learning in people, the machine is forced to build a compact internal representation of its world and then generate imaginative content from it.
 
 
-
+In general, deep neural networks could approximate any high-dimensional function given that sufficient training data are supplied, see \cite{ArzaniDawson:2021}
 
 
 The more complex the problem to be solved with the help of the neural network is, the more layers are needed. 
@@ -135,16 +135,9 @@ Many applications of deep learning use feedforward neural network architectures 
 
 
 Zusammenhang zu daten
-Perceptron
-Activation Function
-One layer
-Neural Network
-FNN
-%ResNet
-Machine Learning, Training 
-Supervised Learning
-Unsupervised Learning
+deep learning
 Gradient Based optimization
+Automatic differentiation
 Backpropagation 
 NAS
 Honrik 
