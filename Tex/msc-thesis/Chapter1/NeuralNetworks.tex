@@ -133,6 +133,12 @@ The backpropagation procedure to compute the gradient of an objective function w
 
 Many applications of deep learning use feedforward neural network architectures (Fig. 1), which learn to map a fixed-size input (for example, an image) to a fixed-size output (for example, a probability for each of several categories). To go from one layer to the next, a set of units compute a weighted sum of their inputs from the previous layer and pass the result through a non-linear function. At present, the most popular non-linear function is the rectified linear unit (ReLU), which is simply the half-wave rectifier. In past decades, neural nets used smoother non-linearities, such as , but the ReLU typically learns much faster in networks with many layers, allowing training of a deep supervised network without unsupervised pre-training28. Units that are not in the input or output layer are conventionally called hidden units. The hidden layers can be seen as distorting the input in a non-linear way so that categories become linearly separable by the last layer 
 
+Deep Learning (DL) has revolutionized the way of performing classification, pattern recognition, and regression
+tasks in various application areas, such as image and speech recognition, recommendation systems, natural language
+processing, drug discovery, medical imaging, bioinformatics, and fraud detection, among few examples
+
+Automatic differentiation in general, and the back-propagation algorithm in particular, is currently the dominant approach for training deep models by taking their derivatives with respect to the parameters (e.g., weights and biases) of the models.
+
 
 Zusammenhang zu daten
 deep learning

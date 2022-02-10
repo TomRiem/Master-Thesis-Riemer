@@ -185,11 +185,11 @@ The continuity condition imposed on functions from the Sobolev space $H^1 (\Gamm
 
 With all the definitions above, we see that it makes sense to consider differential operators defined on a metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, by which we mean that we consider a differential operator on each edge. This operator will be called the Hamiltonian. An example of this would be the one-dimensional Schrödinger operator
 \begin{equation*}
-    (\mathcal{H} \, f)(x) = -\frac{\mathrm{d}^2 f}{\mathrm{d} x^2}(x) + V(x)f(x)
+    \mathcal{H} \left[ f \right](x) = -\frac{\mathrm{d}^2 f}{\mathrm{d} x^2}(x) + V(x)f(x)
 \end{equation*}
 with a potential function $V$. Then, one can formulate a differential equation for each edge $e \in \mathcal{E}$ of the form
 \begin{equation*}
-    (\mathcal{H} \, f |_e)(x_e) = g|_e(x_e), \quad \text{for all  } x_e \in (0, \ell_e)
+    \mathcal{H} \left[ f |_e \right] (x_e) = g|_e(x_e), \quad \text{for all  } x_e \in (0, \ell_e)
 \end{equation*}
 where the functions $g|_e \colon (0, \ell_e) \to \mathbb{R}$ are given source terms. We note that for this operator the direction of the edge is irrelevant. This is not the case if one wants to include first order derivative terms. Then we need to assume the graph to be directed and consider bonds $b \in \mathcal{B}$ and the corresponding coordinates. \\
 The classical case of differential operators on an interval, which we can understand as a graph with one edge and two vertices, makes clear that the definition of a differential operator on a metric graph is not complete until its domain is described. The domain description should involve smoothness conditions along the edges and some appropriate boundary value conditions at the vertices, which we will call vertex conditions in the following and are an analogue of boundary conditions for a single interval. The addition of these conditions justifies the introduction of the following notion

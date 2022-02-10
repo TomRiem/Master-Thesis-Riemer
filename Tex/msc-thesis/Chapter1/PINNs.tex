@@ -3,37 +3,97 @@
 
 In this section we describe physics-informed neural networks, abbreviated by PINNs, which  were introduced in \cite{RaissiPerdikarisKarniadakisPart1:2017} and are neural networks that are trained to solve supervised learning tasks while respecting any given law of physics described by general non-linear partial differential equations. PINNs enable the solution of a wide range of problems in computational science, represent a pioneering technology leading to the development of new classes of numerical solution methods for PDEs, and can be considered as a mesh-free alternative to traditional approaches and as a novel data-driven approach to model inversion and system identification \cite[p.~3]{RaissiPerdikarisKarniadakis:2019}. \\
 Most of the physical laws that govern the dynamics of a system can be described by partial differential equations. For example, the Navier-Stokes equations are a set of partial differential equations derived from the conservation laws that describe the physics of many phenomena of scientific and engineering interest. They can be used to model the weather, ocean currents, water flow in a pipe and air flow around a wing. However, these equations cannot be solved exactly and therefore numerical methods must be used such as a finite volume method, where these equations must be solved while accounting for prior assumptions, linearization, and adequate time and space discretization. \\
-As discussed in the previous section, machine learning methods with deep neural networks offer a promising way to approximate any map, therefore it is only logical to use them also for the approximation of the solution of differential equations. If one follows the classical approach, in which one trains a network purely by feeding it with data obtained, for example, from empirical tests of the underlying system, two problems arise. At first, when analysing complex physical, biological or technical systems, the cost of data acquisition is often prohibitive and one is faced with the challenge of drawing conclusions and making decisions based on incomplete information. For the often resulting small amount of data, most of the modern machine learning methods are not robust enough and offer no convergence guarantee, which is why the task of training a network with a few high-dimensional input and output values seems naive. Second, neural networks generally do not in general take into account the physical properties underlying the system generated from the physical law, and the degree of approximation accuracy they provide still depends heavily on a careful specification of the problem geometry and the initial and boundary conditions. Without this prior information, the solution is not unique and may lose physical correctness. Exactly this prior information, such as the principal physical laws governing the time-dependent dynamics of a system, or some empirically validated rules or other expertise, can act as a control agent that restricts the space of admissible solutions to a manageable size, which leads to the idea of a physics-informed neural network. This type of neural networks uses the governing physical equations in training, i.e. PINNs are designed to be trained to satisfy both the given training data and the given equations. In turn, encoding such structured information in a learning algorithm leads to an increase in the information content of the data which the algorithm encounters, so that it can move quickly towards the correct solution and generalise well, even when only a few training examples are available. Therefore, with some knowledge of the physical properties of the problem and some form of training data, PINNs can be used to find an optimal solution with high accuracy \cite{RaissiPerdikarisKarniadakisPart1:2017}. Moreover, PINNs can be used for data-driven discovery of partial differential equations or system identification, which is concerned with finding parameters that best describe the observed data of a test of a system. However, this is not relevant for this work and will therefore not be described. \\
+As discussed in the previous section, machine learning methods with deep neural networks offer a promising way to approximate any map, therefore it is only logical to use them also for the approximation of the solution of differential equations. If one follows the classical approach, in which one trains a network purely by feeding it with data obtained, for example, from empirical tests of the underlying system, two problems arise. At first, when analysing complex physical, biological or technical systems, the cost of data acquisition is often prohibitive and one is faced with the challenge of drawing conclusions and making decisions based on incomplete information. For the often resulting small amount of data, most of the modern machine learning methods are not robust enough and offer no convergence guarantee, which is why the task of training a network with a few high-dimensional input and output values seems naive. Second, neural networks generally do not in general take into account the physical properties underlying the system generated from the physical law, and the degree of approximation accuracy they provide still depends heavily on a careful specification of the problem geometry and the initial and boundary conditions. Without this prior information, the solution is not unique and may lose physical correctness. Exactly this prior information, such as the principal physical laws governing the time-dependent dynamics of a system, or some empirically validated rules or other expertise, can act as a control agent that restricts the space of admissible solutions to a manageable size, which leads to the idea of a physics-informed neural network. This type of neural networks uses the governing physical equations in training, i.e. PINNs are designed to be trained to satisfy both the given training data and the given equations. In turn, encoding such structured information in a learning algorithm leads to an increase in the information content of the data which the algorithm encounters, so that it can move quickly towards the correct solution and generalise well, even when only a small data set is available, which is in some sense a key property of PINNs. Therefore, with some knowledge of the physical properties of the problem and some form of training data, PINNs can be used to find an optimal solution with high accuracy \cite{RaissiPerdikarisKarniadakisPart1:2017}. Moreover, PINNs can be used for data-driven discovery of partial differential equations or system identification, which is concerned with finding parameters that best describe the observed data of a test of a system. However, this is not relevant for this work and will therefore not be described. \\
+We concentrate on the problem of computing data-driven approximative solutions to non-linear partial differential equations, by encoding explicitly the differential equation formulation in the neural network. We consider the following general form of a differential equation:
+\begin{equation}
+    \label{PINN PDE}
+    u_t + \mathcal{H} \left[ u \right] = 0, \quad x \in \Omega, \quad t \in [0, T], 
+\end{equation}
+where $u(t,x)$ is the latent solution of the corresponding system, $u_t$ is its derivative with respect to the time $t$ in the period $\left[ 0, T \right]$, $\mathcal{H} \left[ \cdot \right]$ is a non-linear differential operator, $x$ is an independent, possibly multi-dimensional variable, defined over the domain $\Omega \subset \mathbb{R}^{n}$. \\
+A distinction is made between discrete time and continuous time models for PINNs, depending on the type and arrangement of the available data. We focus on the latter. For this purpose $f(x,t)$ is defined as the left-hand-side of \cref{PINN PDE}, i.e.
+\begin{equation}
+    \label{Residual Network}
+    f(t,x) = u_t + \mathcal{H} \left[ u \right].
+\end{equation}
+The main innovation of PINNs is that in \cref{Residual Network}, $u(t,x)$ is approximated by a neural network and thus \cref{Residual Network} becomes a so-called residual network, which encodes the governing physical equations, takes the output of the neural network that approximates $u(t,x)$ and computes a residual. This means that in the basic formulation of PINNs, two networks are combined: the surrogate network which approximates $u(t,x)$ and the residual network $f(t,x)$. From now on, we will use $u$ to identify the surrogate Network and $f$ to identify the residual network. To obtain the residual network $f$ from the surrogate network $u$, one uses recent developments in automatic differentiation - one of the most useful but perhaps underused techniques in scientific computing - to differentiate the neural network that approximates u with respect to its input values. The application of automatic differentiation to elegantly and efficiently formulate the operator H in the residual network is the main strength of PINNs. Officially, the residual network $f$, which is the characteristic feature of PINNs, is not trained and its only function is to provide the surrogate network with the residual. The surrogate network is trained and is then used to calculate the (approximative) solution for a given input point in the domain. We note that the networks u and f share the same topology as well as the same weights and biases. This is generally not the case for the activation functions, since for the network f the network u is differentiated and thus derivatives of the activation functions are considered. \\
+The weights and biases of the neural networks f and u can be then learned by minimizing the following cost function
+\begin{equation*}
+    MSE = MSE_f + MSE_u, 
+\end{equation*}
+where
+\begin{equation*}
+    MSE_f = \frac{1}{N_f} \sum^{N_f}_{i = 1} \lVert f(t^{f}_i, x^{f}_i) \rVert^{2}_{2}
+\end{equation*}
+and
+\begin{equation*}
+    MSE_u = \frac{1}{N_u} \sum^{N_u}_{i = 1} \lVert u(t^{u}_i, x^{u}_i) - u_i \rVert^{2}_{2}.
+\end{equation*}
+
+
+PINNs are deep-learning networks that, after training (solving an optimization problem to minimize a residual function), output an approximated solution of differential equation/equations, given an input point in the integration domain (called collocation point)
+
+The loss MSEu corresponds to the initial and boundary data while MSEf enforces the structure imposed by equation (2) at a finite set of collocation points.
+
+This term $MSE_f$ requires the structured information represented by the partial differential equations to be satisfied in the training process.
+
+Here, $\{t^{u}_i, x^{u}_i, u_i \}_{i = 1, \ldots, N_u}$ denote the initial and boundary training data on u and  $\{t^{f}_i, x^{f}_i \}_{i = 1, \ldots, N_f}$ specify the collocations points for f. The loss MSEu corresponds to the initial and boundary data while MSEf enforces the structure imposed by equation (2) at a finite set of collocation points. 
 
 
 
-If one follows the classical approach, in which one trains a network purely by feeding it with data obtained, for example, from empirical tests of the underlying system, two problems arise. 
+The basic formulation of the PINN training does not require labeled data, e.g., results from other simulations or experimental data, and is unsupervised: PINNs only require the evaluation of the residual function [23]. Providing simulation or experimental data for training the network in a supervised manner is also possible and necessary for so data-assimilation [36], inverse problems [24], super resolution [5, 44], and discrete PINNs [35]. The supervised approach is often used for solving ill-defined problems when for instance we lack boundary conditions or an Equation of State (EoS) to close a system of equations (for instance, EoS for the fluid equations [48]). In this study, we only focus on the basic PINNs as we are interested in solving PDEs without relying on other simulations to assist the DL network training. A common case in scientific applications is that we solve the same PDE with different source terms at each time step. For instance, in addition to other computational kernels, Molecular Dynamics (MD) code and semi-implicit fluid and plasma codes, such as GROMACS [42], Nek5000 [30], and iPIC3D [22], calculate the Poisson equation for the electrostatic and pressure solver [27] and divergence cleaning operations at each cycle.
 
-
-a new class of data-efficient universal function approximators that naturally encode any underlying physical laws as prior information.
-
-
-
-Depending on the nature and arrangement of the available data, we devise two distinct classes of algorithms, namely continuous time and discrete time models. The resulting neural networks form a new class of data-efficient universal function approximators that naturally encode any underlying physical laws as prior information
-
-However, more often than not, in the course of analysing complex physical, biological or engineering systems, the cost of data acquisition is prohibitive, and we are inevitably faced with the challenge of drawing conclusions and making decisions under partial information.
-
-At first sight, the task of training a deep learning algorithm to accurately identify a non-linear map from a few – potentially very high-dimensional – input and output data pairs seems at best naive. Coming to our rescue, for many cases pertaining to the modelling of physical and biological systems, there a exist a vast amount of prior knowledge that is currently not being utilized in modern machine learning practice. Let it be the principled physical laws that govern the time-dependent dynamics of a system, or some empirical validated rules or other domain expertise, this prior information can act as a regularization agent that constrains the space of admissible solutions to a manageable size. In return, encoding such structured information into a learning algorithm results in amplifying the information content of the data that the algorithm sees, enabling it to quickly steer itself towards the right solution and generalize well even when only a few training examples are available.
+Once a PINN is trained, the inference from the trained PINN can be used to replace traditional numerical solvers in scientific computing. In this so-called inference or prediction step, the input includes independent variables like simulation time step and simulation domain positions. The output is the solution of the governing equations at the time and position specified by the input. Therefore, PINNs are a gridless method because any point in in the domain can be taken as input without requiring the definition of a mesh. Moreover, the trained PINN network can be used for predicting the values on simulation grids of different resolutions without the need of being retrained. For this reason, the computational cost does not scale with the number of grid points like many traditional computational methods.
 
 
 
-In this work we take a different approach by employing deep neural networks and leverage their well known capability as universal function approximators. In this setting, we can directly tackle non-linear problems without the need for committing to any prior assumptions, linearization, or local time-stepping. We exploit recent developments in automatic differentiation – one of the most useful but perhaps underused techniques in scientific computing – to differentiate neural networks with respect to their input coordinates and model parameters to obtain physics informed neural networks. 
-
-This simple yet powerful construction allows us to tackle a wide range of problems in computational science and introduces a potentially disruptive technology leading to the development of new data-efficient and physics-informed learning machines, new classes of numerical solvers for partial differential equations, as well as new data-driven approaches for model inversion and systems identification
-
-Given noisy measurements of the system, we are interested in the solution of two distinct problems. The first problem is that of predictive inference, filtering and smoothing, or data driven solutions of partial differential equations which states: given fixed model parameters  what can be said about the unknown hidden state of the system?
 
 
 
-Therefore, a key property of physics-informed neural networks is that they can be effectively trained using small data sets; a setting often encountered in the study of physical systems for which the cost of data acquisition may be prohibitive
+We find that
+fully-connected surrogate/approximator networks with more than three layers produce similar performance results in
+the first thousand training epochs. The choice of activation function is critical for PINN performance: depending on the
+smoothness of the source term, different activation functions provide considerably different accuracy and convergence.
 
-Automatic differentiation in general, and the back-propagation algorithm in particular, is currently the dominant approach for training deep models by taking their derivatives with respect to the parameters (e.g., weights and biases) of the models. Here, we use the exact same automatic differentiation techniques, employed by the deep learning community, to physics-inform neural networks by taking their derivatives with respect to their input coordinates (i.e., space and time) where the physics is described by partial differential equations.
+As shown by Ref. [23], PINNs requires sufficiently
+smooth activation functions. PINNs with ReLU and other non-smooth activation functions, such as ELU and
+SELU (Exponential and Scaled Exponential Linear Units) are not “consistent/convergent" methods: in the
+limit of an infinite training dataset a well-trained PINN with ReLU-like activation functions, the solution does not
+converge to the exact solution [23]
+
+In the training phase, an optimization process targeting the residual minimization determines the weights and
+biases of the surrogate network. Typically, we use two optimizers in succession: the Adam optimizer as first and
+then a Broyden-Fletcher-Goldfarb-Shanno (BFGS) optimizer [6]. BFGS uses the Hessian matrix (curvature in highly
+dimensional space) to calculate the optimization direction and provides more accurate results. However, if used directly
+without using the Adam optimizer can rapidly converge to a local minimum (for the residual) without exiting. For this
+reason, the Adam optimizer is used first to avoid local minima, and then the solution is refined by BFGS. We note that
+the typical BFGS used in PINNs is the L-BFGS-B: L-BFGS is a limited-memory version of BFGS to handle problems with
+many variables, such as DL problems; the BFGS-B is a variant of BFGS for bound constrained optimization problems. In
+our work, we tested several optimizers, including Newton and Powell methods, and found that L-BFGS-B provides by
+far the highest accuracy and faster convergence in all our test problems. L-BFGS-B is currently the most critical
+technology for PINNs.
+
+Despite the recent introduction of PINNs, several PINN frameworks for PDE solutions exist. All the major PINN
+frameworks are written in Python and rely either on TensorFlow [1] or PyTorch [29] to express the neural network
+architecture and exploit auto-differentiation used in the residual network. Together with TensorFlow, SciPy [43] is
+often used to use high-order optimizers such as L-BFGS-B. Two valuable PINN Domain-Specific Languages (DSL) are
+DeepXDE [19] and sciANN [11]. DeepXDE is an highly customizable framework with TensorFlow 1 and 2 backend and it
+supports basic and fractional PINNs in complex geometries. sciANN is a DSL based on and similar to Keras [10]. In this
+work, we use the DeepXDE DSL
+
+Throughout this work we have been using relatively simple deep feed-forward neural networks architectures with hyperbolic tangent activation functions and no additional regularization
+
+
+
+
+
+
+
+
 
 Throughout this work we have been using relatively simple deep feed-forward neural networks architectures with hyperbolic tangent activation functions and no additional regularization
 
 Burgers equation
+
+Bild einfügen!
+
+Markidis Paper lesen
