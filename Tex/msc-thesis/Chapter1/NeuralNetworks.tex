@@ -26,9 +26,9 @@ The choice of activation function is determined by the nature of the input and t
     \sigma(x) = \begin{cases} 1 & \text{if } x \geq 0, \\ 0 & \text{if } x < 0, \end{cases}
 \end{equation*}
 then the artificial neuron coincides with a so-called linear support vector classifier, which is a mathematical method of pattern recognition that divides a set of objects into classes in such a way that the widest possible area around the class boundaries remains free of objects, see \cite[Chapter~7]{Bishop:2006}. \\
-The activation function can be any non-constant, non-linear function, but those generally used are monotone increasing, continuous, and at least piecewise smooth. At present, the most popular activation function is the rectified linear unit, abbreviated ReLu, \cref{ReLu}. In recent decades, smoother activation functions have been used, such as the sigmoid function, \cref{Sigmoid}, or the hyperbolic tangent function, \cref{TanH}, \cite[p.~3]{LeCunBengioHinton:2015}.
+The activation function can be any non-constant, non-linear function, but those generally used are monotone increasing, continuous, and at least piecewise smooth. At present, the most popular activation function is the rectified linear unit, abbreviated ReLU, \cref{ReLU}. In recent decades, smoother activation functions have been used, such as the sigmoid function, \cref{Sigmoid}, or the hyperbolic tangent function, \cref{TanH}, \cite[p.~3]{LeCunBengioHinton:2015}.
 \begin{align}
-    \sigma(y) &=\max \{y, 0\} & & \text{ rectified linear unit (ReLU) } \label{ReLu} \\
+    \sigma(y) &=\max \{y, 0\} & & \text{ rectified linear unit (ReLU) } \label{ReLU} \\
     \sigma(y) &=\frac{1}{1+\exp (-y)} & & \text{ sigmoid } \label{Sigmoid} \\
     \sigma(y) &=\tanh (y)=\frac{\exp (y)-\exp (-y)}{\exp (y)+\exp (-y)} & & \text{ hyperbolic tangent } \label{TanH}
 \end{align}
@@ -141,6 +141,7 @@ Automatic differentiation in general, and the back-propagation algorithm in part
 
 
 Zusammenhang zu daten
+Verschiedene Typen von netzwerken
 deep learning
 Gradient Based optimization
 Automatic differentiation
