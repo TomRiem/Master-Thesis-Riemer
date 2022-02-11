@@ -7,7 +7,7 @@ As discussed in the previous section, machine learning methods with deep neural 
 We concentrate on the problem of computing data-driven approximative solutions to non-linear partial differential equations, by encoding explicitly the differential equation formulation in the neural network. We consider the following general form of a differential equation:
 \begin{equation}
     \label{PINN PDE}
-    u_t + \mathcal{H} \left[ u \right] = 0, \quad x \in \Omega, \quad t \in [0, T], 
+    u_t + \mathcal{H} \left[ u \right] = 0, \quad x \in \Omega, \quad t \in \left[ 0, T \right], 
 \end{equation}
 where $u(t,x)$ is the latent solution of the corresponding system, $u_t$ is its derivative with respect to the time $t$ in the period $\left[ 0, T \right]$, $\mathcal{H} \left[ \cdot \right]$ is a non-linear differential operator, $x$ is an independent, possibly multi-dimensional variable, defined over the domain $\Omega \subset \mathbb{R}^{n}$. \\
 A distinction is made between discrete time and continuous time models for PINNs, depending on the type and arrangement of the available data. We focus on the latter. For this purpose let $f(x,t)$ be defined as the left-hand-side of \cref{PINN PDE}, i.e.
@@ -15,53 +15,29 @@ A distinction is made between discrete time and continuous time models for PINNs
     \label{Residual Network}
     f(t,x) = u_t + \mathcal{H} \left[ u \right].
 \end{equation}
-The main innovation of PINNs is that in \cref{Residual Network}, $u(t,x)$ is approximated by a deep neural network and thus \cref{Residual Network} becomes a so-called residual network, which encodes the governing physical equations, takes the output of the neural network that approximates $u(t,x)$ and computes a residual. This means that in the basic formulation of PINNs, two networks are combined: the surrogate network $\widetilde{u}(t,x)$, which approximates $u(t,x)$, and the resulting residual network $\widetilde{f}(t,x)$, which emerges when $\widetilde{u}(t,x)$ is substituted into \cref{Residual Network}, i.e. $\widetilde{f}(t,x) = \widetilde{u}_t + \mathcal{H} \left[ \widetilde{u} \right]$. In principle, any type of neural network can be used for the surrogate network $\widetilde{u}(t,x)$. The most common are simple (fully-connected) deep feed-forward neural networks, see e.g. \cite{RaissiPerdikarisKarniadakis:2019}, \cite{MishraMolinaro:2021}, \cite{Markidis:2021}. The choice of the activation functions in each layer is critical for the performance of PINNs. As shown by \cite{MishraMolinaro:2021} PINNs require sufficiently smooth activation functions such as the sigmoid function, \cref{Sigmoid}, or the hyperbolic tangent function. Non-smooth activation functions, such as ReLU, \cref{ReLU}, lead to non-convergent methods, i.e. in the limit of an infinite training dataset a well-trained PINN with ReLU-like activation functions, the solution does not converge to the exact solution of the differential equation, see \cite{MishraMolinaro:2021}. To obtain the residual network $\widetilde{f}(t,x)$ from the surrogate network $\widetilde{u}(t,x)$, one uses recent developments in automatic differentiation - one of the most useful but perhaps underused techniques in scientific computing - to differentiate the neural network $\widetilde{u}(t,x)$ with respect to its input values $t$ and $x$. The application of automatic differentiation to elegantly and efficiently formulate the derivative by time of the surrogate network $\widetilde{u}_t$ and the application of the operator $\mathcal{H} \left[ \widetilde{u} \right]$ in the residual network $\widetilde{f}(t,x)$ is the main strength of PINNs. We note that the networks $\widetilde{u}(t,x)$ and $\widetilde{f}(t,x)$ share the same weights $W$ and biases $b$, but generally not the same activation functions, since in the residual network $\widetilde{f}(t,x)$ the derivatives of the activation functions of $\widetilde{u}(t,x)$ are generally considered.  \\
-
-PINNs are now deep-learning networks that have to be trained. However, the residual network, which is the characteristic feature of PINNs, is officially not trained, since its only function is to provide the surrogate network with the residual. The surrogate network of a PINN is trained, which then returns an approximate solution of a differential equation for an input point in the integration domain, which we call the collocation point.
-
-The weights and biases of the neural networks f and u can be then learned by minimizing the following cost function
-\begin{equation*}
+The main innovation of PINNs is that in \cref{Residual Network}, $u$ is approximated by a deep neural network and thus \cref{Residual Network} becomes a so-called residual network, which encodes the governing physical equations, takes the output of the neural network that approximates $u$ and computes a residual. This means that in the basic formulation of PINNs, two networks are combined: the surrogate network $u_\Theta$, which approximates $u$ and therefore receives the same input parameters $(t,x)$, and the resulting residual network $f_\Theta$, which emerges when $u_\Theta$ is substituted into \cref{Residual Network}, i.e. $f_\Theta(t,x) = (u_\Theta)_t + \mathcal{H} \left[ u_\Theta \right]$. In principle, any type of neural network can be used for the surrogate network $u_\Theta$. The most common are simple (fully-connected) deep feed-forward neural networks, see e.g. \cite{RaissiPerdikarisKarniadakis:2019}, \cite{MishraMolinaro:2021}, \cite{Markidis:2021}. The choice of the activation functions in each layer is critical for the performance of PINNs. As shown by \cite{MishraMolinaro:2021} PINNs require sufficiently smooth activation functions such as the sigmoid function, \cref{Sigmoid}, or the hyperbolic tangent function. Non-smooth activation functions, such as ReLU, \cref{ReLU}, lead to non-convergent methods, i.e. in the limit of an infinite training dataset a well-trained PINN with ReLU-like activation functions, the solution does not converge to the exact solution of the differential equation, see \cite{MishraMolinaro:2021}. To obtain the residual network $f_\Theta$ from the surrogate network $u_\Theta$, one uses recent developments in automatic differentiation - one of the most useful but perhaps underused techniques in scientific computing - to differentiate the neural network $u_\Theta(t,x)$ with respect to its input values $t$ and $x$. The application of automatic differentiation to elegantly and efficiently formulate the derivative by time of the surrogate network $(u_\Theta)_t$ and the application of the operator $\mathcal{H} \left[ u_\Theta \right]$ in the residual network $f_\Theta(t,x)$ is the main strength of PINNs. We note that the networks $u_\Theta$ and $f_\Theta$ share the same weights $W$ and biases $b$, but generally not the same activation functions, since in the residual network $f_\Theta$ the derivatives of the activation functions of $u_\Theta$ are generally considered. Since $f_\Theta$ contains only $u_\Theta$ as a neural network and no other network, $u_\Theta$ and $f_\Theta$ also have the same network topology, but the propagation of information through the neural networks is different. \\
+PINNs are deep-learning networks that have to be trained. However, the residual network $f_\Theta$, which is the characteristic feature of PINNs, is officially not trained, since its only function is to provide the surrogate network $u_\Theta$ with the residual. The surrogate network $u_\Theta$ of a PINN is trained, which afterwards returns an approximate solution $u_\Theta$ of a differential equation for an input point $(t,x)$, which we call collocation point. The weights $W$ and biases $b$ of the surrogate network $u_\Theta$ can be learned by minimizing the following cost function
+\begin{equation}
+    \label{MSE PINN}
     MSE = MSE_f + MSE_u, 
-\end{equation*}
+\end{equation}
 where
 \begin{equation*}
-    MSE_f = \frac{1}{N_f} \sum^{N_f}_{i = 1} \lVert f(t^{f}_i, x^{f}_i) \rVert^{2}_{2}
+    MSE_f = \frac{1}{N_f} \sum^{N_f}_{i = 1} \lVert f_\Theta (t^{f}_i, x^{f}_i) \rVert^{2}_{2}
 \end{equation*}
 and
 \begin{equation*}
-    MSE_u = \frac{1}{N_u} \sum^{N_u}_{i = 1} \lVert u(t^{u}_i, x^{u}_i) - u_i \rVert^{2}_{2}.
+    MSE_u = \frac{1}{N_u} \sum^{N_u}_{i = 1} \lVert u_\Theta(t^{u}_i, x^{u}_i) - u_i \rVert^{2}_{2}.
 \end{equation*}
+The data $\{t^{u}_i, x^{u}_i, u_i \}_{i = 1, \ldots, N_u}$ denotes the initial and boundary training data on $u_\Theta$. This data ensures by minimizing $MSE_u$ that $u_\Theta$ takes over the initial and boundary conditions of the differential equation. The data is generated by using, for example, for $u_i$ the value $u(0,x^{u}_i)$ explicitly required by an initial condition for all points $x^{u}_i \in \Omega$, i.e. $t^{u}_i = 0$ for all $i = 1, \ldots, N_u$. With the collocation points $\{t^{f}_i, x^{f}_i \}_{i = 1, \ldots, N_f}$, the structured information imposed by the partial differential equation is to be enforced by $MSE_f$. We note that of course the value of $MSE$ also depends on both the size of the data sets, i.e. $N_u + N_f$, and the distribution of collocation points $\{t^{f}_i, x^{f}_i \}_{i = 1, \ldots, N_f}$ (with that $\{t^{u}_i, x^{u}_i \}_{i = 1, \ldots, N_u}$). One of the most used data set distributions is the uniform distribution, where the collocation points are uniformly spaced on $\left[ 0, T \right] \times \Omega$ as on a uniform grid. In addition, simulation or experimental data can also flow in for training the network in a supervised manner, which is for example necessary for data assimilation, inverse problems and super-resolution. We see that the learning of the network $u_\Theta$, which is done by minimizing \cref{MSE PINN}, follows both a supervised approach through $MSE_u$ and an unsupervised approach through $MSE_f$. We nevertheless refer to the learning of PINNs as supervised learning, since both by introducing labelled data  $u_i = u(t^{u}_i, x^{u}_i)$ into the optimization problem and by introducing $y_i=0$ for each collocation point $\{t^{f}_i, x^{f}_i \}_{i = 1, \ldots, N_f}$, we can form a supervised learning cost function from $MSE_f$. 
 
-
-
-
-The loss MSEu corresponds to the initial and boundary data while MSEf enforces the structure imposed by equation (2) at a finite set of collocation points.
-
-This term $MSE_f$ requires the structured information represented by the partial differential equations to be satisfied in the training process.
-
-Here, $\{t^{u}_i, x^{u}_i, u_i \}_{i = 1, \ldots, N_u}$ denote the initial and boundary training data on u and  $\{t^{f}_i, x^{f}_i \}_{i = 1, \ldots, N_f}$ specify the collocations points for f. The loss MSEu corresponds to the initial and boundary data while MSEf enforces the structure imposed by equation (2) at a finite set of collocation points. 
-
-
-
-The basic formulation of the PINN training does not require labeled data, e.g., results from other simulations or experimental data, and is unsupervised: PINNs only require the evaluation of the residual function [23]. Providing simulation or experimental data for training the network in a supervised manner is also possible and necessary for so data-assimilation [36], inverse problems [24], super resolution [5, 44], and discrete PINNs [35]. The supervised approach is often used for solving ill-defined problems when for instance we lack boundary conditions or an Equation of State (EoS) to close a system of equations (for instance, EoS for the fluid equations [48]). In this study, we only focus on the basic PINNs as we are interested in solving PDEs without relying on other simulations to assist the DL network training. A common case in scientific applications is that we solve the same PDE with different source terms at each time step. For instance, in addition to other computational kernels, Molecular Dynamics (MD) code and semi-implicit fluid and plasma codes, such as GROMACS [42], Nek5000 [30], and iPIC3D [22], calculate the Poisson equation for the electrostatic and pressure solver [27] and divergence cleaning operations at each cycle.
-
-Once a PINN is trained, the inference from the trained PINN can be used to replace traditional numerical solvers in scientific computing. In this so-called inference or prediction step, the input includes independent variables like simulation time step and simulation domain positions. The output is the solution of the governing equations at the time and position specified by the input. Therefore, PINNs are a gridless method because any point in in the domain can be taken as input without requiring the definition of a mesh. Moreover, the trained PINN network can be used for predicting the values on simulation grids of different resolutions without the need of being retrained. For this reason, the computational cost does not scale with the number of grid points like many traditional computational methods.
+In order to minimize $MSE$ in the training phase, two minimizers in succession are typically used: at first the Adam optimizer, see e.g. \cite{KingmaBa:2017} and after that L-BFGS-B optimizer \cite{ByrdLuNocedalZhu:1995}, which is a limited-memory version of BFGS to handle bound constrained optimization problems with many variables.
 
 
 
 
 
 
-We find that
-fully-connected surrogate/approximator networks with more than three layers produce similar performance results in
-the first thousand training epochs. The choice of activation function is critical for PINN performance: depending on the
-smoothness of the source term, different activation functions provide considerably different accuracy and convergence.
-
-As shown by Ref. [23], PINNs requires sufficiently
-smooth activation functions. PINNs with ReLU and other non-smooth activation functions, such as ELU and
-SELU (Exponential and Scaled Exponential Linear Units) are not “consistent/convergent" methods: in the
-limit of an infinite training dataset a well-trained PINN with ReLU-like activation functions, the solution does not
-converge to the exact solution [23]
 
 In the training phase, an optimization process targeting the residual minimization determines the weights and
 biases of the surrogate network. Typically, we use two optimizers in succession: the Adam optimizer as first and
@@ -75,6 +51,10 @@ our work, we tested several optimizers, including Newton and Powell methods, and
 far the highest accuracy and faster convergence in all our test problems. L-BFGS-B is currently the most critical
 technology for PINNs.
 
+
+Once a PINN is trained, the inference from the trained PINN can be used to replace traditional numerical solvers in scientific computing. In this so-called inference or prediction step, the input includes independent variables like simulation time step and simulation domain positions. The output is the solution of the governing equations at the time and position specified by the input. Therefore, PINNs are a gridless method because any point in in the domain can be taken as input without requiring the definition of a mesh. Moreover, the trained PINN network can be used for predicting the values on simulation grids of different resolutions without the need of being retrained. For this reason, the computational cost does not scale with the number of grid points like many traditional computational methods.
+
+
 Despite the recent introduction of PINNs, several PINN frameworks for PDE solutions exist. All the major PINN
 frameworks are written in Python and rely either on TensorFlow [1] or PyTorch [29] to express the neural network
 architecture and exploit auto-differentiation used in the residual network. Together with TensorFlow, SciPy [43] is
@@ -83,20 +63,12 @@ DeepXDE [19] and sciANN [11]. DeepXDE is an highly customizable framework with T
 supports basic and fractional PINNs in complex geometries. sciANN is a DSL based on and similar to Keras [10]. In this
 work, we use the DeepXDE DSL
 
-Throughout this work we have been using relatively simple deep feed-forward neural networks architectures with hyperbolic tangent activation functions and no additional regularization
 
-
-
-
-
-
-
-
-
-Throughout this work we have been using relatively simple deep feed-forward neural networks architectures with hyperbolic tangent activation functions and no additional regularization
 
 Burgers equation
 
 Bild einfügen!
+
+TensorFlow nennen und andere PINN sachen
 
 Markidis Paper lesen
