@@ -16,7 +16,7 @@ where $(w_1, \ldots, w_n)^{\mathrm{T}} = w \in \mathbb{R}^n$ are called weights 
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[scale=0.3]{img/diagram-20220205_1.png}
+        \includegraphics[scale=0.25]{img/diagram-20220205_1.png}
     \end{center}
     \caption{Illustration of the mathematical model of a single neuron.}
     \label{fig4}
@@ -63,7 +63,7 @@ where $\Theta_l = (W^{l}, b^{l})$. \\
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[scale=0.2]{img/diagram-20220206.png}
+        \includegraphics[scale=0.25]{img/diagram-20220206.png}
     \end{center}
     \caption{Illustration of a feed-forward neural network with $L=3$ layers.}
     \label{fig5}
@@ -89,7 +89,7 @@ Suppose we want to approximate a map
 \begin{equation*}
     f \colon \mathbb{R}^n \to \mathbb{R}^m
 \end{equation*}
-with a FNN. Of course $n_0 = n$ and $n_L = m$ holds. In an supervised learning approach, it is assumed that a so-called training data set $\{ (x_i, y_i) \}_{i = 1, \ldots, N}$ is given, consisting of ordered pairs of inputs $x_i$ and output values $y_i$. In general, the values $y_i$ are the desired output values of the function $f$ to be approximated for the input values $x_i$, i.e. $y_i = f(x_i)$. The idea of supervised learning is to confront the neural network $f_{\Theta}$, which is to approximate the function $f$, with the correct function value $y_i$ for an input value $x_i$. The goal is to train the neural network $f_{\Theta}$ to make associations after several computations with different inputs $x_i$ and outputs $y_i$, so that the network $f_{\Theta}$ approximates the function $f$ well to a certain degree. For this purpose, a cost function is defined that compares the desired output values $y_i$ with the outputs produced by the network $f_{\Theta}(x_i)$ with the corresponding inputs $x_i$. This is generally achieved by using the so-called mean square error, abbreviated $MSE$, which is the average squared difference between the generated values $f_{\Theta}(x_i)$ and the actual values $y_i$. One then tries, with the help of a learning algorithm, to choose the weights and biases $\Theta = (W, b) = (\{ W^l \}, \{ b^l \})_{l = 1, \ldots, L}$ such that the $MSE$ can be kept as small as possible over all pairs of data $\{ (x_i, y_i) \}_{i = 1, \ldots, N}$. This can be defined as the following optimisation problem:
+with a FNN. Of course $n_0 = n$ and $n_L = m$ holds. In an supervised learning approach, it is assumed that a so-called training data set $\{ (x_i, y_i) \}_{i = 1, \ldots, N}$ is given, consisting of ordered pairs of inputs $x_i$ and output values $y_i$. In general, the values $y_i$ are the desired output values of the function $f$ to be approximated for the input values $x_i$, i.e. $y_i = f(x_i)$. The idea of supervised learning is to confront the neural network $f_{\Theta}$, which is to approximate the function $f$, with the correct function value $y_i$ for an input value $x_i$. The goal is to train the neural network $f_{\Theta}$ to make associations after several computations with different inputs $x_i$ and outputs $y_i$, so that the network $f_{\Theta}$ approximates the function $f$ well to a certain degree. For this purpose, a cost function is defined that compares the desired output values $y_i$ with the outputs produced by the network $f_{\Theta}(x_i)$ with the corresponding inputs $x_i$. This is generally achieved by using the so-called mean square error, abbreviated $MSE$, which is the average squared difference between the generated values $f_{\Theta}(x_i)$ and the actual values $y_i$. One then tries, with the help of a learning algorithm, to choose the weights and biases $\Theta = (W, b) = (\{ W^l \}, \{ b^l \})_{l = 1, \ldots, L}$ such that the $MSE$ can be kept as small as possible over all pairs of data $\{ (x_i, y_i) \}_{i = 1, \ldots, N}$. This can be defined as the following optimization problem:
 \begin{equation}
     \label{supervised learning}
     \begin{gathered}
@@ -98,55 +98,21 @@ with a FNN. Of course $n_0 = n$ and $n_L = m$ holds. In an supervised learning a
         \text{ where } \; \Theta = (\{ W^l \}, \{ b^l \})_{l = 1, \ldots, L}, \; \; \left(W^{l}, b^{l}\right) \in \mathbb{R}^{n_l \times n_{l-1}} \times \mathbb{R}^{n_l}, \; \; l=1, \ldots, L .
     \end{gathered}
 \end{equation}
-Of course, loss functions other than the MSE can be used, but the MSE has become the most common because of the differentiability it provides. \\
+\cref{supervised learning} is called a non-linear least-squares optimization problem. It is an unconstrained problem whose objective is generally non-convex. Of course, loss functions other than the $MSE$ can be used, but the $MSE$ has become the most common because of the differentiability it provides. \\
 In an unsupervised learning approach, a training dataset is given only with input values, i.e. $\{ x_i \}_{i = 1, \ldots, N}$. In this machine learning approach, the networks try to recognise structures in the given input data. The networks therefore learn from data that has not been categorised in any way. Instead of responding to feedback, unsupervised learning methods identify commonalities in the data and respond based on the presence or absence of such commonalities in each new data set. There are several methods of unsupervised learning. Again, there is the possibility of defining a cost function $C$, which is passed an input value $x_i$ and the output generated by the network $f_{\Theta}(x_i)$. The cost function $C$ depends on the problem and all a priori assumptions for the function $f$ to be approximated. However, the cost function can also be much more complicated, as its form depends on the problem at hand. Here one can again take the approach from \cref{supervised learning} and try to minimize the mean value of the cost function evaluated at all training inputs $\{ x_i \}_{i = 1, \ldots, N}$ and the output values generated by the network $\{ f_{\Theta}(x_i) \}_{i = 1, \ldots, N}$ with respect to the weights $\{ W^l \}_{l = 1, \ldots, L}$ and biases $\{ b^l \}_{l = 1, \ldots, L}$. The unsupervised learning approach offers the advantage that for many approximation problems only input values are available. \\
 
-
-
-
-
-
-
-
-
-
-
-Honrik
-
-
-In general, deep neural networks could approximate any high-dimensional function given that sufficient training data are supplied, see \cite{ArzaniDawson:2021}
-
-
-
-
-A hyperparameter is a constant parameter whose value is set before the learning process begins. The values of parameters are derived via learning. Examples of hyperparameters include learning rate, the number of hidden layers and batch size.[50] The values of some hyperparameters can be dependent on those of other hyperparameters. For example, the size of some layers can depend on the overall number of layers.
-
-We note that the type of activation function is not learned from the data, therefore it is not in the arguments of F or F in either 3 or 4. The type of activation function, like the number of layers and the number of neurons for a layer, is a so-called hyperparameter and is determined in advance by the user. 
-
-We would like to point out that in both optimization problems the activation functions do not appear as optimization variables. This is because hyperparameters are generally not learned. Choosing the right hyperparameters is extremely difficult, generally they are discovered by trial and error. 
-
-
-
-
-
-We compute an objective function that measures the error (or distance) between the output scores and the desired pattern of scores. The machine then modifies its internal adjustable parameters to reduce  this error. These adjustable parameters, often called weights, are real numbers that can be seen as ‘knobs’ that define the input–output function of the machine. In a typical deep-learning system, there may be hundreds of millions of these adjustable weights, and hundreds of millions of labelled examples with which to train the machine. To properly adjust the weight vector, the learning algorithm computes a gradient vector that, for each weight, indicates by what amount the error would increase or decrease if the weight were increased by a tiny amount. The weight vector is then adjusted in the opposite direction to the gradient vector. 
-
-A deep-learning architecture is a multilayer stack of simple modules, all (or most) of which are subject to learning, and many of which compute non-linear input–output mappings. Each module in the stack transforms its input to increase both the selectivity and the invariance of the representation.
-
-The backpropagation procedure to compute the gradient of an objective function with respect to the weights of a multilayer stack of modules is nothing more than a practical application of the chain rule for derivatives. The key insight is that the derivative (or gradient) of the objective with respect to the input of a module can be computed by working backwards from the gradient with respect to the output of that module
-
-Many applications of deep learning use feedforward neural network architectures (Fig. 1), which learn to map a fixed-size input (for example, an image) to a fixed-size output (for example, a probability for each of several categories). To go from one layer to the next, a set of units compute a weighted sum of their inputs from the previous layer and pass the result through a non-linear function. At present, the most popular non-linear function is the rectified linear unit (ReLU), which is simply the half-wave rectifier. In past decades, neural nets used smoother non-linearities, such as , but the ReLU typically learns much faster in networks with many layers, allowing training of a deep supervised network without unsupervised pre-training28. Units that are not in the input or output layer are conventionally called hidden units. The hidden layers can be seen as distorting the input in a non-linear way so that categories become linearly separable by the last layer 
-
-
-
+% automatic diff, backprop
 Automatic differentiation in general, and the back-propagation algorithm in particular, is currently the dominant approach for training deep models by taking their derivatives with respect to the parameters (e.g., weights and biases) of the models.
 
 
-Zusammenhang zu daten
+Deep neural networks could approximate in general any high-dimensional function if sufficient training data is available, see \cite{ArzaniDawson:2021}. Therefore, FNNs can be understood as universal approximators for vector-valued, multivariate, measurable, especially continuous, functions if they are given suitable weights and biases, which was shown, amongst other papers, in the universal approximation theorem. The theorem refers to the ability of FNN with a single hidden layer of finite size to approximate continuous functions. The first proof was published in \cite{Cybenko:1989} for sigmoid activation functions, \cref{Sigmoid}, and was generalised to feed-forward multi-layer architectures in \cite{Hornik:1991}. In \cite{SonodaMurata:2017} it was shown that the universal approximation also holds for unbounded activation functions such as ReLU, \cref{ReLU}. In \cite{HornikStinchcombeWhite:1990}, it was shown that the derivatives of the FNN can also approximate the derivatives of the function, which is approximated by the FNN, arbitrarily well. \cite{LuPuWangHuWang:2017} considered a universal approximation theorem for deep neural networks concerning the capacity of networks of finite width, where the depth is allowed to grow, and showed that if the width of a deep neural network with ReLU activation is strictly larger than the input dimension, the network can approximate any Lebesgue integrable function. Overall, this means that "any reasonable" function can be approximated with an arbitrary small error by an FNN with a suitable topology. Unfortunately, however, all the proofs are non-constructive in terms of the number of neurons required, the network topology, the weights and the learning parameters. \\
+
+Finally, there is the question of which type of neural network is best suited for which problem. Unfortunately, this question is difficult to answer. In general, one relies on the user's expertise in machine learning and her/his ability to decide on the right type of neural network based on the characteristics of the problem. The machine learning toolbox offers the so-called neural architecture search, abbreviated NAS, which is a technique for automating the design of artificial neural networks. NAS is used to design networks that match or outperform user-designed architectures, see \cite{ZophLe:2017}. NAS methods can be categorised by the search space, which defines the types of neural networks that can be designed and optimised, the search strategy, which specifies the approach used to explore the search space, and the performance estimation strategy, which evaluates the performance of a potential neural network based on its design without constructing and training it, \cite{ElskenMetzenHutter:2019}. Should the choice fall on an FNN, there is still the question of the correct topology of the FNN for the corresponding problem. This question is also very difficult to answer. But as mentioned above, a certain width or depth is necessary for a certain degree of approximation. Here, too, the large toolbox of machine learning offers a solution approach, which is called hyperparameter optimization. A hyperparameter is a constant parameter whose value is determined in advance before the learning phase starts. Examples of hyperparameters include of course the width and depth, the used activation functions as well as the connection patters between the neurons. The values of some hyperparameters can be dependent on those of other hyperparameters, for example, the depth can depend on the width in a FNN. Choosing the right set of hyperparameters is extremely difficult, it is not unusual for the user to find these by trial and error. In machine learning, hyperparameter optimization is the problem of selecting a set of optimal hyperparameters for a neural network and the resulting learning algorithm. Hyperparameter optimization attempts to find a tuple of hyperparameters that results in an optimal neural network that minimises a predefined loss function given the data, see \cite{ClaesenDeMoor:2015}. The best known approaches in hyperparameter optimization are: The grid search, which is simply an exhaustive search through a manually defined subset of the space of hyperparameters in question. A grid search algorithm must be guided by a performance metric, which is usually measured by cross-validating the training set, see \cite{HsuChangLin:2003}. The random search, which replaces exhaustive enumeration of all combinations with random selection. It can outperform grid search, especially when only a small number of hyperparameters affect the final performance of the machine learning algorithm, see \cite{BergstraBengio:2012}. And the Bayesian optimization approach, where a probabilistic model of the function is created that maps the values of the hyperparameters to the target, which is evaluated against a validation set. By iteratively evaluating a promising hyperparameter configuration based on the current model and then updating that model, Bayesian optimization aims to collect observations that provide as much information as possible about that function and, in particular, about the location of the optimum. In practice, Bayesian optimization has been shown to produce better results with fewer evaluations compared to grid search and random search, as it is able to draw conclusions about the quality of the experiments before they are conducted, see \cite{SnoekLarochelleAdams:2012}.
 
 
-Gradient Based optimization
-Automatic differentiation
-Backpropagation 
-NAS
-Honrik 
+
+
+
+
+
+
