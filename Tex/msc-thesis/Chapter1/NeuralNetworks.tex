@@ -43,8 +43,8 @@ We consider the information processing of a single layer $1 \leq l \leq L$. As i
     \label{propagation function}
     a^l = W^l x^{l-1} + b^l \in \mathbb{R}^{n_l}.
 \end{equation}
-We will call \cref{propagation function} propagation function of layer $l$. \\
-The same activation function will be used in all neurons of layer $l$, which is why we define the activation function $\sigma \colon \mathbb{R} \to \mathbb{R}$ for vector-valued input values $a \in \mathbb{R}^{n_l}$ by applying it component-wise:
+We call \cref{propagation function} propagation function of layer $l$. \\
+The same activation function is used in all neurons of layer $l$, which is why we define the activation function $\sigma \colon \mathbb{R} \to \mathbb{R}$ for vector-valued input values $a \in \mathbb{R}^{n_l}$ by applying it component-wise:
 \begin{equation*}
     \sigma_l \colon \mathbb{R}^{n_l} \ni a^l \mapsto \sigma_l (a^l):= \left(
         \begin{array}
@@ -118,5 +118,7 @@ Finally, there is the question of which type of neural network is best suited fo
 
 
 % curse of dimensionality 
+% Tensorflow
+% Lernen ist aufwendigster Prozess von NN
 
 
