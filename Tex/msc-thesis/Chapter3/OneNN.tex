@@ -1,61 +1,58 @@
 \section{One Neural Network for all edges}
 \label{ch3:sec1}
 
-In this section we construct a, in some sense, global cost function, which considers the drift-diffusion equations on all edges and all initial and boundary conditions at once and thereby considers the edges as interconnected and the problem on the graph as a total. In the following we denote the cost function by $\phi_\theta$, where $\theta$ only refers to the learnable parameters of the used neural network and does not obtain any information about the used type of neural network or the topology of the used neural network. The cost function to be constructed $\phi_\theta$ consists of several parts, as in \cref{MSE PINN}, by incorporating the mean squared error of a residual network at a set of collocation points as well as a number of misfit terms which enforce both the boundary and initial conditions weakly. Of course, we want to exploit the special structure of the domain given by the metric graph for the construction of the cost function in thus also in the PINN. \\
-Let's start with the easy part first, the definition of the residual network, which returns us a residual in the cost function $\phi_\theta$ for the network to be learned. From now on, we will denote the surrogate network by $\rho_{\theta_e}$, which is supposed to approximate the solution $\rho_e$ of \cref{eq:Hamiltonian} on an individual edge $e \in \mathcal{E}$. Of course, $\rho_{\theta_e}$ receives the same input values $(t, x) \in (0, T) \times e$ as $\rho_e$ and also returns a real-valued number. Here $\theta_e$ denotes the set of all weights and biases that depend on the approximation of $\rho_e$ on an individual edge $e \in \mathcal{E}$, and $\theta_e$ also contains no information about the used type of neural network or the topology of the used neural network. If we insert the surrogate network $\rho_{\theta_e}(t,x)$ into the right-hand side of \cref{eq:Hamiltonian}, we obtain as a residual network for each edge $e \in \mathcal{E}$
+In this section we construct a, in some sense, global cost function, which is used to enable a type of neural network to modify its learnable parameters appropriately by minimizing it. In the following we denote this cost function by $\phi_\theta$, where $\theta$ only refers to the learnable parameters of the used neural network and does not obtain any information about the used type of neural network or the topology of the used neural network. The idea of this approach in this section is that in the learning phase the drift-diffusion equations on all edges and all initial and boundary conditions are considered at once such that all edges are seen as being merged together and thus the problem of solving the drift-diffusion equations on all edges is treated as a whole. 
+Therefore, we construct only one cost function $\phi_\theta$, which consists of several parts, as in \cref{MSE PINN}, by incorporating the mean squared error of a residual network at a set of collocation points as well as a number of misfit terms which enforce both the boundary and initial conditions weakly. Of course, we want to exploit the special structure of the domain given by the metric graph for the construction of the cost function in thus also in the PINN. We note that we construct the cost function for the general case and do not adopt the parameters with respect to the previously mentioned graph, since this approach can of course also be applied to any metric graph. \\
+Let's start with the easy part first, the definition of the residual network, which returns us a residual for the network to be learned in the cost function $\phi_\theta$. From now on, we will denote the surrogate network by $\rho_{\theta_e}$, which is supposed to approximate the solution $\rho_e$ of \cref{eq:Hamiltonian} on an individual edge $e \in \mathcal{E}$. Of course, $\rho_{\theta_e}$ receives the same input values $ \left( t, x \right) \in  \left( 0, T \right) \times e$ as $\rho_e$ and also returns a real-valued number. Here $\theta_e$ denotes the set of all weights and biases that are involved in the approximation of $\rho_e$ on an individual edge $e \in \mathcal{E}$, and $\theta_e$ also contains no information about the used type of neural network or the topology of the used neural network. If we insert the surrogate network $\rho_{\theta_e} \left( t,x \right)$ into the right-hand side of \cref{eq:Hamiltonian}, we obtain as a residual network for each individual edge $e \in \mathcal{E}$
 \begin{equation}
     \label{Drift-Diffusion residual network}
-    r_{\theta_e}(t,x)=\partial_t \rho_{\theta_e}(t,x) - \partial_x  ( \varepsilon \partial_x  \rho_{\theta_e}(t,x) - f(\rho_{\theta_e}(t,x)) \partial_x V(t,x)).
+    r_{\theta_e} \left( t,x \right)=\partial_t \rho_{\theta_e} \left( t,x \right) - \partial_x   \left(  \varepsilon \partial_x  \rho_{\theta_e} \left( t,x \right) - f \left( \rho_{\theta_e} \left( t,x \right) \right) \partial_x V \left( t,x \right) \right).
 \end{equation}
-From \cref{Drift-Diffusion residual network} we form the residual misfit term for each edge $e \in \mathcal{E}$ of the cost function via
-\begin{equation*} 
-    \phi_{e,r} (X_e) \coloneqq \frac{1}{n_e} \sum_{i=1}^{n_e} (r_{\theta_e} (X_e^i))^2
-\end{equation*} 
-where $r_{\theta_e} (X_e^i) = r_{\theta_e} (x_e^i, t_e^i)$ for $X_e = \{X_e^i\}_{i=1}^{n_e} = \{(t_e^i, x_e^i)\}_{i=1}^{n_e} \subset (0, T) \times e$, which is a set of time-space collocation points that are drawn randomly or chosen equidistantly. \\
-To enforce the Kirchhoff-Neumann conditions, \cref{eq:Kirchhoff_Neumann_condition}, we introduce the following misfit term for each vertex $v \in \mathcal{V}_\mathcal{K}$ 
-\begin{equation*} 
-    \phi_{v,K} (X_{v,b}) \coloneqq \frac{1}{n_b} \sum_{i=1}^{n_b} (\sum_{e \in \mathcal{E}_v} (- \varepsilon \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v))^2, 
-\end{equation*} 
-where $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b} \subset (0,T)$ is a set of time snapshots where the Kirchhoff-Neumann conditions are enforced. We note that the derivative is taken into the outgoing direction. \\
-We introduce a misfit term enforcing the continuity in the interior vertices $v \in \mathcal{V}_\mathcal{K}$ 
-\begin{equation*} 
-    \phi_{v,c} (X_{v,b}) \coloneqq \frac{1}{\abs{\mathcal{E}_v}} \sum_{e \in \mathcal{E}_v} \frac{1}{n_b} \sum_{i=1}^{n_b} ( \rho_{\theta_e} (t_{v,b}^i, v) - \rho_{v}^i)^2,
-\end{equation*} 
-with $X_{v,b}$ as introduced before. Here, we introduce for each $v \in \mathcal{V}_\mathcal{K}$ some additional learnable variables $\{\rho_{v}^i\}_{i=1}^{n_b}$, that are appended to our parameter set $\theta$ and determined through the optimization process in our model. \\
-a misfit term enforcing the flux boundary conditions for each vertex $v \in \mathcal{V}_\mathcal{D}$ 
+From \cref{Drift-Diffusion residual network} we form the residual misfit term for each individual edge $e \in \mathcal{E}$ of the cost function $\phi_\theta$ via
+\begin{equation} 
+    \label{misfit:residual}
+    \phi_{e,r}  \left( X_e \right) \coloneqq \frac{1}{n_e} \sum_{i=1}^{n_e} r_{\theta_e}  \left( X_e^i \right)^2,
+\end{equation} 
+where $r_{\theta_e}  \left( X_e^i \right) = r_{\theta_e}  \left( x_e^i, t_e^i \right)$ for $X_e = \{X_e^i\}_{i=1}^{n_e} = \{ \left( t_e^i, x_e^i \right)\}_{i=1}^{n_e} \subset  \left( 0, T \right) \times e$, which is a set of time-space collocation points that are drawn randomly or chosen equidistantly. \\
+To enforce the Kirchhoff-Neumann conditions, \cref{eq:Kirchhoff_Neumann_condition}, we introduce the following misfit term for each interior vertex $v \in \mathcal{V}_\mathcal{K}$ 
+\begin{equation} 
+    \label{misfit:Kirchhoff}
+    \phi_{v,K}  \left( X_{v,b} \right) \coloneqq \frac{1}{n_b} \sum_{i=1}^{n_b}  \left( \sum_{e \in \mathcal{E}_v}  \left( - \varepsilon \partial_x \rho_{\theta_e}  \left( t_{v,b}^i, v \right) + f \left( \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \right) \partial_x V_e \left( t_{v,b}^i, v \right) \right) \, n_e  \left( v \right) \right)^2, 
+\end{equation} 
+where $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b} \subset  \left( 0,T \right)$ is a set of time snapshots where the Kirchhoff-Neumann conditions are enforced. We note that the derivative is taken into the outgoing direction. \\
+We introduce a misfit term for each interior vertex $v \in \mathcal{V}_\mathcal{K}$ to enforce continuity in the interior vertices 
+\begin{equation} 
+    \label{misfit:continuity}
+    \phi_{v,c}  \left( X_{v,b} \right) \coloneqq \frac{1}{n_b} \sum_{e \in \mathcal{E}_v} \sum_{i=1}^{n_b} \left(  \rho_{\theta_e}  \left( t_{v,b}^i, v \right) - \rho_{v}^i \right)^2,
+\end{equation} 
+with $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b}$ as introduced before. Here, we introduce for each interior vertex $v \in \mathcal{V}_\mathcal{K}$ some additional learnable variables $\{\rho_{v}^i\}_{i=1}^{n_b}$, that are appended to our parameter set $\theta$ and determined through the optimization process in our model. \\
+We enforce the flux boundary conditions for each exterior vertex $v \in \mathcal{V}_\mathcal{D}$, \cref{eq:Dirichlet_conditions} by the misfit term  
+\begin{align} 
+    \label{misfit:Dirichlet}
+    \phi_{v,D}  \left( X_{v,b} \right) \coloneqq & \frac{1}{n_b} \sum_{i=1}^{n_b} \bigg( \sum_{e \in \mathcal{E}_v} \left(- \varepsilon \partial_x \rho_{\theta_e}  \left( t_{v,b}^i, v \right) + f\left(\rho_{\theta_e}  \left( t_{v,b}^i, v \right)\right) \partial_x V_e\left( t_{v,b}^i, v \right) \right) n_e  \left( v \right) + \\
+    & \alpha_v \left( t_{v,b}^i \right)  \left( 1- \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \right) - \beta_v \left( t_{v,b}^i \right) \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \bigg)^2
+\end{align}
+with $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b}$ as introduced before. \\
+To enforce the initial conditions for each edge $e \in \mathcal{E}$, \cref{eq:initial_conditions}, we introduce the following misfit term  
+\begin{equation} 
+    \label{misfit:initial}
+    \phi_{e,0}  \left( X_{e,0} \right) \coloneqq \frac{1}{n_0} \sum_{i=1}^{n_0}  \left( \rho_{\theta_e}  \left( 0,x_{e,0}^i \right) - \rho_{e,0} \left( x_{e,0}^i \right) \right)^2, 
+\end{equation} 
+where $X_{e,0} = \{x_{e,0}^i\}_{i=1}^{n_0} \subset [0, \ell_e]$ is a set of boundary points along $t=0$. \\ 
+
+
+We average each misfit term over all units where these terms are involved and combine the averages to form $\Phi_{\theta}$:
 \begin{align*} 
-    \phi_{v,D} (X_{v,b}) & \coloneqq \frac{1}{n_b} \sum_{i=1}^{n_b} ( \sum_{e\in \mathcal{E}_v} (-\varepsilon \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v) + \\ & \quad + \alpha_v(t_{v,b}^i) (1-\rho_v^i) - \beta_v(t_{v,b}^i) \rho_v^i)^2 
+    \label{eq:loss}
+    \Phi_{\theta} \left( X_{data} \right) & =  \frac{1}{\abs{\mathcal{V}_\mathcal{D}}} \sum_{v \in \mathcal{V}_\mathcal{D}} \phi_{v,D} \left( X_{v,b} \right) + \frac{1}{\abs{\mathcal{V}_\mathcal{K}}} \sum_{v \in \mathcal{V}_\mathcal{K}}  \left(  \phi_{v,K}  \left( X_{v,b} \right) + \phi_{v,c} \left( X_{v,b} \right)  \right) + \\
+    & \quad + \frac{1}{\abs{\mathcal{E}}} \sum_{e \in \mathcal{E}}  \left(  \phi_{e,r}  \left( X_{e,r} \right) + \phi_{e,0}  \left( X_{e,0} \right)  \right), 
 \end{align*}
-a misfit term enforcing the initial conditions for each edge $e \in \mathcal{E}$ 
-\begin{equation*} 
-    \phi_{e,0} (X_{e,0}) \coloneqq \frac{1}{n_0} \sum_{i=1}^{n_0} (\rho_{\theta_e} (0,x_{e,0}^i) - \rho_{e,0}(x_{e,0}^i))^2, 
-\end{equation*} 
-where $X_{e,0} = \{x_{e,0}^i\}_{i=1}^{n_0} \subset [0, \ell_e]$ is a set of boundary points along $t=0$ and $\rho_{e,0}$ \ldots
-
-\begin{align*} \label{eq:loss}
-    \Phi(X_{data}) & =  \frac{1}{\abs{\mathcal{V}_\mathcal{D}}} \sum_{v \in \mathcal{V}_\mathcal{D}} \phi_{v,D}(X_{v,b}) + \frac{1}{\abs{\mathcal{V}_\mathcal{K}}} \sum_{v \in \mathcal{V}_\mathcal{K}} \big( \phi_{v,K} (X_{v,b}) + \phi_{v,c}(X_{v,b}) \big) + \\
-    & \quad + \frac{1}{\abs{\mathcal{E}}} \sum_{e \in \mathcal{E}} \big( \phi_{e,r} (X_{e,r}) + \phi_{e,0} (X_{e,0}) \big). 
-\end{align*}
+where $X_{data}$ represents the union of the different collocation points $X_e$, $X_{v,b}$ and $X_{e,0}$. 
 
 
 
-The model is then trained based on the minimization of a loss function $\phi_\theta$ that incorporates the residual at a set of collocation points as well as a number of misfit terms which enforce both the boundary and initial conditions weakly.
 
-As the domain in the metric graph case is more structured then a standard two or three-dimensional domain we want to use the network structure in the setup of the PINN on networks.
-To be precise we assume that we identify a feed-forward neural network $\rho_{\theta_e}$ of the form  with the solution on an individual edge $e \in \mathcal{E}$ where we have $\theta_e$ as the weights associated with the solution of the drift-diffusion equation defined on edge $e \in \mathcal{E}$.
 
-Having introduced our model, we obtain now the loss function $\phi(X_{Data})$ consisting of
 
-\begin{itemize}
-    \item residual loss term for each edge $e \in \mathcal{E}$ \begin{equation*} \phi_{e,r} (X_e) \coloneqq \frac{1}{n_e} \sum_{i=1}^{n_e} (r_{\theta_e} (X_e^i))^2 \end{equation*} where \begin{equation*} r_{\theta_e} (X_e^i) = r_{\theta_e} (x_e^i, t_e^i) = \partial_t \rho_{\theta_{e}} (x_{e}^i , t_{e}^i) - \varepsilon \partial_{xx} \rho_{\theta_e}(x_e^i, t_e^i) - \partial_x [f(\rho_{\theta_e}(x_e^i, t_e^i)) \partial_x V_e(x_e^i, t_e^i)] \end{equation*} for $X_e = \{X_e^i\}_{i=1}^{n_e} = \{(t_e^i, x_e^i)\}_{i=1}^{n_e} \subset [0,\ell_e] \times (0, T)$.
-    \item a misfit term enforcing the initial conditions for each edge $e \in \mathcal{E}$ \begin{equation*} \phi_{e,0} (X_{e,0}) \coloneqq \frac{1}{n_0} \sum_{i=1}^{n_0} (\rho_{\theta_e} (0,x_{e,0}^i) - \rho_{e,0}(x_{e,0}^i))^2, \end{equation*} where $X_{e,0} = \{x_{e,0}^i\}_{i=1}^{n_0} \subset [0, \ell_e]$ is a set of boundary points along $t=0$ and $\rho_{e,0}$ \ldots
-    \item a misfit term enforcing the Kirchhoff-Neumann conditions for each vertex $v \in \mathcal{V}_\mathcal{K}$ \begin{equation*} \phi_{v,K} (X_{v,b}) \coloneqq \frac{1}{n_b} \sum_{i=1}^{n_b} (\sum_{e \in \mathcal{E}_v} (- \varepsilon \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v))^2, \end{equation*} where $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b} \subset (0,T)$ is a set of time snapshots where the Kirchhoff-Neumann conditions are enforced, $\mathcal{E}_v$ is the set of edges incident to node $v$ and the derivative is taken into the outgoing direction,
-    \item a misfit term enforcing the flux boundary conditions for each vertex $v \in \mathcal{V}_\mathcal{D}$ \begin{align*} \phi_{v,D} (X_{v,b}) & \coloneqq \frac{1}{n_b} \sum_{i=1}^{n_b} ( \sum_{e\in \mathcal{E}_v} (-\varepsilon \partial_x \rho_{\theta_e} (t_{v,b}^i, v) + f(\rho_{\theta_e} (t_{v,b}^i, v)) \partial_x V_e(t_{v,b}^i, v)) \, n_e (v) + \\ & \quad + \alpha_v(t_{v,b}^i) (1-\rho_v^i) - \beta_v(t_{v,b}^i) \rho_v^i)^2 \end{align*}
-    \item a misfit term enforcing the continuity in the vertices $v \in \mathcal{V}_\mathcal{K}$ \begin{equation*} \phi_{v,c} (X_{v,b}) \coloneqq \frac{1}{\abs{\mathcal{E}_v}} \sum_{e \in \mathcal{E}_v} \frac{1}{n_b} \sum_{i=1}^{n_b} ( \rho_{\theta_e} (t_{v,b}^i, v) - \rho_{v}^i)^2, \end{equation*} with $X_{v,b}$ as introduced before. Here, we introduce for each $v \in \mathcal{V}_\mathcal{K}$ some additional variables $\{\rho_{v}^i\}_{i=1}^{n_b}$, that are appended to our parameter set $\theta$ and determined through the optimization process in our model.
-\end{itemize}
 
-\begin{align*} \label{eq:loss}
-    \Phi(X_{data}) & =  \frac{1}{\abs{\mathcal{V}_\mathcal{D}}} \sum_{v \in \mathcal{V}_\mathcal{D}} \phi_{v,D}(X_{v,b}) + \frac{1}{\abs{\mathcal{V}_\mathcal{K}}} \sum_{v \in \mathcal{V}_\mathcal{K}} \big( \phi_{v,K} (X_{v,b}) + \phi_{v,c}(X_{v,b}) \big) + \\
-    & \quad + \frac{1}{\abs{\mathcal{E}}} \sum_{e \in \mathcal{E}} \big( \phi_{e,r} (X_{e,r}) + \phi_{e,0} (X_{e,0}) \big). 
-\end{align*}
 

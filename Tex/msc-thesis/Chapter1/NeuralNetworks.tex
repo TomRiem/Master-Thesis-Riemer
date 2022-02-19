@@ -46,7 +46,7 @@ We consider the information processing of a single layer $1 \leq l \leq L$. As i
 We call \cref{propagation function} propagation function of layer $l$. \\
 The same activation function is used in all neurons of layer $l$, which is why we define the activation function $\sigma \colon \mathbb{R} \to \mathbb{R}$ for vector-valued input values $a \in \mathbb{R}^{n_l}$ by applying it component-wise:
 \begin{equation*}
-    \sigma_l \colon \mathbb{R}^{n_l} \ni a^l \mapsto \sigma_l (a^l):= \left(
+    \sigma_l \colon \mathbb{R}^{n_l} \ni a^l \mapsto \sigma_l (a^l) \coloneqq \left(
         \begin{array}
             {c} \sigma_l \left( a^l_{1} \right) \\
             \vdots \\
@@ -57,7 +57,7 @@ The same activation function is used in all neurons of layer $l$, which is why w
 We note that the activation function $\sigma_l$ can vary from layer to layer, which is why we indicate the dependency with the index $l$. The complete transformation of the input $x^{l-1} \in \mathbb{R}^{n_{l-1}}$ in the $l$-th layer can then be written as
 \begin{equation}
     \label{action layer}
-    \mathbb{R}^{n^{l-1}} \ni \underbrace{x^{l-1}}_{\text{input of layer } l} \mapsto x^{l}:=\underbrace{\sigma_{l}\left( W^{l} x^{l-1} + b^{l} \right)}_{\text{output of layer } l}=: f^{l}_{\theta_l} \left( x^{l-1} \right) \in \mathbb{R}^{n^{l}}, 
+    \mathbb{R}^{n^{l-1}} \ni \underbrace{x^{l-1}}_{\text{input of layer } l} \mapsto x^{l}\coloneqq \underbrace{\sigma_{l}\left( W^{l} x^{l-1} + b^{l} \right)}_{\text{output of layer } l}=: f^{l}_{\theta_l} \left( x^{l-1} \right) \in \mathbb{R}^{n^{l}}, 
 \end{equation}
 where $\theta_l = (W^{l}, b^{l})$. \\
 
