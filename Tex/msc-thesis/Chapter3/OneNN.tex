@@ -47,6 +47,13 @@ We average each misfit term over all units where these terms are involved and co
 \end{align*}
 where $X_{data}$ represents the union of the different collocation points $X_e$, $X_{v,b}$ and $X_{e,0}$. 
 
+
+For the minimization of the cost function, we first use a variant of the gradient descent method, in which the direction is given by the Adam optimizer from the module \lstinline!Keras!, see \cite{Chollet:2015}, which belongs to the package \lstinline!Tensorflow!, see \cite{TensorFlow}. We change for the different types of neural networks the input parameter \lstinline!learning_rate!, which obviously specifies the learning rate of the method, and leave all other input parameters of the Adam optimizer by default. This method stops after 2000 iterations. After that, we use the L-BFGS-B optimizer from the package \lstinline!SciPy!, see \cite{SciPy:2020}, and we set for all networks as parameters in the options \lstinline!maxiter = 5000! which specifies the maximum number of iterations, \lstinline!maxfun = 50000! which specifies the maximum number of function evaluations, \lstinline!maxcor = 50! which specifies the maximum number of stored variable metric corrections used in the L-BFGS approximation of the Hessian of the cost function $\Phi_{\theta}$, \lstinline!maxls = 50! which specifies the maximum number of line search steps per iteration and \lstinline!ftol = 1.0*np.finfo(float).eps! which specifies a parameter in a stopping criterion that aborts the method if the values of the cost function $\Phi_{\theta}$ between two iterates are too small.
+
+
+
+% Kollokationspunkte 
+% Code 
 % Adam und LBFGs
 
 
