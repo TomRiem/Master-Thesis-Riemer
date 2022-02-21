@@ -1,6 +1,13 @@
 \section{Drift-Diffusion Equations on Metric Graphs}
 \label{ch1:sec2}
 
+In this section, we introduce a set of differential equations on a metric graph by which the density of cars on a compact road network are modelled. This provides us with an approximation problem, which we attempt to solve later in this thesis using various methods. \\
+We imagine a compact road network, where we mean a finite number of finitely long roads connected by a finite number of junctions. We note that in a realistic road network there also exist roads which simply end, i.e. roads which end in an junction to which no other roads are connected, and also one-way roads exist between two junctions. We thus identify a compact road network with a compact directed metric graph, where obviously the roads are identified by edges and the junctions by vertices. An example of such a compact road network is illustrated in Figure 1 and the corresponding graph is illustrated in Figure 2. \\
+
+
+
+It links the temporal change in the spatial density at which this conservation variable is present at a point to the spatial change in its flux density.
+
 traffic flow on networks The main inspiration is that of understanding traffic behavior in urban context in order to answer
 
 In the case of complex dynamics observed within the network, metric graphs provide a natural representation as both the edge length is incorporated into the modeling as well as a partial differential equation defined on the graph
@@ -25,6 +32,8 @@ In any case, it is reasonable to assume the conservation of the number of cars, 
 % graph muss gerichtet sein, ansosnten erste ableitung nicht möglich
 %initial conditions übernehmen
 % Analytische Lösung nicht möglich
+% 3.1.5 Lighthill-Whitham-Richards Model with Viscosity
+
 
 \begin{equation} 
     \label{Drift-Diffusion-equation}
