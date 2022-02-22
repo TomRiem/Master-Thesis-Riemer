@@ -1,36 +1,36 @@
 \section{Drift-Diffusion Equations on Metric Graphs}
 \label{ch1:sec2}
 
-In this section, we introduce a set of differential equations on a metric graph by which the density of cars on a compact road network are modelled. This provides us with an approximation problem, which we attempt to solve later in this thesis using various methods. \\
-We imagine a compact road network, where we mean a finite number of finitely long roads connected by a finite number of junctions. We note that in a realistic road network there also exist roads which simply end, i.e. roads which end in an junction to which no other roads are connected, and also one-way roads exist between two junctions. We thus identify a compact road network with a compact directed metric graph, where obviously the roads are identified by edges and the junctions by vertices. An example of such a compact road network is illustrated in Figure 1 and the corresponding graph is illustrated in Figure 2. \\
+In this section, we introduce a model that uses a set of differential equations defined on the edges of a metric graph to represent the traffic flow in a road network. We want to solve this model in an approximate way later in the thesis using various methods. \\
+We imagine a compact road network, where we mean a finite number of finitely long roads connected by a finite number of junctions. We note that in a realistic road network there also exist roads which simply end, i.e. roads which end in an junction to which no other roads are connected, and there exist also one-way roads between two junctions. To model such a compact road network, we identify it with a compact directed metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, where obviously the roads are identified by edges $e \in \mathcal{E}$ and the junctions $v \in \mathcal{V}$ by vertices. The length $\ell_e > 0$ of each edge $e \in \mathcal{E}$ is either given by the length of the associated road or some other isometric representation of it. An example of such a compact road network is illustrated in Figure 1 and the associated graph is illustrated in Figure 2. \\
+
+There exist several approaches to model the traffic flow on a road network. One of the most important approaches was presented in \cite{LighthillWhitham:1955} and independently in \cite{Richards:1956}, in which the traffic flow is described by equations describing the flow of water. These fluid dynamics equations are a set of partial differential equations known as the Navier-Stokes equations, which express the conservation of mass, momentum, and energy. The basic idea of this approach is to look at large scales so to consider individual cars as small particles and a set of cars as mass, and their density as the main quantity to be considered. The model in this thesis is inspired by the same idea, which is why we focus on the density of cars on an individual edge $e \in \mathcal{E}$, which we want to model with a function $\rho_e \colon (0, T) \times [0, \ell_e] \to [0, \rho_{e, max}]$, where $\rho_e (t,x)$ describes the density of cars at the time $t \in (0, T)$ at the coordinate $x \in [0, \ell_e]$ on the edge $e \in \mathcal{E}$. However, in many applications, the density is not allowed to exceed a maximal value $\rho_{e, max}$ (e.g. due to finite size effects), which should also be the case in this model, and we scale 
+
+It is reasonable to assume the conservation of the number of cars, which can be expressed by a continuity equation for each individual edge $e \in \mathcal{E}$
+\begin{equation}
+    \label{continuity equation}
+    \partial_t \rho_e (t,x) = - \partial_x J_e(t,x),
+\end{equation}
+where $J_e \colon (0,T) \times [0, \ell_e] \to \mathbb{R}$ is the flux of cars. \cref{continuity equation} describes the transport of a certain quantity of cars and expresses a relationship between the density of cars and the flux by linking the temporal change of the density to the spatial change of its flux density with the assumption of conservation of the number of cars. \\
+Let the flux in the model in this thesis be given by 
+\begin{equation} 
+    \label{eq:flux} 
+    J_e(t,x) \coloneqq - \varepsilon \partial_x \rho_e (t, x) + f(\rho_e(t, x)) \partial_x V_e(t, x).
+\end{equation}
+The flux is composed of two terms. The first term, $- \varepsilon \partial_x \rho_e (t, x)$, describes the transport by diffusion, which is given by Fick's first law, see \cite{Fick:1855}, where $\varepsilon > 0$ is the so-called diffusion coefficient. The second term, $f(\rho_e(t, x)) \partial_x V_e(t, x)$, describes the transport by flow, where $V_e \colon (0,T) \times [0, \ell_e] \to \mathbb{R}_{+}$ is a given potential, that may vary from edge to edge, and the function $f \colon \mathbb{R}_{+} \to \mathbb{R}_{+}$ is called mobility, satisfies $f(0) = f(\rho_{e, max}) = 0$ and its simplest choice is the so-called linear transport $f(\rho_e) = \mathrm{v} \cdot \rho_e$ with $\mathrm{v}$ the average velocity of cars. 
+
+However, in many applications, the density is not allowed to exceed a maximal value (e.g. due to finite size effects). If this value is scaled to one, a choice of $f$ that obeys $f(1) = 0$ will ensure that solutions to \eqref{eq:Hamiltonian} will satisfy this bound for all times. A typical choice for $f$ will be $f(\rho_e) = \rho_e(1-\rho_e)$ in the following.
 
 
 
-It links the temporal change in the spatial density at which this conservation variable is present at a point to the spatial change in its flux density.
-
-traffic flow on networks The main inspiration is that of understanding traffic behavior in urban context in order to answer
-
-In the case of complex dynamics observed within the network, metric graphs provide a natural representation as both the edge length is incorporated into the modeling as well as a partial differential equation defined on the graph
-
-This corresponds to the ideas originally introduced in the context of fluid models. A very prominent fluidlike traffic flow model is the Lighthill-Whitham-Richards model (LWR model) by Lighthill and Whitham (1955) and Richards (1956), w
-
-Classically, the network models of transportation systems are assumed to be static, but these models do not allow a correct simulation of heavily congested urban road networks. For this reason, traffic engineers have been studying dynamic traffic assignment or within-day models, thus rendering necessary the use of time advancing mathematical models (traffic simulation models). These models, principally created from static network traffic assignments, can be roughly classified in microscopic, mesoscopic and macroscopic (see [10] and the references therein). The main problems of this approach consist in the fact that it does not properly reproduce the backward propagation of shocks and in the difficulty of collecting experimental data to test the models. Various other ideas have been developed by researchers studying traffic from other perspectives, see for instance [9, 38, 63, 68, 89, 91, 106]. In many cases, the attention was focused on a single road or on small portions of an urban network
-
-In the 1950s James Lighthill and Gerald Whitham, two experts in fluiddynamics, (and independently P. Richards) thought that the equations describing the flow of water could also describe the flow of car traffic. These equations in fluid dynamics are a set of partial differential equations known as the Euler or Navier-Stokes equations, expressing the conservation of mass, momentum and energy. The basic idea is to look at large scales so to consider cars as small particles and their density as the main quantity to be considered.
-
-
-
-In any case, it is reasonable to assume the conservation of the number of cars, thus leading again to a conservation law. As traffic jams display sharp discontinuities, there is a correspondence between traffic jams and shock waves. Therefore, fluid-dynamic models for traffic flow seem the most appropriate to detect some phenomena as shocks formation and propagation on roads, since solutions can develop discontinuities in a finite time even starting from smooth initial data (
-
-
+% 
 %erster teil diffussion
 %zweiter Teil transport
-%$\rho$ ist dichte. Nie über eins
 %Kirchhoff: alles was in den Knoten reinfließt muss auch rausfließen
 % Kirchhoff: We note that the derivative is taken into the outgoing direction.
 %operator nicht selbstadjungiert
 % graph muss gerichtet sein, ansosnten erste ableitung nicht möglich
-%initial conditions übernehmen
+% initial conditions übernehmen
 % Analytische Lösung nicht möglich
 % 3.1.5 Lighthill-Whitham-Richards Model with Viscosity
 
@@ -54,7 +54,6 @@ To make \cref{eq:Hamiltonian} a well-posed problem, we need to add initial-condi
 \end{equation}
 where $J_e \colon (0,T) \times e \to \mathbb{R}$ is defined as the flux in a spatial point $x \in e$ via 
 \begin{equation} 
-    \label{eq:flux} 
     J_e(t,x) \coloneqq - \varepsilon \partial_x \rho_e (t, x) + f(\rho_e(t, x)) \partial_x V_e(t, x).
 \end{equation}
 Additionally, we ask the solution to be continuous on the set of interior vertices, i.e. 
