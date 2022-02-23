@@ -4,6 +4,24 @@
 In this section, we introduce a model that uses a set of differential equations defined on the edges of a metric graph to represent the traffic flow in a road network. We want to solve this model in an approximate way later in the thesis using various methods. \\
 We imagine a compact road network, where we mean a finite number of finitely long roads connected by a finite number of junctions. We note that in a realistic road network there also exist roads which simply end, i.e. roads which end in an junction to which no other roads are connected, and there exist also one-way roads between two junctions. To model such a compact road network, we identify it with a compact directed metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, where obviously the roads are identified by edges $e \in \mathcal{E}$ and the junctions $v \in \mathcal{V}$ by vertices. The length $\ell_e > 0$ of each edge $e \in \mathcal{E}$ is either given by the length of the associated road or some other isometric representation of it. An example of such a compact road network is illustrated in Figure 1 and the associated graph is illustrated in Figure 2. \\
 
+\begin{figure}[H]
+    \begin{subfigure}[b]{0.4\textwidth}
+        \begin{center}
+            \includegraphics[scale=0.4]{img/Kaßberg2.png}
+        \end{center}
+        \caption{Non-directed graph}
+        \label{fig8:f1}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.4\textwidth}
+        \begin{center}
+            \includegraphics[scale=0.15]{img/Kaßberg2-Darstellung.png}
+        \end{center}
+        \caption{Directed graph}
+        \label{fig8:f2}
+    \end{subfigure}
+    \caption{Two different types of graphs.}
+\end{figure}
+
 There exist several approaches to model the traffic flow on a road network. One of the most important approaches was presented in \cite{LighthillWhitham:1955} and independently in \cite{Richards:1956}, in which the traffic flow is described by equations describing the flow of water. These fluid dynamics equations are a set of partial differential equations known as the Navier-Stokes equations, which express the conservation of mass, momentum, and energy. The basic idea of this approach is to look at large scales so to consider individual cars as small particles and a set of cars as mass, and their density as the main quantity to be considered. The model in this thesis is inspired by the same idea, which is why we focus on the density of cars on an individual edge $e \in \mathcal{E}$, which we want to model with a function $\rho_e \colon (0, T) \times [0, \ell_e] \to \mathbb{R}_{+}$, where $\rho_e (t,x)$ describes the concentration of some quantity, i.e. the density of cars, at the time $t \in (0, T)$ at the coordinate $x \in [0, \ell_e]$ on the edge $e \in \mathcal{E}$. It is reasonable to assume the conservation of the number of cars, which can be expressed by a continuity equation for each individual edge $e \in \mathcal{E}$
 \begin{equation}
     \label{continuity equation}
