@@ -41,7 +41,7 @@ where $X_{e,0} = \{x_{e,0}^i\}_{i=1}^{n_0} \subset [0, \ell_e]$ is a set of coll
 
 We average each misfit term over all units where these terms are involved and combine the averages to form $\Phi_\theta$:
 \begin{align*} 
-    \label{eq:loss}
+    \label{eq:loss:1}
     \Phi_{\theta} \left( X_{data} \right) & =  \frac{1}{\abs{\mathcal{V}_\mathcal{D}}} \sum_{v \in \mathcal{V}_\mathcal{D}} \phi_{v,D} \left( X_{v,b} \right) + \frac{1}{\abs{\mathcal{V}_\mathcal{K}}} \sum_{v \in \mathcal{V}_\mathcal{K}}  \left(  \phi_{v,K}  \left( X_{v,b} \right) + \phi_{v,c} \left( X_{v,b} \right)  \right) + \\
     & \quad + \frac{1}{\abs{\mathcal{E}}} \sum_{e \in \mathcal{E}}  \left(  \phi_{e,r}  \left( X_{e,r} \right) + \phi_{e,0}  \left( X_{e,0} \right)  \right), 
 \end{align*}
@@ -56,7 +56,14 @@ For the minimization of the cost function, we first use a variant of the gradien
 % Code 
 % Adam und LBFGs
 
+\subsection{One Neural Network to rule them all}
+\label{ch3:sec1:subsec1}
 
+Also, a set of neural networks offers the possibility to choose for the networks on the various edges different training parameters such as residual points but also different hyperparameters such as activation functions, width and depth of the corresponding network. One can also use a deep neural network for an edge for which the solution can have a complex structure, while a shallow neural network can be used on the edges with relatively simple and smooth solutions.
+
+
+\subsection{One Neural Network for each edge}
+\label{ch3:sec1:subsec2}
 
 
 

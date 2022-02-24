@@ -9,7 +9,7 @@ We concentrate on the problem of computing data-driven approximate solutions to 
     \label{PINN PDE}
     \partial_t u(t,x) + \mathcal{H} \left[ u \right] (t, x) = 0, \quad x \in \Omega, \quad t \in \left[ 0, T \right], 
 \end{equation}
-where $u(t,x)$ is the latent solution of the corresponding system, $\partial_t u(t,x)$ is its derivative with respect to the time $t$ in the period $\left[ 0, T \right]$, $\mathcal{H} \left[ \cdot \right]$ is a non-linear differential operator, $x$ is an independent, possibly multi-dimensional variable, defined over the domain $\Omega \subset \mathbb{R}^{n}$. \\
+where $u(t,x)$ is the latent solution of the corresponding system, $\partial_t u(t,x)$ is its derivative with respect to the time $t$ in the period $\left[ 0, T \right]$, $\mathcal{H} \left[ \cdot \right]$ is a non-linear differential operator, $x$ is an independent, possibly multi-dimensional variable, defined over the domain $\Omega \subset \mathbb{R}^{n}$. The structure of \cref{PINN PDE} covers a wide range of problems in mathematical physics, including conservation laws, diffusion processes, advection-diffusion reaction systems, and kinetic equations, \cite[p.~3]{RaissiPerdikarisKarniadakisPart1:2017}. \\
 A distinction is made between discrete time and continuous time models for PINNs, depending on the type and arrangement of the available data. We focus on the latter. For this purpose let $f(x,t)$ be defined as the left-hand-side of \cref{PINN PDE}, i.e.
 \begin{equation}
     \label{Residual Network}

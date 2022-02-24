@@ -113,7 +113,7 @@ On a graph $\Gamma = (\mathcal{V}, \mathcal{E})$ is a vertex $w \in \mathcal{V}$
 A graph $\Gamma = (\mathcal{V}, \mathcal{E})$ with $\mathcal{V} = \{v_i\}_{i = 1, \ldots, V}$ is fully specified by its $V \times V$ adjacency matrix $A^{\Gamma}$. The entries of the adjacency matrix are given by
 \begin{equation}
     \label{adjacency matrix}
-    A^{\Gamma}_{i, j}= \begin{cases} 1 & \text{if } v_i \sim v_j \\ 0 & \text{otherwise. } \end{cases}
+    A^{\Gamma}_{i, j} = \begin{cases} 1 & \text{if } v_i \sim v_j \\ 0 & \text{otherwise. } \end{cases}
 \end{equation}
 One sees immediately that the adjacency matrix of an non-directed graph is symmetric, since a vertex $v \in \mathcal{V}$ is adjacent to another vertex $w \in \mathcal{V}$ exactly when vice versa is also true, i.e. $v \sim w \Leftrightarrow w \sim v$. \\
 The degree $d_{v_i}$ of a vertex $v_i \in \mathcal{V}$ is the number of edges that are connected to the vertex $v_i$, i.e. $d_{v_i} = \sum_{v_j \in \mathcal{V}} A_{i, j}$. For a directed graph the number of incoming bonds at a vertex $v_i$ is called incoming degree of $v_i$, denoted by $d^{t}_{v_i}$, and the number of outgoing bonds at a vertex $v_i$ is called outgoing degree of $v_i$, denoted by $d^{o}_{v_i}$. Clearly, $d^{t}_{v_i} + d^{o}_{v_i} = d_{v_i}$ holds. All degrees are assumed to be finite and positive, we hence exclude vertices with no edges coming in or going out. We denote by $D^{\Gamma}$ the degree matrix of a graph $\Gamma = (\mathcal{V}, \mathcal{E})$, which is a diagonal $V \times V$ matrix with the entries
