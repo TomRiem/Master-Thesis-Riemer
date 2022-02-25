@@ -1,74 +1,76 @@
 \section{Drift-Diffusion Equations on Metric Graphs}
 \label{ch1:sec2}
 
-In this section, we introduce a model that uses a set of differential equations defined on the edges of a metric graph to represent the traffic flow in a road network. We want to solve this model in an approximate way later in the thesis using various methods. \\
-We imagine a compact road network, where we mean a finite number of finitely long roads connected by a finite number of junctions. We note that in a realistic road network there also exist roads which simply end, i.e. roads which end in an junction to which no other roads are connected, and there exist also one-way roads between two junctions. To model such a compact road network, we identify it with a compact directed metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, where obviously the roads are identified by edges $e \in \mathcal{E}$ and the junctions $v \in \mathcal{V}$ by vertices. The length $\ell_e > 0$ of each edge $e \in \mathcal{E}$ is either given by the length of the associated road or some other isometric representation of it. An example of such a compact road network is illustrated in Figure 1 and the associated graph is illustrated in Figure 2. \\
+In this section, we introduce a model that uses a set of differential equations defined on the edges of a metric graph to represent the traffic flow in a road network. We want to approximate the solutions of these differential equations later in this thesis using different methods.  \\
+We imagine a compact road network, where we mean a finite number of finitely long roads connected by a finite number of junctions. We note that in a realistic road network there also exist roads which simply start or end and we assume that these roads end or start in an junction to which no other roads are connected. Further there exist also one-way roads between two junctions in a realistic road network. To model such a compact road network, we identify it with a compact directed metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, where obviously the roads are identified by edges $e \in \mathcal{E}$ and the junctions by vertices $v \in \mathcal{V}$. The length $\ell_e > 0$ of each edge $e \in \mathcal{E}$ is either given by the length of the associated road or some other isometric representation of it. An example of such a compact road network is illustrated in \cref{fig8:f1} and the associated graph is illustrated in \cref{fig8:f2}. \\
 
 \begin{figure}[H]
-    \begin{subfigure}[b]{0.4\textwidth}
-        \begin{center}
-            \includegraphics[scale=0.4]{img/Kaßberg2.png}
-        \end{center}
-        \caption{Non-directed graph}
-        \label{fig8:f1}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.4\textwidth}
-        \begin{center}
-            \includegraphics[scale=0.15]{img/Kaßberg2-Darstellung.png}
-        \end{center}
-        \caption{Directed graph}
-        \label{fig8:f2}
-    \end{subfigure}
+    \begin{center}
+        \begin{subfigure}[b]{0.4\textwidth}
+            \begin{center}
+                \includegraphics[scale=0.45]{img/Kaßberg2.png}
+            \end{center}
+            \caption{Non-directed graph}
+            \label{fig8:f1}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.4\textwidth}
+            \begin{center}
+                \includegraphics[scale=0.2]{img/Kaßberg2-Darstellung.png}
+            \end{center}
+            \caption{Directed graph}
+            \label{fig8:f2}
+        \end{subfigure}
+    \end{center}
     \caption{Two different types of graphs.}
 \end{figure}
 
-There exist several approaches to model the traffic flow on a road network. One of the most important approaches was presented in \cite{LighthillWhitham:1955} and independently in \cite{Richards:1956}, in which the traffic flow is described by equations describing the flow of water. These fluid dynamics equations are a set of partial differential equations known as the Navier-Stokes equations, which express the conservation of mass, momentum, and energy. The basic idea of this approach is to look at large scales so to consider individual cars as small particles and a set of cars as mass, and their density as the main quantity to be considered. The model in this thesis is inspired by the same idea, which is why we focus on the density of cars on an individual edge $e \in \mathcal{E}$, which we want to model with a function $\rho_e \colon (0, T) \times [0, \ell_e] \to \mathbb{R}_{+}$, where $\rho_e (t,x)$ describes the concentration of some quantity, i.e. the density of cars, at the time $t \in (0, T)$ at the coordinate $x \in [0, \ell_e]$ on the edge $e \in \mathcal{E}$. It is reasonable to assume the conservation of the number of cars, which can be expressed by a continuity equation for each individual edge $e \in \mathcal{E}$
+There exist several approaches to model the traffic flow on a road network. One of the most important approaches was presented in \cite{LighthillWhitham:1955} and independently in \cite{Richards:1956}, in which the traffic flow is described by equations describing the flow of water. These fluid dynamics equations are a set of partial differential equations known as the Navier-Stokes equations, which express the conservation of mass, momentum, and energy. The basic idea of this approach is to look at large scales so to consider individual cars as small particles, a set of cars as mass, and their density as the main quantity to be considered, \cite[p.~1]{GaravelloPiccoli:2006}. The model in this thesis is inspired by the same idea. We also focus on the density of cars on an individual edge $e \in \mathcal{E}$ and we model it with a function $\rho_e \colon (0, T) \times [0, \ell_e] \to \mathbb{R}_{+}$. The value $\rho_e (t,x)$ describes the concentration of some quantity at the time $t \in (0, T)$ at the coordinate $x \in [0, \ell_e]$ on the edge $e \in \mathcal{E}$. It is reasonable to assume the conservation of the number of cars, which can be expressed by the following continuity equation for each individual edge $e \in \mathcal{E}$
 \begin{equation}
     \label{continuity equation}
     \partial_t \rho_e (t,x) = - \partial_x J_e(t,x),
 \end{equation}
-where $J_e \colon (0,T) \times [0, \ell_e] \to \mathbb{R}$ is the flux of cars. \cref{continuity equation} describes the transport of a certain quantity of cars and expresses a relationship between the density of cars and the flux by linking the temporal change of the density to the spatial change of its flux density with the assumption of conservation of the number of cars. \\
-Let the flux in the model in this thesis be given by 
+where $J_e \colon (0,T) \times [0, \ell_e] \to \mathbb{R}$ is the flux of cars. \cref{continuity equation} expresses a relationship between the density of cars and the flux of cars by linking the temporal change of the density to the spatial change of its flux with the assumption of the conservation of the number of cars. Therefore, describes the conservation law generated by \cref{continuity equation} the transport of a certain quantity of cars. \\
+Let the flux for the model in this thesis be given by 
 \begin{equation} 
     \label{eq:flux} 
     J_e(t,x) \coloneqq - \varepsilon \partial_x \rho_e (t, x) + f(\rho_e(t, x)) \partial_x V_e(t, x).
 \end{equation}
-The flux is composed of two terms. The first term, $- \varepsilon \partial_x \rho_e (t, x)$, describes the transport by diffusion, which is given by Fick's first law, see \cite{Fick:1855}, where $\varepsilon > 0$ is the so-called diffusion coefficient. The second term, $f(\rho_e(t, x)) \partial_x V_e(t, x)$, describes the transport by flow or drift, where $V_e \colon (0,T) \times [0, \ell_e] \to \mathbb{R}_{+}$ is a given potential, that may vary from edge to edge, the function $f \colon \mathbb{R}_{+} \to \mathbb{R}_{+}$ is called mobility and its simplest choice is the so-called linear transport $f(\rho_e) = \mathrm{v} \cdot \rho_e$ with $\mathrm{v}$ the average velocity of cars. However, in many applications, the density $\rho_e (t,x)$ is not allowed to exceed a maximal value $\rho_{e, max}$ (e.g. due to finite size effects). In the model in this thesis it is required that the mobility $f$ satisfies $f(0) = f(\rho_{e, max}) = 0$. If this value is scaled to one, a choice of $f$ that obeys $f(0) = f(1) = 0$, such as $f(\rho_e) = (1-\rho_e) \rho_e$, will ensure that solutions to \eqref{continuity equation} will satisfy this bound for all time. The choice of $f(\rho_e) = (1-\rho_e) \rho_e$ is quite common, since the average velocity $\mathrm{v}$ is often considered as a function of $\rho_e$ and the linear decreasing function $\mathrm{v} = \mathrm{v}_{max} (1-\rho_e)$ is often chosen for it. The model in this thesis follows this approach, but we set $\mathrm{v}_{max} = 1$. We note that with this choice of $f$ it follows that all edges in the graph $\Gamma$ must be directed, because by defining the flux $J_e(t,x)$ via \cref{eq:flux} we consider first order derivatives in the continuity equation, see \cref{continuity equation}, on the graph $\Gamma$ and we need directions for first order derivatives. We further note that the derivative in $J_e(t,x)$ is taken into the outgoing direction. \\
+The flux is composed of two terms. The first term, $- \varepsilon \partial_x \rho_e (t, x)$, describes the transport by diffusion, which is given by Fick's first law, see \cite{Fick:1855}, where $\varepsilon > 0$ is the so-called diffusion coefficient. The second term, $f(\rho_e(t, x)) \partial_x V_e(t, x)$, describes the transport by flow or by drift, where $V_e \colon (0,T) \times [0, \ell_e] \to \mathbb{R}_{+}$ is a given potential, that may vary from edge to edge, the function $f \colon \mathbb{R}_{+} \to \mathbb{R}_{+}$ is called mobility and its simplest choice is the so-called linear transport $f(\rho_e) = \mathrm{v} \rho_e$ with $\mathrm{v}$ the average velocity of the cars. However, in many applications, the density $\rho_e (t,x)$ is not allowed to exceed a maximal value $\rho_{e, max}$, e.g. due to finite size effects. For the model in this thesis it is required that the mobility $f$ satisfies $f(0) = f(\rho_{e, max}) = 0$. If this value $\rho_{e, max}$ is scaled to one, a choice of $f$ that obeys $f(0) = f(1) = 0$, such as $f(\rho_e) = (1-\rho_e) \rho_e$, will ensure that solutions to \eqref{continuity equation} will satisfy this bound for all time. By choosing $f(\rho_e) = (1-\rho_e) \rho_e$, the average velocity of the cars $\mathrm{v}$ can be thought of as a linearly decreasing function depending on $\rho_e$, i.e. $\mathrm{v} = \mathrm{v}_{max} (1-\rho_e)$ with $\mathrm{v}_{max} > 0$. We follow this approach for the model in this thesis, but we set $\mathrm{v}_{max} = 1$. We note that with this choice of mobility $f$, it follows that all edges of the graph $\Gamma$ must be directed, because by defining the flux $J_e(t,x)$ via \cref{eq:flux} we consider first order derivatives in \cref{continuity equation} on the graph $\Gamma$ and for that  we need directions. We further note that the derivatives in $J_e(t,x)$ are taken into the outgoing direction. \\
 
-Summarized, the model is posed on a compact directed metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, where each edge $e \in \mathcal{E}$ is equipped with a length $\ell_e > 0$ and the differential equation
+Summarized, we have for the traffic flow in a compact road network a mathematical model, which is posed on a compact directed metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, where each edge $e \in \mathcal{E}$ is equipped with a length $\ell_e > 0$ and the following differential equation
 \begin{equation} 
     \label{Drift-Diffusion-equation}
     \partial_t \rho_e (t,x) = \partial_x (\varepsilon \partial_x \rho_e (t,x) - f(\rho_e (t,x) ) \partial_x V_e (t,x)),
 \end{equation}
 where $\rho_e \colon (0, T) \times [0, \ell_e] \to [0, 1]$ is the searched function, $\varepsilon > 0$ is a constant, $V_e \colon (0,T) \times e \to \mathbb{R}_{+}$ is a given potential and $f \colon \mathbb{R}_{+} \to \mathbb{R}_{+}$ is a function, that satisfies $f(0) = f(1) = 0$. From now on, we refer to the differential equation given by \cref{Drift-Diffusion-equation} as drift-diffusion equation. \\
-To make \cref{Drift-Diffusion-equation} a well-posed problem, we need to add initial-conditions as well as coupling conditions on the vertices. For that we denote the ordered pair of vertices connected by a directed edge $e \in \mathcal{E}$ by $(v^{o}_e, v^{t}_e)$ and define a normal vector $n_e$ to each edge $e = (v^{o}_e, v^{t}_e)$ via $n_e(v^{o}_e) = -1$ and $n_e(v^{t}_e) = 1$. \\
-On the set of interior vertices $v \in \mathcal{V}_\mathcal{K} \subset \mathcal{V}$, which are vertices that are incident to at least one incoming edge and at least one outgoing edge (i.e.$\forall v \in \mathcal{V}_\mathcal{K} \; \exists \ e_1, e_2 \in \mathcal{E}$ such that $v^{t}_{e_1} = v$ and $v^{o}_{e_2} = v$), we apply homogeneous Kirchhoff-Neumann coupling conditions, i.e. on each $v \in \mathcal{V}_\mathcal{K}$ holds
-\begin{equation}
-    \label{eq:Kirchhoff_Neumann_condition}
-    \sum_{e\in \mathcal{E}_v} J_e(t,v) n_e (v)=0,
-\end{equation}
-where $\mathcal{E}_v$ is the edge set incident to the vertex $v$. Additionally, we ask the solution of \cref{Drift-Diffusion-equation} to be continuous on the set of interior vertices, i.e. 
-\begin{equation}
-    \label{continuous on vertices}
-    \rho_e(v) = \rho_{e'}(v) \quad \text{ for all }v \in \mathcal{V}_\mathcal{K},\; e,\,e' \in \mathcal{E}_v.
-\end{equation}
-On the set of exterior vertices $v \in \mathcal{V}_\mathcal{D} \coloneqq \mathcal{V} \setminus \mathcal{V}_\mathcal{K}$, which are vertices that are incident to either only one incoming edge or only one outgoing edge (i.e. $\forall v \in \mathcal{V}_\mathcal{D} \; \exists! \ e \in \mathcal{E}$ such that either $v^{t}_{e} = v$ or $v^{o}_{e} = v$), the solution $\rho$ should fulfills the flux boundary conditions
-\begin{equation}
-    \label{eq:Dirichlet_conditions}
-    \sum_{e\in \mathcal{E}_v}J_e(v) n_e (v)=-\alpha_v(t) (1-\rho_v) + \beta_v(t) \rho_v,\ \text{for all}\ v \in \mathcal{V}_\mathcal{D}, e \in \mathcal{E}_v,
-\end{equation}
-where $\alpha_v \colon (0,T) \to \mathbb{R}_{+}$ prescribes the rate of influx of mass into the network and $\beta_v \colon (0,T) \to \mathbb{R}_{+}$, ${v \in \mathcal{V}_\mathcal{D}}$ prescribes the velocity of mass leaving the network at the exterior vertices ${v \in \mathcal{V}_\mathcal{D}}$. Note that this choice ensures that the bounds $0 \leq \rho_e \leq 1$ are preserved. In typical situations, exterior vertices are either of influx- or of outflux type, i.e. $\alpha_v(t) \beta_v(t) \equiv 0$ for all $v \in \mathcal{V}_\mathcal{D}$ for all $t \in (0,T)$. \\
-The Kirchhoff-Neumann conditions are the natural boundary conditions for the differential equation \eqref{eq:Hamiltonian}, since they ensure, on the one hand, that exactly as much mass flows into each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$ as flows out of it and, on the other hand, together with the the flux boundary conditions, \cref{eq:Dirichlet_conditions}, they ensure that mass enters or leaves the system only via the exterior vertices $\mathcal{V}_\mathcal{D}$ for which either $\alpha_v(t)$ or $\beta_v(t)$ is positive. \\
-Finally, we impose an initial condition on each edge via 
+To make \cref{Drift-Diffusion-equation} a well-posed problem, we need to add initial-conditions as well as coupling conditions on the vertices. First we impose on each edge $e \in \mathcal{E}$ the following initial condition
 \begin{equation}
     \label{eq:initial_conditions}
     \rho_e(0,x) = \rho_{e, 0}(x),
 \end{equation}
-where $\rho_{e, 0} \in L^2(e)$ returns the density on each point of the edge $e$ at time $t=0$. \\ 
+where $\rho_{e, 0} \in L^2(e)$ returns the density on each point of the edge $e$ at the start time of the observation $t=0$. \\ 
+In the following we denote the ordered pair of vertices connected by a directed edge $e \in \mathcal{E}$ by $(v^{o}_e, v^{t}_e) = e$ and for the vertex condition we define a normal vector $n_e$ to each edge $e = (v^{o}_e, v^{t}_e)$ via $n_e(v^{o}_e) = -1$ and $n_e(v^{t}_e) = 1$. \\
+On the set of interior vertices $v \in \mathcal{V}_\mathcal{K} \subset \mathcal{V}$, which are vertices that are incident to at least one incoming edge and at least one outgoing edge (i.e. $\forall v \in \mathcal{V}_\mathcal{K} \; \exists \ e_1, e_2 \in \mathcal{E}$ such that $v^{t}_{e_1} = v$ and $v^{o}_{e_2} = v$), we apply homogeneous Kirchhoff-Neumann coupling conditions, i.e. on each $v \in \mathcal{V}_\mathcal{K}$ holds
+\begin{equation}
+    \label{eq:Kirchhoff_Neumann_condition}
+    \sum_{e\in \mathcal{E}_v} J_e(t,v) n_e (v)=0,
+\end{equation}
+where $\mathcal{E}_v$ is the edge set incident to the vertex $v$. Additionally, we ask the solution of \cref{Drift-Diffusion-equation} to be continuous on the set of interior vertices $\mathcal{V}_\mathcal{K}$, i.e. 
+\begin{equation}
+    \label{continuous on vertices}
+    \rho_e(v) = \rho_{e'}(v) \quad \text{ for all }v \in \mathcal{V}_\mathcal{K},\; e,\,e' \in \mathcal{E}_v.
+\end{equation}
+On the set of exterior vertices $v \in \mathcal{V}_\mathcal{D} \coloneqq \mathcal{V} \setminus \mathcal{V}_\mathcal{K}$, which are vertices that are incident to either only one incoming edge or only one outgoing edge (i.e. $\forall v \in \mathcal{V}_\mathcal{D} \; \exists! \ e \in \mathcal{E}$ such that either $v^{t}_{e} = v$ or $v^{o}_{e} = v$), the solution $\rho$ should fulfills the so-called flux boundary conditions
+\begin{equation}
+    \label{eq:Dirichlet_conditions}
+    \sum_{e\in \mathcal{E}_v}J_e(v) n_e (v)=-\alpha_v(t) (1-\rho_v) + \beta_v(t) \rho_v,\ \text{for all}\ v \in \mathcal{V}_\mathcal{D}, e \in \mathcal{E}_v,
+\end{equation}
+where $\alpha_v \colon (0,T) \to \mathbb{R}_{+}$ describes the rate of influx of mass into the network and $\beta_v \colon (0,T) \to \mathbb{R}_{+}$, ${v \in \mathcal{V}_\mathcal{D}}$ describes the velocity of mass leaving the network at the exterior vertices $v \in \mathcal{V}_\mathcal{D}$. We note that this choice ensures that the bounds $0 \leq \rho_e \leq 1$ are preserved. In typical situations, exterior vertices are either of the influx- or of outflux type, i.e. $\alpha_v(t) \beta_v(t) \equiv 0$ for all $v \in \mathcal{V}_\mathcal{D}$ and $t \in (0,T)$. \\
+The Kirchhoff-Neumann conditions are the natural boundary conditions for the differential equation \eqref{Drift-Diffusion-equation}, since they ensure, on the one hand, that exactly as much mass flows into each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$ as flows out of it and, on the other hand, together with the the flux boundary conditions, \cref{eq:Dirichlet_conditions}, they ensure that mass enters or leaves the system only via the exterior vertices $\mathcal{V}_\mathcal{D}$ for which either $\alpha_v(t)$ or $\beta_v(t)$ is positive. \\
 
+Unfortunately, there is no constructive proof yet of any form of solution to this problem under the above mentioned conditions. \\
 
-
-We note that by \cref{Drift-Diffusion-equation} we obtain the following differential operator defined on the metric graph $\Gamma$
+We note that through \cref{Drift-Diffusion-equation} we obtain the following differential operator defined on the metric graph $\Gamma$
 \begin{equation} 
     \label{eq:Hamiltonian}
     \mathcal{H} [\rho_e] (t,x) \coloneqq \partial_t \rho_e (t,x)  - \partial_x (\varepsilon \partial_x \rho_e (t,x) + f(\rho_e (t,x) ) \partial_x V_e (t,x))
@@ -92,6 +94,5 @@ and together with the above mentioned initial and boundary conditions we obtain 
 %Kirchhoff: alles was in den Knoten reinfließt muss auch rausfließen
 % Kirchhoff: We note that the derivative is taken into the outgoing direction.
 %operator nicht selbstadjungiert
-% graph muss gerichtet sein, ansosnten erste ableitung nicht möglich
-% initial conditions übernehmen
+
 % Analytische Lösung nicht möglich
