@@ -66,7 +66,8 @@ For the minimization of the cost function $\Phi_{\theta}$, we first use a varian
 \subsection{One Neural Network to rule them all}
 \label{ch3:sec1:subsec1}
 
-
+In this subsection, we use a single feed-forward neural network with $L \in \mathbb{N}$ layers for the approximation of the solution of \cref{Drift-Diffusion-equation} under the given initial and boundary conditions on all edges of the graph $\Gamma = (\mathcal{V}, \mathcal{E})$, i.e. the network, which we denote with $P_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^{E}$ with $E = \abs{\mathcal{E}}$ in the following, receives as input the ordered pair $(t,x) \in \mathbb{R}^2$ and produces an output $P(t,x) \in \mathbb{R}^{E}$ whose dimension corresponds to the number of edges of the graph $\Gamma$, where the $i$-th entry of this network $P_{\theta}$ represents the approximation of the solution on the $i$-th edge, i.e. $[P_{\theta}(t,x)]_i = \rho_{\theta_{e_i}} \left( t,x \right) \in \mathbb{R}$ with $e_i \in \mathcal{E}$. Of course, only the weights $W = \{ W^l \}_{l = 1, \ldots, L}$ and biases $b = \{ b^l \}_{l = 1, \ldots, L}$ of this network $P_{\theta}$ are to be learned here, i.e. $\theta = (\{ W^l \}_{l = 1, \ldots, L}, \{ b^l \}_{l = 1, \ldots, L})$. \\
+We note that using just one neuronal network for all edges is only possible because the graph $\Gamma$ is equilateral, see \cref{graph_assumptions}, and thus  is defined for $x \in [0,1]$ on every edge. % stimmt nicht so ganz, macht es aber um vieles einfacher. Man kann die gleichen Kollokationspunkte verwenden!
 
 
 \subsection{One Neural Network for each edge}

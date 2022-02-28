@@ -43,7 +43,7 @@ The graph $\Gamma$ consists of $6$ vertices $\mathcal{V} = \{ v_i \}_{i = 1,\ldo
 \end{figure}
 As we can see, the vertices $v_1$, $v_2$, $v_5$ and $v_6$ are the exterior vertices, i.e. $\mathcal{V}_{\mathcal{D}} = \{v_1, v_2, v_5, v_6\}$, and the vertices $v_3$ and $v_4$ are the interior vertices, i.e. $\mathcal{V}_{\mathcal{K}} = \{v_3, v_4\}$, of the graph $\Gamma$. \\
 As an approximation problem, we consider the set of drift-diffusion equations defined by \cref{Drift-Diffusion-equation} on all edges $e \in \mathcal{E}$ of the graph $\Gamma = (\mathcal{V}, \mathcal{E})$, which is defined by \cref{NumericalExperimentGraph}, under the initial and boundary conditions given by \cref{eq:Kirchhoff_Neumann_condition}, \cref{continuous on vertices}, \cref{eq:Dirichlet_conditions} and \cref{eq:initial_conditions}. Furthermore we have the following assumptions:
-\begin{assumption} 
+\begin{assumption} \label{graph_assumptions} 
     \ \\[-1.5\baselineskip]
     \begin{enumerate}
         \item The observation time ends at $T = 10$ and the graph $\Gamma$ is equilateral (see \cref{metric graph equilateral}) with $\ell = 1$. 
