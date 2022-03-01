@@ -64,20 +64,29 @@ We set
 \end{equation*}
 
 \begin{align*}
-    \nabla^{2} f_{\theta}(s) & = \vartheta^{[1]} \in \mathbb{R}^{2 \times 2} \\
-    \vartheta^{[1]} & = {W^{[1]}}^{\mathrm{T}} \left( \mathrm{diag}(H^{[1]} \delta^{[2]}) + D^{[1]} \vartheta^{[2]} D^{[1]} \right) W^{[1]} \\
+    \nabla^{2} f_{\theta}(s) & = \eta^{[1]} \in \mathbb{R}^{2 \times 2} \\
+    \eta^{[1]} & = {W^{[1]}}^{\mathrm{T}} \left( \mathrm{diag}(H^{[1]} \delta^{[2]}) + D^{[1]} \eta^{[2]} D^{[1]} \right) W^{[1]} \\
     & \vdots \\
-    \vartheta^{l} & = {W^{l}}^{\mathrm{T}} \left( \mathrm{diag}(H^{l} \delta^{[l+1]}) + D^{l} \vartheta^{[l+1]} D^{l} \right) W^{l} \in \mathbb{R}^{n_{l-1} \times n_{l-1}} \\
+    \eta^{l} & = {W^{l}}^{\mathrm{T}} \left( \mathrm{diag}(H^{l} \delta^{[l+1]}) + D^{l} \eta^{[l+1]} D^{l} \right) W^{l} \in \mathbb{R}^{n_{l-1} \times n_{l-1}} \\
     & \vdots \\
-    \vartheta^{L} & = {W^{L}}^{\mathrm{T}} H^{L} W^{L} \in \mathbb{R}^{n_{L-1} \times n_{L-1}}
-\end{align*}
+    \eta^{L} & = {W^{L}}^{\mathrm{T}} H^{L} W^{L} \in \mathbb{R}^{n_{L-1} \times n_{L-1}}
+\end{align*} 
 
 
 \begin{algorithm}[H]
     \caption{Computation of the gradient and a Hessian of an L-layer feed-forward neural network.}
     \begin{algorithmic}[1]
-        \State Hi
-        \State \textbf{Return} $x_k$.
+        \State \textbf{Input:} vector $z^0 \in \mathbb{R}^{n_0}$; learnable parameters $\theta = (\{ W^l \}_{l = 1, \ldots, L}, \{ b^l \}_{l = 1, \ldots, L})$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\{ b^l \}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a FNN $f$
+        \For{$ l = 1, \ldots, L$}
+            \State Set $z^l = \sigma_l(W^l z^{l-1} + b^l)$
+        \EndFor
+        \State Set $\delta^{L} = {W^{L}}^{\mathrm{T}} \mathrm{diag}({\sigma_{L}}^{\prime}(W^{L} z^{L-1} + b^{L}))$.
+        \State Set $\eta^{L}$.
+        \For{$ l = 1, \ldots, L-1$}
+            \State Set $\delta^{l} = {W^{l}}^{\mathrm{T}} \mathrm{diag}({\sigma_{l}}^{\prime}(W^{l} z^{l-1} + b^{l})) \cdot \delta^{l+1}$.
+            \State Set $\eta^{l}$.
+        \EndFor
+        \State \textbf{Input:} $z^L$, $\delta^1$, $\eta^1$.
     \end{algorithmic}
 \end{algorithm}
 
@@ -167,22 +176,22 @@ where the columns of $E \in \mathbb{R}^{(d+1) \times d}$ are given by the first 
 Ruthotto sets
 
 \begin{align*}
-    \Delta_x (a^{L}(s) \, w) & = t^{[0]} + h \, \sum^{L}_{l=1} t^{l} = \mathrm{tr}(\vartheta^{[0]}) + h \, \sum^{L}_{l=1} \mathrm{tr}(\vartheta^{l}) = \\
-    & = \mathrm{tr} \left( \vartheta^{[0]} + h \, \sum^{L}_{l=1} \vartheta^{l} \right) = \mathrm{tr} \left( \nabla^{2}_x a^{L}(s) \, w \right)
+    \Delta_x (a^{L}(s) \, w) & = t^{[0]} + h \, \sum^{L}_{l=1} t^{l} = \mathrm{tr}(\eta^{[0]}) + h \, \sum^{L}_{l=1} \mathrm{tr}(\eta^{l}) = \\
+    & = \mathrm{tr} \left( \eta^{[0]} + h \, \sum^{L}_{l=1} \eta^{l} \right) = \mathrm{tr} \left( \nabla^{2}_x a^{L}(s) \, w \right)
 \end{align*}
 
 \begin{equation*}
-    \partial_{xx} a^{L}(s) w = \nabla^{2}_x a^{L}(s) w = E^{\mathrm{T}} \, \nabla^{2}_s a^{L}(s) \, w \, E = \vartheta^{[0]} + h \, \sum^{L}_{l=1} \vartheta^{l}
+    \partial_{xx} a^{L}(s) w = \nabla^{2}_x a^{L}(s) w = E^{\mathrm{T}} \, \nabla^{2}_s a^{L}(s) \, w \, E = \eta^{[0]} + h \, \sum^{L}_{l=1} \eta^{l}
 \end{equation*}
 
 where 
 
 \begin{equation*}
-    \vartheta^{[0]} = E^T {W^{[1]}}^{\mathrm{T}} \mathrm{diag}({\sigma_{[1]}}^{\prime \prime}(W^{[1]} s + b^{[1]}) \odot \delta^{[2]}) W^{[1]} E
+    \eta^{[0]} = E^T {W^{[1]}}^{\mathrm{T}} \mathrm{diag}({\sigma_{[1]}}^{\prime \prime}(W^{[1]} s + b^{[1]}) \odot \delta^{[2]}) W^{[1]} E
 \end{equation*}
 
 \begin{equation*}
-    \vartheta^{l} = {J^{l-1}}^{\mathrm{T}} {W^{l}}^{\mathrm{T}} \mathrm{diag}({\sigma_{l}}^{\prime \prime}(W^{l} a^{l-1}(s) + b^{l}) \odot \delta^{[l+1]}) W^{l} J^{l-1}
+    \eta^{l} = {J^{l-1}}^{\mathrm{T}} {W^{l}}^{\mathrm{T}} \mathrm{diag}({\sigma_{l}}^{\prime \prime}(W^{l} a^{l-1}(s) + b^{l}) \odot \delta^{[l+1]}) W^{l} J^{l-1}
 \end{equation*}
 
 where 
@@ -195,16 +204,16 @@ where
 Now to the Hessian as it has been implemented: 
 
 \begin{align*}
-    \vartheta^{[1]} & = h \, {W^{[1]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[1]} \delta^{[2]} \right) W^{[1]} + \\
-    & \quad + \left( I + h \, {W^{[1]}}^{\mathrm{T}} D^{[1]} \right) \, \left( \left( I + h \, {W^{[1]}}^{\mathrm{T}} D^{[1]} \right) \, \vartheta^{[2]} \right)^{\mathrm{T}} \\ 
+    \eta^{[1]} & = h \, {W^{[1]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[1]} \delta^{[2]} \right) W^{[1]} + \\
+    & \quad + \left( I + h \, {W^{[1]}}^{\mathrm{T}} D^{[1]} \right) \, \left( \left( I + h \, {W^{[1]}}^{\mathrm{T}} D^{[1]} \right) \, \eta^{[2]} \right)^{\mathrm{T}} \\ 
     &\vdots\\
-    \vartheta^{l} & = h \, {W^{l}}^{\mathrm{T}} \mathrm{diag} \left( H^{l} \delta^{[l+1]} \right) W^{l} + \\
-    & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \left( \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \vartheta^{[l+1]} \right)^{\mathrm{T}} \\ 
-    \vartheta^{l} & = h \, {W^{l}}^{\mathrm{T}} \mathrm{diag} \left( H^{l} \delta^{[l+1]} \right) W^{l} + \\
-    & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \vartheta^{[l+1]}  \left( I + h \,  D^{l} {W^{l}} \right) \\ 
+    \eta^{l} & = h \, {W^{l}}^{\mathrm{T}} \mathrm{diag} \left( H^{l} \delta^{[l+1]} \right) W^{l} + \\
+    & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \left( \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \eta^{[l+1]} \right)^{\mathrm{T}} \\ 
+    \eta^{l} & = h \, {W^{l}}^{\mathrm{T}} \mathrm{diag} \left( H^{l} \delta^{[l+1]} \right) W^{l} + \\
+    & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \eta^{[l+1]}  \left( I + h \,  D^{l} {W^{l}} \right) \\ 
     &\vdots\\
-    \vartheta^{L-1} & = h \, {W^{L-1}}^{\mathrm{T}} \mathrm{diag} \left( H^{L-1} \delta^{L} \right) W^{L-1} + \\
-    & \quad + \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \left( \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \vartheta^{L} \right)^{\mathrm{T}} \\
-    \vartheta^{L} &  = h \, {W^{L}}^{\mathrm{T}} \mathrm{diag}(H^{L} w) W^{L} 
+    \eta^{L-1} & = h \, {W^{L-1}}^{\mathrm{T}} \mathrm{diag} \left( H^{L-1} \delta^{L} \right) W^{L-1} + \\
+    & \quad + \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \left( \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \eta^{L} \right)^{\mathrm{T}} \\
+    \eta^{L} &  = h \, {W^{L}}^{\mathrm{T}} \mathrm{diag}(H^{L} w) W^{L} 
 \end{align*}
 
