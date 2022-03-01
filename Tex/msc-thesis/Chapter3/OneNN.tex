@@ -75,6 +75,11 @@ We note that using just one neuronal network for all edges is only possible beca
 
 Also, a set of neural networks offers the possibility to choose for the networks on the various edges different training parameters such as residual points but also different hyperparameters such as activation functions, width and depth of the corresponding network. One can also use a deep neural network for an edge for which the solution can have a complex structure, while a shallow neural network can be used on the edges with relatively simple and smooth solutions.
 
+\begin{equation}
+    \label{Resnet}
+    \rho_{\theta_e}(t,x) = \rho_{\theta_e}(z) = \frac{1}{2} z^{\mathrm{T}} A z + w^{\mathrm{T}} x^{L} + c^{\mathrm{T}} s 
+\end{equation}
+
 
 
 

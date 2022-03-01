@@ -1,9 +1,8 @@
 \section{Automatic differentiation vs explicit derivatives}
 \label{ch3:sec3}
 
-Below we provide an explicit calculation for the Jacobian or gradient and the Hessian matrix of an L-layer feed-forward neural network, from which partial derivatives up to order 2 can be obtained. 
-
-In the following, $f_{\theta}(x)$ denotes the model prediction for the input value $x = x^0 \in \mathbb{R}^{n_0}$, which is given by 
+In this section we show how the neural networks used in the previous numerical tests can be explicitly differentiated so that the use of automatic differentiation in a PINN can be omitted. We compare the time to convergence and the computational resources required for a PINN programmed in Python with explicit derivatives with the results previously obtained for a PINN that of course uses automatic differentiation. This aims to show whether an explicit calculation of the derivatives for our problem brings computational advantages with it and whether the performance of a PINN can be improved as a result. \\
+Let us first consider the case of the feed-forward neural network. In this work we used two FNNs with different topologies. First, an FNN was used in section 1 for all edges of the graph and then an FNN was used for each individual edge of the graph. We are interested in finding an explicit formula for the gradient of the output used for an individual edge of one of these two neural networks. For this purpose, we first calculate the first-order derivative with respect to a vector of a general FNN $f_{\theta}$ with $L$ layers. In the following, $f_{\theta}(x) \in \mathbb{R}^{n_L}$ denotes the model prediction of this neural network for an input value $x = x^0 \in \mathbb{R}^{n_0}$, which is defined by 
 \begin{equation}
     \label{model prediction}
     f_{\theta}(x) = x^{L} = f^{L}_{\theta_L}(x^{L-1}) = \sigma_{L} (W^{L} x^{L-1} + b^{L}) \in \mathbb{R}^{n_L} 
@@ -12,129 +11,51 @@ and
 \begin{equation*}
     x^{l} = \sigma_{l} (W^{l} x^{l-1} + b^{l}) \in \mathbb{R}^{n_l}, 
 \end{equation*}
-for $0 \leq l \leq L-1$.
-
-We are interested in the derivative of the FNN $f_{\theta} \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_L}$ with respect to the input value x, i.e. we want to find the following linear mapping
+for $0 \leq l \leq L-1$. We are interested in the first order derivative of $f_{\theta} \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_L}$ with respect to the input value $x = x^0 \in \mathcal{R}^{n_0}$, which can be represented by the Jacobian matrix of $f_{\theta}$
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} x} f(x) \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_L}
+    \frac{\mathrm{d}}{\mathrm{d} \ x} f_{\theta}(x) = \mathrm{}J[f_{\theta}](x)= \begin{pmatrix} \dfrac{\partial f_{\theta}(x)}{\partial x_{1}} & \cdots & \dfrac{\partial f_{\theta}(x)}{\partial x_{n_0}} \end{pmatrix} = \begin{pmatrix} \nabla f_{\theta, 1}(x)^{\mathrm{T}} \\ \vdots \\  \nabla f_{\theta, n_L}(x)^{\mathrm{T}} \end{pmatrix} = \begin{pmatrix} \dfrac{\partial f_{\theta, 1}(x)}{\partial x_{1}} & \cdots & \dfrac{\partial f_{\theta, 1}(x)}{\partial x_{n_0}} \\ \vdots & \ddots & \vdots \\ \dfrac{\partial f_{\theta, n_L}(x)}{\partial x_{1}} & \cdots & \dfrac{\partial f_{\theta, n_L}(x)}{\partial x_{n_0}} \end{pmatrix} 
 \end{equation*}
-which can be represented by the Jacobian of $f_{\theta}$
+where $f_{\theta, i}(x)$ is the $i$-th component of the output $f_{\theta}(x) \in \mathbb{R}^{n_L}$ and $\nabla f_{\theta, n_L}(x)^{\mathrm{T}}$ is the transpose of the gradient of $f_{\theta, i}(x)$. \\
+To calculate the Jacobi matrix of $f_{\theta}$ we use the chain rule several times in order to differentiate the network layer by layer. For that we denote the Jacobian matrix of the activation function $\sigma_{l} \colon \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$ of the $l$-th layer with respect to the activation $a^l(x^{l-1}) = W^{l} x^{l-1} + b^{l}$ of the $l$-th layer, with
 \begin{equation*}
-    \mathbb{J}= \begin{pmatrix} \dfrac{\partial \mathbf{f}(\mathbf{x})}{\partial x_{1}} & \cdots & \dfrac{\partial \mathbf{f}(\mathbf{x})}{\partial x_{n}} \end{pmatrix} = \begin{pmatrix} \nabla^{T} f_{1}(\mathbf{x}) \\ \vdots \\ \nabla^{T} f_{m}(\mathbf{x})\end{pmatrix} = \begin{pmatrix} \dfrac{\partial f_{1}(\mathbf{x})}{\partial x_{1}} & \cdots & \dfrac{\partial f_{1}(\mathbf{x})}{\partial x_{n}} \\ \vdots & \ddots & \vdots \\ \dfrac{\partial f_{m}(\mathbf{x})}{\partial x_{1}} & \cdots & \dfrac{\partial f_{m}(\mathbf{x})}{\partial x_{n}} \end{pmatrix} 
+    \frac{\mathrm{d}}{\mathrm{d} \ a^{l}} \ \sigma_{l} (a^l) = D^{l} \in \mathbb{R}^{n_l \times n_l}.
 \end{equation*}
-where:  is the transpose of the gradient of the -th component.
-
-
-\subsection{Backpropagation in FNN}
-
+We remind that the activation function of a layer is defined component-wise, thus the Jacobian matrix is a diagonal matrix and its diagonal entries are given by
 \begin{equation*}
-    a^{[0]}(x) = \begin{pmatrix} x \\ t \end{pmatrix} \in \mathbb{R}^2
-\end{equation*}
-
-\begin{equation*}
-    a^{l}(x) = \sigma_{l} (z^{l}(x)) = \sigma_{l} (W^{l} a^{l-1}(x) + b^{l}) \in \mathbb{R}^{n_l}, 
-\end{equation*}
-
-where $W^{l} \in \mathbb{R}^{n_l \times n_{l-1}}, \; b^{l} \in \mathbb{R}^{n_l}$ and $z^{l}(x) = W^{l} a^{l-1}(x) + b^{l} \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$.
-
-\begin{equation*}
-    f_{\theta}(x) = a^{L}(x) = \sigma_{L} (W^{L} a^{[L-1]}(x) + b^{L}) \in \mathbb{R}^{1} 
-\end{equation*}
-
+    D_{i, i}^{l} = {\sigma_{l}}^{\prime} (a^{l}(x^{l-1}))_i = {\sigma_{l}}^{\prime} (a^{l}(x^{l-1})_i).
+\end{equation*} 
+We can now differentiate the network using the chain rule
 \begin{align*}
-    \partial_x f_{\theta}(x) & =  \partial_x a^{L}(x) = \partial_x \sigma_{L} (W^{L} a^{[L-1]}(x) + b^{L}) = \\
-    & =  \frac{\mathrm{d}}{\mathrm{d} z^{L}} \sigma_{L} (z^{L}(x)) \, \cdot \, \frac{\mathrm{d}}{\mathrm{d} a^{L}} z^{L}(x) = \\ 
-    & =  \frac{\mathrm{d}}{\mathrm{d} z^{L}} \sigma_{L} (z^{L}(x)) \, \cdot \, W^{L} \, \cdot \, \frac{\mathrm{d}}{\mathrm{d} x} a^{[L-1]}(x) = \\
-    & =  \ldots = \\
-    & =  \frac{\mathrm{d}}{\mathrm{d} z^{L}} \sigma_{L} (z^{L}(x)) \, \cdot \, W^{L} \, \cdot \, \frac{\mathrm{d}}{\mathrm{d} z^{[L-1]}} \sigma_{[L-1]} (z^{[L-1]}(x)) \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \\
-    & \quad \cdot \, \frac{\mathrm{d}}{\mathrm{d} z^{[1]}} \sigma_{[1]} (z^{[1]}(x)) \, \cdot \, W^{[1]} \, \cdot \,\frac{\mathrm{d}}{\mathrm{d} x} a^{[0]}(x) 
-\end{align*}
-    
-\begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} x} a^{[0]}(x) = \frac{\mathrm{d}}{\mathrm{d} x} \begin{pmatrix} x \\ t \end{pmatrix} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}
-\end{equation*}
-
-\begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} z^{l}} \sigma_{l} (z^{l}(x)) = D^{l} \in \mathbb{R}^{n_l \times n_l}, \quad D_{i, i}^{l} = {\sigma_{l}}^{\prime} (z_{i}^{l})
-\end{equation*}
-
-(diagonal matrix, since we apply the activation function component-wise)
-
-\begin{equation*}
-    \partial_x f_{\theta}(x) = D^{L} \, \cdot \, W^{L} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[1]} \, \cdot \, W^{[1]} \, \cdot \, \begin{pmatrix} 1 \\ 0 \end{pmatrix} \in \mathbb{R}
-\end{equation*}
-
-\begin{equation*}
-    \partial_t f_{\theta}(x) = D^{L} \, \cdot \, W^{L} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[1]} \, \cdot \, W^{[1]} \, \cdot \, \begin{pmatrix} 0 \\ 1 \end{pmatrix} 
-\end{equation*}
-
-If we set $s = (x)^{\mathrm{T}}$ we can write the gradient of $f_{\theta}(s)$ as
-
-\begin{equation*}
-    \nabla_s f_{\theta}(s) = {W^{[1]}}^{\mathrm{T}} \, \cdot \, D^{[1]} \, \cdot \, {W^{[2]}}^{\mathrm{T}} \, \cdot \, D^{[2]} \, \cdot \, \ldots \, \cdot \, {W^{L}}^{\mathrm{T}} \, \cdot \, D^{L},
-\end{equation*}
-
-which we compute in the Backpropagation algorithm and get
-
-\begin{equation*}
-    {\nabla_s f_{\theta}(s)}^{\mathrm{T}} \cdot \begin{pmatrix} 1 \\ 0 \end{pmatrix} = \partial_x f_{\theta}(x) \quad \text{and} \quad {\nabla_s f_{\theta}(s)}^{\mathrm{T}} \cdot \begin{pmatrix} 0 \\ 1 \end{pmatrix} = \partial_t f_{\theta}(x)
-\end{equation*}
-
-
-\begin{equation*}
-    \partial_x [f(f_{\theta}(x)) \partial_x V_e(x)] = \frac{\mathrm{d}}{\mathrm{d} f_{\theta}} f(f_{\theta}(x)) \partial_x f_{\theta}(x) \partial_x V_e(x) + f(f_{\theta}(x)) \partial_{xx} V_e(x)
-\end{equation*}
-
-I suppose we use $f(f_e) = f_e(1-f_e) \Rightarrow f^{\prime}(f_e) = 1 - 2 f_e$. Of course, $\partial_x V_e(x)$ and $\partial_{xx} V_e(x)$ still remain to be computed. 
-
-
-
-\begin{equation*}
-    \partial_{x x} f_{\theta}(x) = ???
-\end{equation*}
-
-Attempt 1: Suppose $\partial_x f_{\theta}(x)$ is computed correctly and the activation function on each layer is $L-1$ times continuously differentiable
-
-\begin{align*}
-    \partial_{x x} f_{\theta}(x) & = \partial_{x} \partial_{x} f_{\theta}(x) = \\
-    & = \partial_{x} [D^{L} \, \cdot \, W^{L} \, \cdot \, D^{[L-1]} \, \cdot \, W^{[L-1]} \, \cdot \, \ldots \, \cdot \, D^{[1]} \, \cdot \, W^{[1]} \, \cdot \, (1, 0)^{\mathrm{T}}]
+    \frac{\mathrm{d}}{\mathrm{d} \ x} f_{\theta}(x) & = \frac{\mathrm{d}}{\mathrm{d} \ a^{L}} \ \sigma_{L} (a^{L}(x^{L-1})) = \\
+    & = D^L \cdot \frac{\mathrm{d}}{\mathrm{d} \ x^{L-1}} \ a^{L}(x^{L-1}) = D^L \cdot \frac{\mathrm{d}}{\mathrm{d} \ x^{L-1}} \ (W^{L} x^{L-1} + b^{L}) = \\
+    & = D^L \cdot W^L \cdot \frac{\mathrm{d}}{\mathrm{d} \ a^{L_1}} \ \sigma_{L-1} (a^{L-1}(x^{L-2})) = \\
+    & = \ldots = \\
+    & = D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot \frac{\mathrm{d}}{\mathrm{d} \ x^{0}} \ (W^{1} x^{0} + b^{1}) = \\
+    & = D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \in \mathbb{R}^{n_L \times n_0}.
 \end{align*}
 
-Only $D^{[1]}, \ldots, D^{L}$ depend on $x$. We first take the derivative $D^{[1]}$ with respect to $x$. Since all $D^{l}$ are diagonal matrices, we only consider the diagonal elements $D_{i, i}^{l} = {\sigma_{l}}^{\prime} (z_{i}^{l}) \in \mathbb{R}$.  
+Let us return to our case where an FNN rho approximates the solution of the drift-diffusion equation on an edge. In the following we use the vector z, where its first component is the time and the second component is the position on an edge. The gradient is due to equation 3 and equation 4 given by 
+\begin{equation}
+    \begin{split}
+        \nabla_{z}  \ \rho_{\theta_e}(z) & = \left(\nabla_{z} \rho_{\theta_e}(z)^{\mathrm{T}} \right)^{\mathrm{T}} = \left(D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \right)^{\mathrm{T}} = \\
+        & = {W^{1}}^{\mathrm{T}} \cdot D^{1} \cdot {W^{2}}^{\mathrm{T}} \cdot \ldots \cdot {W^{L}}^{\mathrm{T}}  \cdot  D^{L}. 
+    \end{split}
+\end{equation}
+The partial derivatives can be obtained by 
+\begin{equation*}
+    \begin{split}
+        \partial_t \rho_{\theta_e}(t,x) = \nabla_{z} \ \rho_{\theta_e}(z)_1 \quad & \text{and} \quad \partial_x \rho_{\theta_e}(t,x) = \nabla_{z} \ \rho_{\theta_e}(z)_2 \\
+        \partial_t \rho_{\theta_e}(t,x) = {\nabla_{z} \ \rho_{\theta_e}(z)}^{\mathrm{T}} \begin{pmatrix} 1 \\ 0 \end{pmatrix} \quad & \text{and} \quad \partial_x \rho_{\theta_e}(t,x) = {\nabla_{z} \ \rho_{\theta_e}(z)}^{\mathrm{T}} \begin{pmatrix} 0 \\ 1 \end{pmatrix}.
+    \end{split}
+\end{equation*}
 
+
+To compute the gradient in a computer program, one proceeds similarly to backpropagation by first evaluating the network at a point, i.e. propagating information forwards through the network, storing relevant values, and then propagating the so-called error backwards through the network by applying the chain rule from the last layer to the first layer in reverse. The following iterative computation can be used for that purpose
 \begin{align*}
-    \frac{\mathrm{d}}{\mathrm{d} x} {\sigma_{[1]}}^{\prime} (z_{i}^{[1]}) & = \frac{\mathrm{d}}{\mathrm{d} z_{i}^{[1]}} {\sigma_{[1]}}^{\prime} (z_{i}^{[1]}) \frac{\mathrm{d}}{\mathrm{d} x} z_{i}^{[1]} = {\sigma_{[1]}}^{\prime \prime} (z_{i}^{[1]}) \frac{\mathrm{d}}{\mathrm{d} x} (W^{[1]} a^{[0]}(x) + b^{[1]})_i = \\
-    & = {\sigma_{[1]}}^{\prime \prime} (z_{i}^{[1]}) \frac{\mathrm{d}}{\mathrm{d} x} \left[ \sum^{n_0}_{j=1} W^{[1]}_{i,j} a^{[0]}_{j}(x) + b^{[1]}_i \right] = \\
-    & = {\sigma_{[1]}}^{\prime \prime} (z_{i}^{[1]}) \sum^{n_0}_{j=1} W^{[1]}_{i,j} \frac{\mathrm{d}}{\mathrm{d} x} a^{[0]}_{j}(x) = \\
-    & = {\sigma_{[1]}}^{\prime \prime} (z_{i}^{[1]}) \left\langle W^{[1]}_{i, \colon}, \frac{\mathrm{d}}{\mathrm{d} x} a^{[0]}(x)  \right\rangle = \\
-    & = {\sigma_{[1]}}^{\prime \prime} (W^{[1]}_{i, 1} + b^{[1]}_i) W^{[1]}_{i, 1}
-\end{align*}
-
-Okay, that wasn't bad. You can certainly continue it iteratively. 
-
-But what about this long matrix product? Does the product rule apply here? If so, then we have to apply it $L-1$ times? And then we have to differentiate a selected matrix (probably $D^{L}$) $L-1$ times. Great.
-
-$\Rightarrow$ If we consider the matrix product component-wise, then the product rule must actually be applied $L-1 \times n_{L-1} \times n_{L-2} \times \ldots \times n_{2}$ times for $\frac{\mathrm{d}}{\mathrm{d} z^{l}_i} \sigma_{l}(z^{l}_i)$ in the second derivative.  
-
-\textbf{Ruthotto:}
-
-For $n_L = 1$ we have
-
-\begin{align*}
-    \delta^{L} & = {W^{L}}^{\mathrm{T}} \mathrm{diag}({\sigma_{L}}^{\prime}(W^{L} a^{[L-1]}(s) + b^{L})) = {W^{L}}^{\mathrm{T}} D^{L} \in \mathbb{R}^{n_{L-1}} \\
+    \delta^{L} & = {W^{L}}^{\mathrm{T}} \mathrm{diag}({\sigma_{L}}^{\prime}(W^{L} a^{L-1}(s) + b^{L})) = {W^{L}}^{\mathrm{T}} D^{L} \in \mathbb{R}^{n_{L-1}} \\
     \delta^{l} & = {W^{l}}^{\mathrm{T}} D^{l} \cdot \, \delta^{[l+1]} \, \cdot \, \ldots \,  \cdot \, \delta^{L} \in \mathbb{R}^{n_{l-1}} \quad \text{for} \quad l = 2, \ldots, L-1
 \end{align*}
 
-We note that for $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^{m}$, $c, d \in \mathbb{R}^{n}$
-
-\begin{align*}
-    d \, \odot \, c &= c \, \odot \, d \in \mathbb{R}^{n} \\
-    \mathrm{diag}(b) \, \cdot \, A &= b \, \odot \, A \in \mathbb{R}^{m \times n} \\
-    A \, \cdot \, \mathrm{diag}(c) &= A \, \odot \, c^{\mathrm{T}} \in \mathbb{R}^{m \times n} \\
-    \mathrm{diag}(b) \, \cdot \, A \, \cdot \, \mathrm{diag}(c) &= b \, \odot \, A \, \odot \, c^{\mathrm{T}} \in \mathbb{R}^{m \times n} \\
-    \mathrm{diag}(c) \, \cdot \, d &= c \, \odot \, d \in \mathbb{R}^{n} \\
-    c^{\mathrm{T}} \, \cdot \, \mathrm{diag}(d) &= c^{\mathrm{T}} \, \odot \, d^{\mathrm{T}} \in \mathbb{R}^{1 \times n} \\
-\end{align*}
 
 We set 
 
@@ -152,15 +73,44 @@ We set
 \end{align*}
 
 
+\begin{algorithm}[H]
+    \caption{Computation of the gradient and a Hessian of an L-layer feed-forward neural network.}
+    \begin{algorithmic}[1]
+        \State Hi
+        \State \textbf{Return} $x_k$.
+    \end{algorithmic}
+\end{algorithm}
+
+
+
+
+  
+
+
+
+
+
+
+We note that for $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^{m}$, $c, d \in \mathbb{R}^{n}$
+
+\begin{align*}
+    d \, \odot \, c &= c \, \odot \, d \in \mathbb{R}^{n} \\
+    \mathrm{diag}(b) \, \cdot \, A &= b \, \odot \, A \in \mathbb{R}^{m \times n} \\
+    A \, \cdot \, \mathrm{diag}(c) &= A \, \odot \, c^{\mathrm{T}} \in \mathbb{R}^{m \times n} \\
+    \mathrm{diag}(b) \, \cdot \, A \, \cdot \, \mathrm{diag}(c) &= b \, \odot \, A \, \odot \, c^{\mathrm{T}} \in \mathbb{R}^{m \times n} \\
+    \mathrm{diag}(c) \, \cdot \, d &= c \, \odot \, d \in \mathbb{R}^{n} \\
+    c^{\mathrm{T}} \, \cdot \, \mathrm{diag}(d) &= c^{\mathrm{T}} \, \odot \, d^{\mathrm{T}} \in \mathbb{R}^{1 \times n} \\
+\end{align*}
+
+
+
 
 
 
 
 \subsection{Backpropagation in ResNet}
 
-\begin{equation*}
-    a^{[1]}(x) = \sigma_{[1]} (W^{[1]} a^{[0]}(x) + b^{[1]}) \in \mathbb{R}^{m}, 
-\end{equation*}
+
 
 where $W^{[1]} \in \mathbb{R}^{m \times 2}$ and $b^{[1]} \in \mathbb{R}^{m}$.
 
@@ -195,7 +145,7 @@ We set
     &\vdots\\
     \delta^{l} & = \delta^{[l+1]} + h \, {W^{l}}^{\mathrm{T}} D^{l} \, \delta^{[l+1]} \\
     &\vdots\\
-    \delta^{[L-1]} & = \delta^{L} + h \, {W^{[L-1]}}^{\mathrm{T}} D^{[L-1]} \, \delta^{L} \\
+    \delta^{L-1} & = \delta^{L} + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \, \delta^{L} \\
     \delta^{L} & = w + h \, {W^{L}}^{\mathrm{T}} D^{L} \, w
 \end{align*}
 
@@ -238,7 +188,7 @@ where
 where 
 
 \begin{equation*}
-    J^{l-1} = J_x(a^{l-1}(s)) = \left( \partial_x a^{l-1}_1(s), \ldots, \partial_x a^{l-1}_m(s) \right)^{\mathrm{T}} \in \mathbb{R}^{m}
+    J^{l-1} = J_x(a^{l-1}(s)) = \left( \frac{\mathrm{d}}{\mathrm{d} x} a^{l-1}_1(s), \ldots, \frac{\mathrm{d}}{\mathrm{d} x} a^{l-1}_m(s) \right)^{\mathrm{T}} \in \mathbb{R}^{m}
 \end{equation*}
 
 
@@ -253,8 +203,8 @@ Now to the Hessian as it has been implemented:
     \vartheta^{l} & = h \, {W^{l}}^{\mathrm{T}} \mathrm{diag} \left( H^{l} \delta^{[l+1]} \right) W^{l} + \\
     & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \vartheta^{[l+1]}  \left( I + h \,  D^{l} {W^{l}} \right) \\ 
     &\vdots\\
-    \vartheta^{[L-1]} & = h \, {W^{[L-1]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[L-1]} \delta^{L} \right) W^{[L-1]} + \\
-    & \quad + \left( I + h \, {W^{[L-1]}}^{\mathrm{T}} D^{[L-1]} \right) \, \left( \left( I + h \, {W^{[L-1]}}^{\mathrm{T}} D^{[L-1]} \right) \, \vartheta^{L} \right)^{\mathrm{T}} \\
+    \vartheta^{L-1} & = h \, {W^{L-1}}^{\mathrm{T}} \mathrm{diag} \left( H^{L-1} \delta^{L} \right) W^{L-1} + \\
+    & \quad + \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \left( \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \vartheta^{L} \right)^{\mathrm{T}} \\
     \vartheta^{L} &  = h \, {W^{L}}^{\mathrm{T}} \mathrm{diag}(H^{L} w) W^{L} 
 \end{align*}
 
