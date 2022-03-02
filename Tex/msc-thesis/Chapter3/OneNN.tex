@@ -1,7 +1,7 @@
 \section{One Neural Network for all edges}
 \label{ch3:sec1}
 
-In this section we construct, in some sense, a global cost function, which is used to modify the weights and biases of a neural network appropriately by minimizing it in the learning phase. In the following we denote this cost function by $\Phi_\theta$, where $\theta$ only refers to the set of learnable parameters of the used neural network and does not obtain any information about the used type of neural network or the topology of the used neural network. The idea of this approach in this section is that in the learning phase the drift-diffusion equations on all edges and all initial and boundary conditions are considered at once such that all edges are seen as being merged together and thus the problem of approximating the solution of the set of drift-diffusion equations on a metric graph is treated as a whole. Therefore, we construct only one cost function $\Phi_\theta$, which consists of several misfit terms, as in \cref{MSE PINN}, by incorporating the mean-squared-error of a residual network as well as a number of misfit terms which enforce the initial and boundary conditions at a set of collocation points. Of course, we want to exploit the special structure of the domain given by the metric graph for the construction of this cost function $\Phi_\theta$. We note that we construct the cost function $\Phi_\theta$ for the general case and do not adopt the parameters with respect to the previously mentioned graph, since this approach can of course also be applied to any metric graph. \\
+In this section we construct, in some sense, a global cost function, which is used to modify the weights and biases of a neural network appropriately by minimizing it in the learning phase. In the following we denote this cost function by $\Phi_\theta$, where $\theta$ only refers to the set of trainable parameters of the used neural network and does not obtain any information about the used type of neural network or the topology of the used neural network. The idea of this approach in this section is that in the learning phase the drift-diffusion equations on all edges and all initial and boundary conditions are considered at once such that all edges are seen as being merged together and thus the problem of approximating the solution of the set of drift-diffusion equations on a metric graph is treated as a whole. Therefore, we construct only one cost function $\Phi_\theta$, which consists of several misfit terms, as in \cref{MSE PINN}, by incorporating the mean-squared-error of a residual network as well as a number of misfit terms which enforce the initial and boundary conditions at a set of collocation points. Of course, we want to exploit the special structure of the domain given by the metric graph for the construction of this cost function $\Phi_\theta$. We note that we construct the cost function $\Phi_\theta$ for the general case and do not adopt the parameters with respect to the previously mentioned graph, since this approach can of course also be applied to any metric graph. \\
 Let's start with the easy part first, the definition of the residual network, which returns us a residual in the cost function $\Phi_\theta$ for the neural network to be learned. From now on, we denote the surrogate network by $\rho_{\theta_e}$, which is supposed to approximate the solution $\rho_e$ of \cref{eq:Hamiltonian} on an individual edge $e \in \mathcal{E}$. Of course, $\rho_{\theta_e}$ receives the same input values $ \left( t, x \right) \in  \left( 0, T \right) \times [0, \ell_e]$ as $\rho_e$ and also returns a real-valued number. Here $\theta_e$ denotes the set of all weights and biases that are involved in the approximation of $\rho_e$ on an individual edge $e \in \mathcal{E}$, and $\theta_e$ also contains no information about the used type of neural network or the topology of the used neural network. If we insert the surrogate network $\rho_{\theta_e} \left( t,x \right)$ into the right-hand side of \cref{eq:Hamiltonian}, we obtain as a residual network for each individual edge $e \in \mathcal{E}$
 \begin{equation}
     \label{Drift-Diffusion residual network}
@@ -24,12 +24,12 @@ In order to enforce the continuity in the interior vertices $\mathcal{V}_\mathca
     \label{misfit:continuity}
     \phi_{v,c}  \left( X_{v,b} \right) \coloneqq \frac{1}{n_b} \sum_{e \in \mathcal{E}_v} \sum_{i=1}^{n_b} \left(  \rho_{\theta_e}  \left( t_{v,b}^i, v \right) - \rho_{v}^i \right)^2,
 \end{equation} 
-with $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b}$ as introduced before. Here, we introduce for each interior vertex $v \in \mathcal{V}_\mathcal{K}$ some additional learnable parameters $\{\rho_{v}^i\}_{i=1}^{n_b}$, that are appended to the set of weights and biases $\theta$ and which are also trained by minimizing the resulting cost function $\Phi_\theta$. The other misfit is defined for each interior vertex $v \in \mathcal{V}_\mathcal{K}$ by 
+with $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b}$ as introduced before. Here, we introduce for each interior vertex $v \in \mathcal{V}_\mathcal{K}$ some additional trainable parameters $\{\rho_{v}^i\}_{i=1}^{n_b}$, that are appended to the set of weights and biases $\theta$ and which are also trained by minimizing the resulting cost function $\Phi_\theta$. The other misfit is defined for each interior vertex $v \in \mathcal{V}_\mathcal{K}$ by 
 \begin{equation} 
     \label{misfit:continuity:average}
     \phi_{v,c}  \left( X_{v,b} \right) \coloneqq \frac{1}{n_b}  \sum_{i=1}^{n_b} \left( \sum_{e \in \mathcal{E}_v} \left( \rho_{\theta_e}  \left( t_{v,b}^i, v \right) - \frac{1}{\abs{\mathcal{E}_v}} \sum_{e \in \mathcal{E}_v} \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \right) \right)^2.
 \end{equation}
-Here, on average over all time collocation points $\{t_{v,b}^i\}_{i=1}^{n_b}$, the value $\rho_{\theta_e}  \left( t_{v,b}^i, v \right)$ of each edge $e \in \mathcal{E}_v$ should be equal to the average of all edges connected to this interior vertex $v \in \mathcal{V}_\mathcal{K}$. Both misfit terms have their numerical advantages and disadvantages. The misfit term defined by \cref{misfit:continuity} is not so complex, from which can follow that the derivatives with respect to the learnable parameters in the optimization method is easier to compute, but therefore it introduces just as much learnable parameters as collocation points to the set of learnable parameters. No further learnable parameters need to be defined for the misfit term given by \cref{misfit:continuity:average}, but it is more complex for that. \\
+Here, on average over all time collocation points $\{t_{v,b}^i\}_{i=1}^{n_b}$, the value $\rho_{\theta_e}  \left( t_{v,b}^i, v \right)$ of each edge $e \in \mathcal{E}_v$ should be equal to the average of all edges connected to this interior vertex $v \in \mathcal{V}_\mathcal{K}$. Both misfit terms have their numerical advantages and disadvantages. The misfit term defined by \cref{misfit:continuity} is not so complex, from which can follow that the derivatives with respect to the trainable parameters in the optimization method is easier to compute, but therefore it introduces just as much trainable parameters as collocation points to the set of trainable parameters. No further trainable parameters need to be defined for the misfit term given by \cref{misfit:continuity:average}, but it is more complex for that. \\
 We enforce the flux boundary conditions for each exterior vertex $v \in \mathcal{V}_\mathcal{D}$, \cref{eq:Dirichlet_conditions} by defining the following misfit term  
 \begin{align} 
     \label{misfit:Dirichlet}
@@ -52,35 +52,71 @@ We average each of the above mentioned misfit terms over all units where these t
 \end{align}
 where $X_{data}$ represents the union of the different collocation points $X_e$, $X_{v,b}$ and $X_{e,0}$. 
 
+Next we perform numerical experiments with different types of neural networks for this approach specified by the cost function given by \cref{eq:loss:1}. So far we have not specified what type of neural network with which topology we use for $\rho_{\theta_e}(t, x)$, i.e. to approximate the solution of \cref{Drift-Diffusion-equation} on an individual edge under the given initial and vertex conditions. Of course, we have an infinite freedom of choice, the only constraints being the dimension of the input $(x,t) \in \mathbb{R}^2$, the dimension of the output $\rho_{\theta_e}(t, x) \in \mathbb{R}$ and the differentiability of the corresponding neural network up to order two (due to $\partial_{xx} \rho_{\theta_e}(t,x)$ appears in \cref{Drift-Diffusion-equation}). \\
+Since we have to find an approximation for each edge $e \in \mathcal{E}$ and the approximations are simply summed up in the cost function $\Phi_{\theta}$, it is obvious to use a single network for the approximation of the solution of \cref{Drift-Diffusion-equation} on one individual edge, which results in the fact that we use as many neural networks as we have edges of the graph $\Gamma$. In this case, $\theta_e$ describes the trainable parameters of a single neural network and $\theta$ is the union of all trainable parameters of all networks. Thus, during training, all trainable parameters in $\theta$ are modified when the cost function $\Phi_{\theta}$ is minimized, and therefore consider the corresponding optimization methods$\theta$ as the optimization variable. A set of neural networks offers the possibility to choose different training parameters such as collocation points but also different hyperparameters such as activation functions or the topology of the corresponding neural network. One can use a deep neural network for an edge for which the solution can have a complex structure, while a shallow neural network can be used on the edges with relatively simple and smooth solutions. In this work, however, we will not cover such a case due to the effort of finding the best set of collocation points or the best hyperparameters, but we use the same type of neural network with the same topology for each edge. \\
+
+% Noch die richtigen Hyperparameter hinzufügen
+For the first numerical experiment, we use for $\rho_{\theta_e}(x, t)$ an feed-forward neural network, denoted by $fnn_{\theta_e}(x, t)$, with $L$-layers for each edge $e \in \mathcal{E}$, which is defined by 
+\begin{gather}
+    \label{one_for_each}
+    fnn_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R} \\
+    \\
+    fnn_{\theta_e}(x, t) = \sigma_L(W^L \sigma_{L-1}(W^{L-1}\sigma_{L-2}(\cdots \sigma_{1}(W^{1}x^0 +b^1) \cdots) + b^{L-1}) + b^{L}) 
+\end{gather}
+where $x^0 = (t, x)^{\mathrm{T}} \in (0, T) \times [0, \ell_e] \subset \mathbb{R}^2$ and $\theta_e = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L} \right\}$. The total set of all trainable parameters for this PINN approach is therefore $\theta = \bigcup_{e \in \mathcal{E}} \ \theta_e$. Feed-forward neural networks have already been used in various PINN setups, so this choice can be considered reasonable.  \\
+For the second numerical experiment, we use a neural network for $\rho_{\theta_e}(x, t)$, which is defined by the following architecture and the following forward propagation
+\begin{gather}
+    \label{Resnet}
+    R_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R} \\
+    \\
+    R_{\theta_e}(t,x) = \frac{1}{2} {x^0}^{\mathrm{T}} A x^0 + w^{\mathrm{T}} x^{L} + c^{\mathrm{T}} x^0 \\
+    \\
+    x^1 = \sigma_1(W^1 x^{0} + b^1) \in \mathbb{R}^m \\
+    \\
+    x^l = x^{l-1} + h \cdot \sigma_l(W^l x^{l-1} + b^l) \in \mathbb{R}^m \quad \text{for} \quad l = 2, \ldots, L, 
+\end{gather}
+where $x^0 = (t, x)^{\mathrm{T}} \in (0, T) \times [0, \ell_e] \subset \mathbb{R}^2$, $h > 0$ is a hyperparameter and $A \in \mathbb{R}^{2 \times 2}$, $w \in \mathbb{R}^m$, $c \in \mathbb{R}^2$ are also trainable parameters, i.e. $\theta_e = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}, A, w, c \right\}$ and $\theta = \bigcup_{e \in \mathcal{E}} \ \theta_e$. The idea of using this type of neural network originates from Paper 3. 
+
+The value x is generated by a neural network that has L layers, but whose forward propagation is defined by 
+
+
+
+
+
+ 
+
+
+In this subsection, we use a single feed-forward neural network with $L \in \mathbb{N}$ layers for the approximation of the solution of \cref{Drift-Diffusion-equation} under the given initial and boundary conditions on all edges of the graph $\Gamma = (\mathcal{V}, \mathcal{E})$, i.e. the network, which we denote with $P_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^{E}$ with $E = \abs{\mathcal{E}}$ in the following, receives as input the ordered pair $(t,x) \in \mathbb{R}^2$ and produces an output $P(t,x) \in \mathbb{R}^{E}$ whose dimension corresponds to the number of edges of the graph $\Gamma$, where the $i$-th entry of this network $P_{\theta}$ represents the approximation of the solution on the $i$-th edge, i.e. $[P_{\theta}(t,x)]_i = \rho_{\theta_{e_i}} \left( t,x \right) \in \mathbb{R}$ with $e_i \in \mathcal{E}$. Of course, only the weights $W = \{ W^l \}_{l = 1, \ldots, L}$ and biases $b = \{ b^l \}_{l = 1, \ldots, L}$ of this network $P_{\theta}$ are to be learned here, i.e. $\theta = (\{ W^l \}_{l = 1, \ldots, L}, \{ b^l \}_{l = 1, \ldots, L})$. \\
+We note that using just one neural network for all edges is only possible because the graph $\Gamma$ is equilateral, see \cref{graph_assumptions}, and thus  is defined for $x \in [0,1]$ on every edge. % stimmt nicht so ganz, macht es aber um vieles einfacher. Man kann die gleichen Kollokationspunkte verwenden!
+%Projektion
+
+
+
+
+
+
+
+% Kollokationspunkte 
+
 We note that, as mentioned in \cref{ch1:sec4}, all derivatives of surrogate models with respect to the input parameters are computed with automatic differentiation provided by \lstinline!Tensorflow! via the method \lstinline!tf.GradientTape!. 
 
 
 For the minimization of the cost function $\Phi_{\theta}$, we first use a variant of the gradient descent method, in which the direction is given by the Adam optimizer from the module \lstinline!Keras!, see \cite{Chollet:2015}, which belongs to the package \lstinline!Tensorflow!, see \cite{TensorFlow}. We change for the different types of neural networks the input parameter \lstinline!learning_rate!, which obviously specifies the learning rate of the method, and leave all other input parameters of the Adam optimizer by default. This method stops after 2000 iterations. After that, we use the L-BFGS-B optimizer from the package \lstinline!SciPy!, see \cite{SciPy:2020}, and we set for all networks as parameters in the options \lstinline!maxiter = 5000! which specifies the maximum number of iterations, \lstinline!maxfun = 50000! which specifies the maximum number of function evaluations, \lstinline!maxcor = 50! which specifies the maximum number of stored variable metric corrections used in the L-BFGS approximation of the Hessian of the cost function $\Phi_{\theta}$, \lstinline!maxls = 50! which specifies the maximum number of line search steps per iteration and \lstinline!ftol = 1.0*np.finfo(float).eps! which specifies a parameter in a stopping criterion that aborts the method if the values of the cost function $\Phi_{\theta}$ between two iterates are too small.
 
 
-
-% Kollokationspunkte 
-% Code 
-% Adam und LBFGs
-
-\subsection{One Neural Network to rule them all}
-\label{ch3:sec1:subsec1}
-
-In this subsection, we use a single feed-forward neural network with $L \in \mathbb{N}$ layers for the approximation of the solution of \cref{Drift-Diffusion-equation} under the given initial and boundary conditions on all edges of the graph $\Gamma = (\mathcal{V}, \mathcal{E})$, i.e. the network, which we denote with $P_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^{E}$ with $E = \abs{\mathcal{E}}$ in the following, receives as input the ordered pair $(t,x) \in \mathbb{R}^2$ and produces an output $P(t,x) \in \mathbb{R}^{E}$ whose dimension corresponds to the number of edges of the graph $\Gamma$, where the $i$-th entry of this network $P_{\theta}$ represents the approximation of the solution on the $i$-th edge, i.e. $[P_{\theta}(t,x)]_i = \rho_{\theta_{e_i}} \left( t,x \right) \in \mathbb{R}$ with $e_i \in \mathcal{E}$. Of course, only the weights $W = \{ W^l \}_{l = 1, \ldots, L}$ and biases $b = \{ b^l \}_{l = 1, \ldots, L}$ of this network $P_{\theta}$ are to be learned here, i.e. $\theta = (\{ W^l \}_{l = 1, \ldots, L}, \{ b^l \}_{l = 1, \ldots, L})$. \\
-We note that using just one neuronal network for all edges is only possible because the graph $\Gamma$ is equilateral, see \cref{graph_assumptions}, and thus  is defined for $x \in [0,1]$ on every edge. % stimmt nicht so ganz, macht es aber um vieles einfacher. Man kann die gleichen Kollokationspunkte verwenden!
-
-
-\subsection{One Neural Network for each edge}
-\label{ch3:sec1:subsec2}
-
-Also, a set of neural networks offers the possibility to choose for the networks on the various edges different training parameters such as residual points but also different hyperparameters such as activation functions, width and depth of the corresponding network. One can also use a deep neural network for an edge for which the solution can have a complex structure, while a shallow neural network can be used on the edges with relatively simple and smooth solutions.
-
-\begin{equation}
-    \label{Resnet}
-    \rho_{\theta_e}(t,x) = \rho_{\theta_e}(z) = \frac{1}{2} z^{\mathrm{T}} A z + w^{\mathrm{T}} x^{L} + c^{\mathrm{T}} s 
-\end{equation}
-
-
-
-
-
+\begin{table}[H]\label{tab:one_cost_function}
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{l l l l }
+            \toprule
+            Neural Network given by & One each egde & Resnet & One  \\ 
+            \midrule
+            Error & $0.15$ & $0.21$ & $0.54$ \\ 
+            \midrule
+            Time in seconds & $0.15$ & $0.21$ & $0.54$  \\ 
+            \midrule
+            Number of Iterations & $72$ & $68$ & $72$ \\
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Comparison of different types of neural networks.}
+\end{table}

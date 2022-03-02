@@ -58,7 +58,7 @@ To compute the gradient in a computer program, one proceeds similarly to backpro
 
 
 We set 
-
+% Tensor
 \begin{equation*}
     H^{l} = \mathrm{diag}({\sigma_{l}}^{\prime \prime}(W^{l} a^{l-1}(s) + b^{l})) \in \mathbb{R}^{n_l \times n_l}, \quad (H^{l})_{i, i} = {\sigma_{l}}^{\prime \prime} (z_{i}^{l})
 \end{equation*}
@@ -76,7 +76,7 @@ We set
 \begin{algorithm}[H]
     \caption{Computation of the gradient and a Hessian of an L-layer feed-forward neural network.}
     \begin{algorithmic}[1]
-        \State \textbf{Input:} vector $z^0 \in \mathbb{R}^{n_0}$; learnable parameters $\theta = (\{ W^l \}_{l = 1, \ldots, L}, \{ b^l \}_{l = 1, \ldots, L})$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\{ b^l \}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a FNN $f$
+        \State \textbf{Input:} vector $z^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = (\{ W^l \}_{l = 1, \ldots, L}, \{ b^l \}_{l = 1, \ldots, L})$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\{ b^l \}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a FNN $f$
         \For{$ l = 1, \ldots, L$}
             \State Set $z^l = \sigma_l(W^l z^{l-1} + b^l)$
         \EndFor
