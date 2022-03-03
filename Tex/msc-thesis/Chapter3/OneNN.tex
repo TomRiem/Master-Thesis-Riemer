@@ -56,7 +56,7 @@ Next we perform numerical experiments with different types of neural networks fo
 Since we have to find an approximation for each edge $e \in \mathcal{E}$ and the approximations are simply summed up in the cost function $\Phi_{\theta}$, it is obvious to use a single network for the approximation of the solution of \cref{Drift-Diffusion-equation} on one individual edge, which results in the fact that we use as many neural networks as we have edges of the graph $\Gamma$. In this case, $\theta_e$ describes the trainable parameters of a single neural network and $\theta$ is the union of all trainable parameters of all networks. Thus, during training, all trainable parameters in $\theta$ are modified when the cost function $\Phi_{\theta}$ is minimized, and therefore consider the corresponding optimization methods$\theta$ as the optimization variable. A set of neural networks offers the possibility to choose different training parameters such as collocation points but also different hyperparameters such as activation functions or the topology of the corresponding neural network. One can use a deep neural network for an edge for which the solution can have a complex structure, while a shallow neural network can be used on the edges with relatively simple and smooth solutions. In this work, however, we will not cover such a case due to the effort of finding the best set of collocation points or the best hyperparameters, but we use the same type of neural network with the same topology for each edge. \\
 
 % Noch die richtigen Hyperparameter hinzufügen
-For the first numerical experiment, we use for $\rho_{\theta_e}(x, t)$ an feed-forward neural network, denoted by $fnn_{\theta_e}(x, t)$, with $L$-layers for each edge $e \in \mathcal{E}$, which is defined by 
+For the first numerical experiment, we use for $\rho_{\theta_e}(x, t)$ an feed-forward neural network, denoted by $fnn_{\theta_e}(x, t)$, with $L$-layers and $n_0 = 2$, $n_L = 1$ for each edge $e \in \mathcal{E}$, which is defined by 
 \begin{gather}
     \label{one_for_each}
     fnn_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R} \\
@@ -66,30 +66,36 @@ For the first numerical experiment, we use for $\rho_{\theta_e}(x, t)$ an feed-f
 where $x^0 = (t, x)^{\mathrm{T}} \in (0, T) \times [0, \ell_e] \subset \mathbb{R}^2$ and $\theta_e = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L} \right\}$. The total set of all trainable parameters for this PINN approach is therefore $\theta = \bigcup_{e \in \mathcal{E}} \ \theta_e$. Feed-forward neural networks have already been used in various PINN setups, so this choice can be considered reasonable.  \\
 For the second numerical experiment, we use a neural network for $\rho_{\theta_e}(x, t)$, which is defined by the following architecture and the following forward propagation
 \begin{gather}
-    \label{Resnet}
+    \label{Resnet1}
     R_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R} \\
     \\
-    R_{\theta_e}(t,x) = \frac{1}{2} {x^0}^{\mathrm{T}} A x^0 + w^{\mathrm{T}} x^{L} + c^{\mathrm{T}} x^0 \\
-    \\
+    R_{\theta_e}(t,x) = \frac{1}{2} {x^0}^{\mathrm{T}} A x^0 + w^{\mathrm{T}} x^{L} + c^{\mathrm{T}} x^0
+\end{gather}
+with
+\begin{gather}
+    \label{Resnet2}
     x^1 = \sigma_1(W^1 x^{0} + b^1) \in \mathbb{R}^m \\
     \\
     x^l = x^{l-1} + h \cdot \sigma_l(W^l x^{l-1} + b^l) \in \mathbb{R}^m \quad \text{for} \quad l = 2, \ldots, L, 
 \end{gather}
-where $x^0 = (t, x)^{\mathrm{T}} \in (0, T) \times [0, \ell_e] \subset \mathbb{R}^2$, $h > 0$ is a hyperparameter and $A \in \mathbb{R}^{2 \times 2}$, $w \in \mathbb{R}^m$, $c \in \mathbb{R}^2$ are also trainable parameters, i.e. $\theta_e = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}, A, w, c \right\}$ and $\theta = \bigcup_{e \in \mathcal{E}} \ \theta_e$. The idea of using this type of neural network originates from Paper 3. 
+where $x^0 = (t, x)^{\mathrm{T}} \in (0, T) \times [0, \ell_e] \subset \mathbb{R}^2$, $h > 0$ is called stepsize and is a hyperparameter and $A \in \mathbb{R}^{2 \times 2}$, $w \in \mathbb{R}^m$, $c \in \mathbb{R}^2$ are also trainable parameters, i.e. $\theta_e = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}, A, w, c \right\}$ and $\theta = \bigcup_{e \in \mathcal{E}} \ \theta_e$. The idea of using this type of neural network originates from \cite{RuthottoOsherLiNurbekyanFung2020}, in which high-dimensional mean field games and mean field control models are approximately solved by combining Lagrangian and Eulerian viewpoints and by using a tailored neural network parameterization for the potential of the solution, which can be understood as a density, to avoid any spatial discretisation. The neural network given by  is also called residual network and abbreviated with ResNet, \cite{HeZhangRenSun:2015}. We refer to it only as ResNet to avoid confusion with the residual network of a PINN. ResNets have been successful in a wide range of machine learning tasks and have been found to be trainable even for many layers. By interpreting \cref{Resnet2} as a forward Euler discretization of an initial value problem, the continuous limit of a ResNet is amenable to mathematical analysis, \cite[p.~6]{RuthottoOsherLiNurbekyanFung2020}. \\
 
-The value x is generated by a neural network that has L layers, but whose forward propagation is defined by 
+For the third numerical experiment, we use a completely different approach of utilize a neural network to approximate the solutions of the set of drift-diffusion equations. We use one single feed-forward neural network with $L \in \mathbb{N}$ layers for the approximation of the solution of \cref{Drift-Diffusion-equation} under the given initial and boundary conditions on all edges of the graph $\Gamma$, i.e. this network returns for a point $(t,x) \in \mathcal{R}^2$ the values $\rho_{\theta_{e_i}}(x, t)$ for all edges $\mathcal{E} = \left\{ e_i \right\}_{i = 1, \ldots, E}$, where $E = \abs{\mathcal{E}}$. We define this neural network as follows
+\begin{gather}
+    \label{one_for_all}
+    \mathfrak{FNN}_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^E \\
+    \\
+    \mathfrak{FNN}_{\theta}(x, t) = \sigma_L(W^L \sigma_{L-1}(W^{L-1}\sigma_{L-2}(\cdots \sigma_{1}(W^{1}x^0 +b^1) \cdots) + b^{L-1}) + b^{L}) \in \mathbb{R}^E
+\end{gather}
+the approximation values are given by 
+\begin{equation*}
+    \rho_{\theta_{e_i}}(x, t) = \left[ \mathfrak{FNN}_{\theta}(x, t) \right]_i \in \mathbb{R},
+\end{equation*}
+i.e. the $i$-th entry of the networks output $\mathfrak{FNN}_{\theta}(x, t) \in \mathbb{R}^E$ is the approximation of the solution on the $i$-th edge. In this case, the trainable parameters consist only of the weights and biases of this single neural network, i.e. $\theta = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L} \right\}$, as indicated by the index $\theta$ in $\mathfrak{FNN}_{\theta}$. \\
+The use of a single neural network is motivated by the hope that the neurons in the hidden layers will learn the structure of the entire graph and the resulting communication of the edges via the vertices, i.e. that all interactions inside the graph will be taken into account by the neurons. Furthermore, we hope that the computational cost is reduced as only the weights and biases of this single network need to be trained, provided it can be shown that the depth and width of the network is not too large. The fact that the network generates the output for all edges at the same time is also an advantage, as in an implementation only the execution of one network is necessary instead of several. However, we point out that this approach only makes sense if the graph is equilateral, see \cref{graph_assumptions}, because then the same collocation points $X_e = \{ \left( t_e^i, x_e^i \right)\}_{i=1}^{n_e}$ and $X_{e,0} = \{x_{e,0}^i\}_{i=1}^{n_0}$ can be used for the misfit terms given by \cref{misfit:residual} and \cref{misfit:initial} for all edges $e \in \mathcal{E}$.
 
 
-
-
-
- 
-
-
-In this subsection, we use a single feed-forward neural network with $L \in \mathbb{N}$ layers for the approximation of the solution of \cref{Drift-Diffusion-equation} under the given initial and boundary conditions on all edges of the graph $\Gamma = (\mathcal{V}, \mathcal{E})$, i.e. the network, which we denote with $P_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^{E}$ with $E = \abs{\mathcal{E}}$ in the following, receives as input the ordered pair $(t,x) \in \mathbb{R}^2$ and produces an output $P(t,x) \in \mathbb{R}^{E}$ whose dimension corresponds to the number of edges of the graph $\Gamma$, where the $i$-th entry of this network $P_{\theta}$ represents the approximation of the solution on the $i$-th edge, i.e. $[P_{\theta}(t,x)]_i = \rho_{\theta_{e_i}} \left( t,x \right) \in \mathbb{R}$ with $e_i \in \mathcal{E}$. Of course, only the weights $W = \{ W^l \}_{l = 1, \ldots, L}$ and biases $b = \{ b^l \}_{l = 1, \ldots, L}$ of this network $P_{\theta}$ are to be learned here, i.e. $\theta = (\{ W^l \}_{l = 1, \ldots, L}, \{ b^l \}_{l = 1, \ldots, L})$. \\
-We note that using just one neural network for all edges is only possible because the graph $\Gamma$ is equilateral, see \cref{graph_assumptions}, and thus  is defined for $x \in [0,1]$ on every edge. % stimmt nicht so ganz, macht es aber um vieles einfacher. Man kann die gleichen Kollokationspunkte verwenden!
-%Projektion
-
+% Erklärung der Knoten v in den misfit termen!
 
 
 
