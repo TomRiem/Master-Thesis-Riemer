@@ -41,11 +41,12 @@ To simplify the notation of FNNs, we introduce a so-called input layer with $l=0
 We consider the information processing of a single layer $1 \leq l \leq L$. As input, each of the $n_l$ neurons in layer $l$ receives the output $x^{l-1} \in \mathbb{R}^{n_{l-1}}$ of the $n_{l-1}$ neurons in the previous layer $l-1$. Each neuron in layer $l$ has its own weight vector $w_i \in \mathbb{R}^{n_{l-1}}$, $i = 1, \ldots, n_l$. The weights of all $n_l$ neurons in layer $l$ can be conveniently organized into a matrix $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$, where the $i$-th row is the transposed weight vector, $w^{\mathrm{T}}_i$, of the $i$-th neuron. We summarize the $n_l$ biases of the $n_l$ neurons into a vector $b \in \mathbb{R}^{n_l}$. The input $x^{l-1}$ is now linearly combined $n_l$ times with the weights and biases of the $n_l$ neurons of layer $l$ via 
 \begin{equation}
     \label{propagation function}
-    a^l = W^l x^{l-1} + b^l \in \mathbb{R}^{n_l}.
+    a^l = a^l(x^{l-1}) = W^l x^{l-1} + b^l \in \mathbb{R}^{n_l}.
 \end{equation}
-We call \cref{propagation function} propagation function of layer $l$. \\
+We call \cref{propagation function} propagation function or activation of layer $l$. \\
 The same activation function is used in all neurons of layer $l$, which is why we define the activation function $\sigma \colon \mathbb{R} \to \mathbb{R}$ for vector-valued input values $a \in \mathbb{R}^{n_l}$ by applying it component-wise:
-\begin{equation*}
+\begin{equation}
+    \label{activation function}
     \sigma_l \colon \mathbb{R}^{n_l} \ni a^l \mapsto \sigma_l (a^l) \coloneqq \left(
         \begin{array}
             {c} \sigma_l \left( a^l_{1} \right) \\
@@ -53,7 +54,7 @@ The same activation function is used in all neurons of layer $l$, which is why w
             \sigma_l \left( a^l_{n_l} \right)
         \end{array}
         \right) \in \mathbb{R}^{n_l}.
-\end{equation*}
+\end{equation}
 We note that the activation function $\sigma_l$ can vary from layer to layer, which is why we indicate the dependency with the index $l$. The complete transformation of the input $x^{l-1} \in \mathbb{R}^{n_{l-1}}$ in the $l$-th layer can then be written as
 \begin{equation}
     \label{action layer}
