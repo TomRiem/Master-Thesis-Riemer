@@ -167,9 +167,9 @@ For some considerations it makes sense that the lengths of all edges are equal, 
 
 The introduction of a length $\ell_e$ for each edge $e$ of a graph $\Gamma$ enables us to interpret the graph $\Gamma$ as a topological space, which is the union of all edges whose ends are identified with the same vertex. We note that in the following the graphs are not assumed to be embedded into an Euclidean space or a Riemannian manifold in any way. A graph with a finite number of vertices and edges, whose edges all have finite lengths will be called compact and it is also compact as a topological space. \\
 Any metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$ can be equipped with a natural metric. If a sequence of edges $\{ e_i \}_{i = 1, \ldots, n} \subset \mathcal{E}$ forms a path, the length of the path is defined as $\sum^{n}_{i=1} \ell_i < \infty$. For two vertices $v, w \in \mathcal{V}$, the distance $\mathrm{dist}(v,w)$ is defined as the minimal length over all path connecting them. One should notice that the points of a metric graph $\Gamma$ are not only its vertices, but all intermediate points $x_e \in e$ on the edges $e \in \mathcal{E}$ as well. Since along each edge $e$ the distance is determined by the coordinate $x_e$, it is easy to define the distance $\mathrm{dist}(x_{e_1},x_{e_2})$ between two points $x_{e_1} \in [0, \ell_{e_1}]$ and $x_{e_2} \in [0, \ell_{e_2}]$, $e_1, e_2 \in \mathcal{E}$, of the graph that are not necessarily vertices. \\
-When we speak about functions $f \colon \Gamma \to \mathbb{R}$ on graphs, we consider them defined on all points of each edge and not only on the vertices. By introducing a metric or distance between two points of a metric graph $\Gamma$, we can define the space of continuous functions $C(\Gamma)$. The presence of the coordinate $x_e$ along the edges $e \in \mathcal{E}$ enables one to define in the natural way the Lebesgue measure $dx$ on the graph. Having this measure, one can define $L_2(e)$, the space of measurable functions $f \colon e \to \mathbb{R}$ for which its absolute value is Lebesgue square integrable, i.e.
+When we speak about functions $f \colon \Gamma \to \mathbb{R}$ on graphs, we consider them defined on all points of each edge and not only on the vertices. By introducing a metric or distance between two points of a metric graph $\Gamma$, we can define the space of continuous functions $C(\Gamma)$. The presence of the coordinate $x_e$ along the edges $e \in \mathcal{E}$ enables one to define in the natural way the Lebesgue measure on the graph. Having this measure, one can define $L_2(e)$, the space of measurable functions $f \colon e \to \mathbb{R}$ for which its absolute value is Lebesgue square integrable, i.e.
 \begin{equation*}
-    \lVert f \rVert^{2}_{L_2(e)} = \int_e \lvert f(x) \rvert^2 \, dx < \infty.
+    \lVert f \rVert^{2}_{L_2(e)} \coloneqq \int_e \lvert f(x) \rvert^2 \, \textup{d} x < \infty.
 \end{equation*}
 The space $L_2(\Gamma)$ on $\Gamma = (\mathcal{V}, \mathcal{E})$ is the orthogonal direct sum of spaces $L_2(e)$, i.e. $L_2(\Gamma) = \bigotimes_{e \in \mathcal{E}} L_2(e)$, and its norm is defined via
 \begin{equation*} 
@@ -177,7 +177,7 @@ The space $L_2(\Gamma)$ on $\Gamma = (\mathcal{V}, \mathcal{E})$ is the orthogon
 \end{equation*} 
 Of course, both $L_2(e)$ and $L_2(\Gamma)$ are Hilbert spaces. Consequently, the Sobolev space $H^1 (e)$ consist of all functions on $e$ that have all their distributional derivatives up to the order 1 belong to $L_2(e)$. Its norm is defined via
 \begin{equation*}
-    \lVert f \rVert^{2}_{H^1(e)} = \int_e \lvert f(x) \rvert^2 + \lvert \nabla f(x) \rvert^2 \, dx < \infty.
+    \lVert f \rVert^{2}_{H^1(e)} \coloneqq \int_e \lvert f(x) \rvert^2 + \lvert f^{\prime}(x) \rvert^2 \, dx < \infty.
 \end{equation*}
 The Sobolev space $H^1 (\Gamma)$ consists of all continuous functions on $\Gamma$ that belong to $H^1 (e)$ for each edge $e$ and such that 
 \begin{equation*} 
@@ -186,28 +186,29 @@ The Sobolev space $H^1 (\Gamma)$ consists of all continuous functions on $\Gamma
 This means that the space $H^1 (\Gamma)$ can be defined as $H^1 (\Gamma) =  \bigotimes_{e \in \mathcal{E}} H^1 (e) \cap C^{0}(\Gamma)$.\\
 The continuity condition imposed on functions from the Sobolev space $H^1 (\Gamma)$ means that any function $f$ from this space assumes the same value at a vertex $v \in \mathcal{V}$ on all edges adjacent to this vertex $v$, and thus $f(v)$ is uniquely defined. This is a natural condition for 1-dimensional $H^1$-functions, which are known to be continuous in the standard 1-dimensional setting. \\
 
-With all the definitions above, we see that it makes sense to also consider differential operators defined on a metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, by which we mean that we consider a differential operator $\mathcal{H} \left[ \cdot \right]$ on each edge, which will be called Hamiltonian. An example of this would be the 1-dimensional Schrödinger operator
+In the following we introduce differential operators on metric graphs, by which we mean that we consider a differential operator $\mathcal{H} \left[ \cdot \right]$ on each edge $e \in \mathcal{E}$ of a metric graph $\Gamma = (\mathcal{V}, \mathcal{E})$, which will be called Hamiltonian. An example of this would be the 1-dimensional Schrödinger operator
 \begin{equation*}
-    \mathcal{H} \left[ f \right](x) = -\frac{\mathrm{d}^2 f}{\mathrm{d} x^2}(x) + V(x)f(x)
+    \mathcal{H} \left[ f \right](x) = -\frac{\textup{d}^2 f}{\textup{d} x^2}(x) + V(x)f(x)
 \end{equation*}
 with a potential function $V$. One can formulate the differential equation for each edge $e \in \mathcal{E}$ of the form
 \begin{equation*}
     \mathcal{H} \left[ f |_e \right] (x_e) = g|_e(x_e), \quad \text{for all  } x_e \in (0, \ell_e),
 \end{equation*}
 where the functions $g|_e \colon (0, \ell_e) \to \mathbb{R}$ are given source terms. We note that for this operator the direction of the edge is irrelevant. This is not the case if one wants to include first order derivative terms. Then we need to assume the graph to be directed and consider bonds $b \in \mathcal{B}$ and the corresponding coordinates. \\
-The classical case of differential operators on an interval, which we can understand as a graph with one edge and two vertices, makes clear that the definition of a differential operator on a metric graph is not complete until its domain is described. The domain description should involve smoothness conditions along the edges and some appropriate boundary value conditions at the vertices, which we call vertex conditions in the following and are an analogue of boundary conditions for a single interval. The addition of these conditions justifies the introduction of the following notion:
+The classical case of differential operators on an interval, which we can understand as a graph with one edge and two vertices, makes clear that the definition of a differential operator on a metric graph is not complete until its domain is described. The domain description should involve continuity conditions along the edges and some appropriate boundary value conditions at the vertices, which we call vertex conditions and are an analogue of boundary conditions for a single interval. The addition of these conditions justifies the introduction of the following notion:
 
-\begin{definition}[{\cite[Definition~1.4.1.]{BerkolaikoKuchment:2013}}]
-    \label{quantum graph}
-    Quantum graph is a metric graph equipped with a differential operator $\mathcal{H} \left[ \cdot \right]$ (Hamiltonian), accompanied by “appropriate” vertex conditions. That is, a quantum graph $\Gamma$ is a triple \\
-    $(\text{metric graph } \Gamma, \; \text{Hamiltonian } \mathcal{H} \left[ \cdot \right], \; \text{vertex conditions})$.
+\begin{definition}[{\cite[Definition~1.4.1.]{BerkolaikoKuchment:2013}}]\label{quantum graph} \ \\
+    Quantum graph is a metric graph $\Gamma$ equipped with a differential operator $\mathcal{H} \left[ \cdot \right]$ (Hamiltonian), accompanied by “appropriate” vertex conditions $\mathcal{V}$. That is, a quantum graph $\Gamma$ is a triple
+    \begin{equation*}
+        (\Gamma, \; \mathcal{H} \left[ \cdot \right], \; \mathcal{V}).
+    \end{equation*}
 \end{definition}
 
 We introduce the most well-known vertex conditions, which are called Kirchhoff-Neumann conditions and require: 
 \begin{equation}
     \label{eq:Kirchhoff-Neumann_general}
     \begin{cases} 
-        f(x) \text{ is continuous on } \Gamma \\ \text{and} \\  \text{at each vertex } v \in \mathcal{V} \text{ one has } \sum_{e \in \mathcal{E}_v} \frac{\mathrm{d} f}{\mathrm{d} x_e}(v) = 0.
+        f(x) \text{ is continuous on } \Gamma \\ \text{and} \\  \text{at each vertex } v \in \mathcal{V} \text{ one has } \sum_{e \in \mathcal{E}_v} \frac{\textup{d} f}{\textup{d} x_e}(v) = 0.
     \end{cases}
 \end{equation}
 The derivatives are assumed to be taken in the directions away from the vertex, which we will call the outgoing directions. The first condition of \cref{eq:Kirchhoff-Neumann_general} is called the continuity condition while the second is sometimes termed as the current conservation condition.

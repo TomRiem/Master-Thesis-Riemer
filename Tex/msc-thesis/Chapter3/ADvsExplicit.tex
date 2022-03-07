@@ -13,29 +13,29 @@ Let this general FNN with $L$ layers be defined by
     x^l = \sigma_l\left(W^l x^{l-1} + b^l\right) \in \mathbb{R}^{n_l} \quad \text{for} \quad l = 1, \ldots, L,
 \end{gather}
 where $x^0 \in \mathbb{R}^{n_0}$ and $\theta = \left\{ \left\{ W^L \right\}_{l = 1, \ldots, L}, \left\{ b^L \right\}_{l = 1, \ldots, L} \right\}$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ are the trainable parameters of this network. \\
-The first order derivative of this vector-valued map $f_{\theta}\left(x^0\right) \in \mathbb{R}^{n_L}$ with respect to its input $x^0 \in \mathbb{R}^{n_0}$ is a linear map $\frac{\mathrm{d}}{\mathrm{d} \ x^0} f_{\theta}\left(x^0\right) \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_L}$, which can be represented by the Jacobian matrix
+The first order derivative of this vector-valued map $f_{\theta}\left(x^0\right) \in \mathbb{R}^{n_L}$ with respect to its input $x^0 \in \mathbb{R}^{n_0}$ is a linear map $\frac{\textup{d}}{\textup{d} \ x^0} f_{\theta}\left(x^0\right) \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_L}$, which can be represented by the Jacobian matrix
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} \ x^0} f_{\theta}\left(x^0\right) = \mathrm{J} \left[f_{\theta} \right]\left(x^0\right) = \begin{pmatrix} \nabla {\left[f_{\theta}\left(x^0\right)\right]_{1}}^{\mathrm{T}} \\ \vdots \\  \nabla {\left[f_{\theta}\left(x^0\right)\right]_{n_L}}^{\mathrm{T}} \end{pmatrix} = \begin{pmatrix} \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{1}} & \cdots & \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{n_0}} \\ \vdots & \ddots & \vdots \\ \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{1}} & \cdots & \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{n_0}} \end{pmatrix} \in \mathbb{R}^{n_L \times n_0}, 
+    \frac{\textup{d}}{\textup{d} \ x^0} f_{\theta}\left(x^0\right) = \mathrm{J} \left[f_{\theta} \right]\left(x^0\right) = \begin{pmatrix} \nabla {\left[f_{\theta}\left(x^0\right)\right]_{1}}^{\mathrm{T}} \\ \vdots \\  \nabla {\left[f_{\theta}\left(x^0\right)\right]_{n_L}}^{\mathrm{T}} \end{pmatrix} = \begin{pmatrix} \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{1}} & \cdots & \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{n_0}} \\ \vdots & \ddots & \vdots \\ \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{1}} & \cdots & \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{n_0}} \end{pmatrix} \in \mathbb{R}^{n_L \times n_0}, 
 \end{equation*}
 where $\left[f_{\theta}\left(x^0\right)\right]_i$ is the $i$-th component of the output $f_{\theta}\left(x^0\right) \in \mathbb{R}^{n_L}$ and $\nabla {\left[f_{\theta}\left(x^0\right)\right]_i}^{\mathrm{T}}$ is the transpose of the gradient of $\left[f_{\theta}\left(x^0\right)\right]_i$. \\
 We are interested in deriving the Jacobi matrix for the FNN given by \cref{model prediction}. Since a FNN consists of the composition of (generally) several layers, and each layer consists of the composition of a linear map, which is the propagation function defined in \cref{propagation function}, and a non-linear map, which is activation function defined in \cref{activation function}, we have to apply the chain rule layer by layer, a total of $2L$ many times. We remind that the activation function $\sigma_{l} \colon \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$ of layer $l$ is defined component-wise, i.e. for $\sigma_{l}\left(a^l\right) \in \mathbb{R}^{n_l}$ holds $\sigma_{l}\left(a^l_i\right) = \left[ \sigma_{l}\left(a^l\right) \right]_i$. Therefore is the Jacobian matrix of the vector-valued activation function $\sigma_{l}\left(a^l\right) \in \mathbb{R}^{n_l}$ of layer $l$ with respect to the activation $a^l = a^l\left(x^{l-1}\right) = W^{l} x^{l-1} + b^{l} \in \mathbb{R}^{n_l}$ of layer $l$ a diagonal matrix, which is defined by
 \begin{equation}
     \label{derivative:activation:function}
-    \frac{\mathrm{d}}{\mathrm{d} \ a^{l}} \ \sigma_{l} \left(a^l\right) = D^{l} = \begin{pmatrix} {\sigma_{l}}^{\prime} \left( a^{l}_1 \right) & & \\ & \ddots & \\ & & {\sigma_{l}}^{\prime} \left( a^{l}_{n_l} \right) \end{pmatrix} \in \mathbb{R}^{n_l \times n_l}, 
+    \frac{\textup{d}}{\textup{d} \ a^{l}} \ \sigma_{l} \left(a^l\right) = D^{l} = \begin{pmatrix} {\sigma_{l}}^{\prime} \left( a^{l}_1 \right) & & \\ & \ddots & \\ & & {\sigma_{l}}^{\prime} \left( a^{l}_{n_l} \right) \end{pmatrix} \in \mathbb{R}^{n_l \times n_l}, 
 \end{equation}
 where ${\sigma_{l}}^{\prime} \left( a^{l}_{n_l} \right)$ is the first derivative of the one-dimensional activation function $\sigma_{l} \colon \mathbb{R} \to \mathbb{R}$ applied to the i-th component of $a_l \in \mathbb{R}^{n_l}$. \\
 Due to the linearity of the propagation function $a^l = a^l\left(x^{l-1}\right) = W^{l} x^{l-1} + b^{l} \in \mathbb{R}^{n_l}$, its derivative with respect to $x^{l-1} \in \mathbb{R}^{n_{l-1}}$ is simply
 \begin{equation}
     \label{derivative:activation}
-    \frac{\mathrm{d}}{\mathrm{d} \ x^{l-1}} \ a^{l}\left(x^{l-1}\right) = W^l.
+    \frac{\textup{d}}{\textup{d} \ x^{l-1}} \ a^{l}\left(x^{l-1}\right) = W^l.
 \end{equation}
 Using equation \cref{derivative:activation:function} and equation \cref{derivative:activation}, we can now differentiate the FNN defined by \cref{model prediction} with respect to its input $x^0 \in \mathbb{R}^{n_0}$ layer by layer to get the Jacobian matrix of \cref{model prediction}
 \begin{align*}
-    \frac{\mathrm{d}}{\mathrm{d} \ x} f_{\theta}\left(x^0\right) & = \frac{\mathrm{d}}{\mathrm{d} \ a^{L}} \ \sigma_{L} \left(a^{L}\left(x^{L-1}\right)\right) = \\
-    & = D^L \cdot \frac{\mathrm{d}}{\mathrm{d} \ x^{L-1}} \ a^{L}\left(x^{L-1}\right) = D^L \cdot \frac{\mathrm{d}}{\mathrm{d} \ x^{L-1}} \ \left(W^{L} x^{L-1} + b^{L}\right) = \\
-    & = D^L \cdot W^L \cdot \frac{\mathrm{d}}{\mathrm{d} \ a^{L_1}} \ \sigma_{L-1} \left(a^{L-1}\left(x^{L-2}\right)\right) = \\
+    \frac{\textup{d}}{\textup{d} \ x} f_{\theta}\left(x^0\right) & = \frac{\textup{d}}{\textup{d} \ a^{L}} \ \sigma_{L} \left(a^{L}\left(x^{L-1}\right)\right) = \\
+    & = D^L \cdot \frac{\textup{d}}{\textup{d} \ x^{L-1}} \ a^{L}\left(x^{L-1}\right) = D^L \cdot \frac{\textup{d}}{\textup{d} \ x^{L-1}} \ \left(W^{L} x^{L-1} + b^{L}\right) = \\
+    & = D^L \cdot W^L \cdot \frac{\textup{d}}{\textup{d} \ a^{L_1}} \ \sigma_{L-1} \left(a^{L-1}\left(x^{L-2}\right)\right) = \\
     & = \ldots = \\
-    & = D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot \frac{\mathrm{d}}{\mathrm{d} \ x^{0}} \ \left(W^{1} x^{0} + b^{1}\right) = \\
+    & = D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot \frac{\textup{d}}{\textup{d} \ x^{0}} \ \left(W^{1} x^{0} + b^{1}\right) = \\
     & = D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \in \mathbb{R}^{n_L \times n_0}.
 \end{align*}
 
@@ -158,7 +158,7 @@ where $s = \left(x\right)^{\mathrm{T}} \in \mathbb{R}^{2}$, $w \in \mathbb{R}^{m
 We set
 
 \begin{equation*}
-    D^{l} = \mathrm{diag} \left( \frac{\mathrm{d}}{\mathrm{d}z^{l}} \sigma_{l} \left(z^{l}\right) \right) \in \mathbb{R}^{m \times m}, \quad D_{i, i}^{l} = {\sigma_{l}}^{\prime} \left(z_{i}^{l}\right)
+    D^{l} = \mathrm{diag} \left( \frac{\textup{d}}{\textup{d}z^{l}} \sigma_{l} \left(z^{l}\right) \right) \in \mathbb{R}^{m \times m}, \quad D_{i, i}^{l} = {\sigma_{l}}^{\prime} \left(z_{i}^{l}\right)
 \end{equation*}
 
 \begin{align*}
@@ -211,7 +211,7 @@ where
 where 
 
 \begin{equation*}
-    J^{l-1} = J_x\left(a^{l-1}\left(s\right)\right) = \left( \frac{\mathrm{d}}{\mathrm{d} x} a^{l-1}_1\left(s\right), \ldots, \frac{\mathrm{d}}{\mathrm{d} x} a^{l-1}_m\left(s\right) \right)^{\mathrm{T}} \in \mathbb{R}^{m}
+    J^{l-1} = J_x\left(a^{l-1}\left(s\right)\right) = \left( \frac{\textup{d}}{\textup{d} x} a^{l-1}_1\left(s\right), \ldots, \frac{\textup{d}}{\textup{d} x} a^{l-1}_m\left(s\right) \right)^{\mathrm{T}} \in \mathbb{R}^{m}
 \end{equation*}
 
 
