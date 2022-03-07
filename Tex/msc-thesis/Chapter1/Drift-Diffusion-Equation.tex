@@ -49,8 +49,8 @@ To make \cref{Drift-Diffusion-equation} a well-posed problem, we need to add ini
     \rho_e(0,x) = \rho_{e, 0}(x),
 \end{equation}
 where $\rho_{e, 0} \in L^2(e)$ returns the density on each point of the edge $e$ at the start time of the observation $t=0$. \\ 
-In the following we denote the ordered pair of vertices connected by a directed edge $e \in \mathcal{E}$ by $(v^{o}_e, v^{t}_e) = e$ and for the vertex condition we define a normal vector $n_e$ to each edge $e = (v^{o}_e, v^{t}_e)$ via $n_e(v^{o}_e) = -1$ and $n_e(v^{t}_e) = 1$. \\
-On the set of interior vertices $v \in \mathcal{V}_\mathcal{K} \subset \mathcal{V}$, which are vertices that are incident to at least one incoming edge and at least one outgoing edge (i.e. $\forall v \in \mathcal{V}_\mathcal{K} \; \exists \ e_1, e_2 \in \mathcal{E}$ such that $v^{t}_{e_1} = v$ and $v^{o}_{e_2} = v$), we apply homogeneous Kirchhoff-Neumann coupling conditions, i.e. on each $v \in \mathcal{V}_\mathcal{K}$ holds
+In the following we denote the ordered pair of vertices connected by a directed edge $e \in \mathcal{E}$ by $(v^{\operatorname{o}}_e, v^{\operatorname{t}}_e) = e$ and for the vertex condition we define a normal vector $n_e$ to each edge $e = (v^{\operatorname{o}}_e, v^{\operatorname{t}}_e)$ via $n_e(v^{\operatorname{o}}_e) = -1$ and $n_e(v^{\operatorname{t}}_e) = 1$. \\
+On the set of interior vertices $v \in \mathcal{V}_\mathcal{K} \subset \mathcal{V}$, which are vertices that are incident to at least one incoming edge and at least one outgoing edge (i.e. $\forall v \in \mathcal{V}_\mathcal{K} \; \exists \ e_1, e_2 \in \mathcal{E}$ such that $v^{\operatorname{t}}_{e_1} = v$ and $v^{\operatorname{o}}_{e_2} = v$), we apply homogeneous Kirchhoff-Neumann coupling conditions, i.e. on each $v \in \mathcal{V}_\mathcal{K}$ holds
 \begin{equation}
     \label{eq:Kirchhoff_Neumann_condition}
     \sum_{e\in \mathcal{E}_v} J_e(t,v) n_e (v)=0,
@@ -60,7 +60,7 @@ where $\mathcal{E}_v$ is the edge set incident to the vertex $v$. Additionally, 
     \label{continuous on vertices}
     \rho_e(v) = \rho_{e'}(v) \quad \text{ for all }v \in \mathcal{V}_\mathcal{K},\; e,\,e' \in \mathcal{E}_v.
 \end{equation}
-On the set of exterior vertices $v \in \mathcal{V}_\mathcal{D} \coloneqq \mathcal{V} \setminus \mathcal{V}_\mathcal{K}$, which are vertices that are incident to either only one incoming edge or only one outgoing edge (i.e. $\forall v \in \mathcal{V}_\mathcal{D} \; \exists! \ e \in \mathcal{E}$ such that either $v^{t}_{e} = v$ or $v^{o}_{e} = v$), the solution $\rho$ should fulfills the so-called flux boundary conditions
+On the set of exterior vertices $v \in \mathcal{V}_\mathcal{D} \coloneqq \mathcal{V} \setminus \mathcal{V}_\mathcal{K}$, which are vertices that are incident to either only one incoming edge or only one outgoing edge (i.e. $\forall v \in \mathcal{V}_\mathcal{D} \; \exists! \ e \in \mathcal{E}$ such that either $v^{\operatorname{t}}_{e} = v$ or $v^{\operatorname{o}}_{e} = v$), the solution $\rho$ should fulfills the so-called flux boundary conditions
 \begin{equation}
     \label{eq:Dirichlet_conditions}
     \sum_{e\in \mathcal{E}_v}J_e(v) n_e (v)=-\alpha_v(t) (1-\rho_v) + \beta_v(t) \rho_v,\ \text{for all}\ v \in \mathcal{V}_\mathcal{D}, e \in \mathcal{E}_v,

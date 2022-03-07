@@ -36,8 +36,8 @@ If we set up a cost function for an individual edge, then we have to check what 
 \end{equation}
 
 
-We define for each edge the cost function $e = (v^{o}_e, v^{t}_e) \in \mathcal{E}$
+We define for each edge the cost function $e = (v^{\operatorname{o}}_e, v^{\operatorname{t}}_e) \in \mathcal{E}$
 \begin{equation}
     \label{eq:cost:2}
-    \phi_{\theta_e} \left( X_{data} \right) \coloneqq \phi_{e,r}  \left( X_e \right) + \phi_{e,0}  \left( X_{e,0} \right) + \phi_{v^{o}_e}(X_{v,b}) + \phi_{v^{t}_e}(X_{v,b})
+    \phi_{\theta_e} \left( X_{data} \right) \coloneqq \phi_{e,r}  \left( X_e \right) + \phi_{e,0}  \left( X_{e,0} \right) + \phi_{v^{\operatorname{o}}_e}(X_{v,b}) + \phi_{v^{\operatorname{t}}_e}(X_{v,b})
 \end{equation}

@@ -15,7 +15,7 @@ Let this general FNN with $L$ layers be defined by
 where $x^0 \in \mathbb{R}^{n_0}$ and $\theta = \left\{ \left\{ W^L \right\}_{l = 1, \ldots, L}, \left\{ b^L \right\}_{l = 1, \ldots, L} \right\}$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ are the trainable parameters of this network. \\
 The first order derivative of this vector-valued map $f_{\theta}\left(x^0\right) \in \mathbb{R}^{n_L}$ with respect to its input $x^0 \in \mathbb{R}^{n_0}$ is a linear map $\frac{\mathrm{d}}{\mathrm{d} \ x^0} f_{\theta}\left(x^0\right) \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_L}$, which can be represented by the Jacobian matrix
 \begin{equation*}
-    \frac{\mathrm{d}}{\mathrm{d} \ x} f_{\theta}\left(x^0\right) = \mathrm{J} \left[f_{\theta} \right]\left(x^0\right) = \begin{pmatrix} \nabla {\left[f_{\theta}\left(x^0\right)\right]_{1}}^{\mathrm{T}} \\ \vdots \\  \nabla {\left[f_{\theta}\left(x^0\right)\right]_{n_L}}^{\mathrm{T}} \end{pmatrix} = \begin{pmatrix} \dfrac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{1}} & \cdots & \dfrac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{n_0}} \\ \vdots & \ddots & \vdots \\ \dfrac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{1}} & \cdots & \dfrac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{n_0}} \end{pmatrix} \in \mathbb{R}^{n_L \times n_0}, 
+    \frac{\mathrm{d}}{\mathrm{d} \ x^0} f_{\theta}\left(x^0\right) = \mathrm{J} \left[f_{\theta} \right]\left(x^0\right) = \begin{pmatrix} \nabla {\left[f_{\theta}\left(x^0\right)\right]_{1}}^{\mathrm{T}} \\ \vdots \\  \nabla {\left[f_{\theta}\left(x^0\right)\right]_{n_L}}^{\mathrm{T}} \end{pmatrix} = \begin{pmatrix} \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{1}} & \cdots & \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{n_0}} \\ \vdots & \ddots & \vdots \\ \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{1}} & \cdots & \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{n_0}} \end{pmatrix} \in \mathbb{R}^{n_L \times n_0}, 
 \end{equation*}
 where $\left[f_{\theta}\left(x^0\right)\right]_i$ is the $i$-th component of the output $f_{\theta}\left(x^0\right) \in \mathbb{R}^{n_L}$ and $\nabla {\left[f_{\theta}\left(x^0\right)\right]_i}^{\mathrm{T}}$ is the transpose of the gradient of $\left[f_{\theta}\left(x^0\right)\right]_i$. \\
 We are interested in deriving the Jacobi matrix for the FNN given by \cref{model prediction}. Since a FNN consists of the composition of (generally) several layers, and each layer consists of the composition of a linear map, which is the propagation function defined in \cref{propagation function}, and a non-linear map, which is activation function defined in \cref{activation function}, we have to apply the chain rule layer by layer, a total of $2L$ many times. We remind that the activation function $\sigma_{l} \colon \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$ of layer $l$ is defined component-wise, i.e. for $\sigma_{l}\left(a^l\right) \in \mathbb{R}^{n_l}$ holds $\sigma_{l}\left(a^l_i\right) = \left[ \sigma_{l}\left(a^l\right) \right]_i$. Therefore is the Jacobian matrix of the vector-valued activation function $\sigma_{l}\left(a^l\right) \in \mathbb{R}^{n_l}$ of layer $l$ with respect to the activation $a^l = a^l\left(x^{l-1}\right) = W^{l} x^{l-1} + b^{l} \in \mathbb{R}^{n_l}$ of layer $l$ a diagonal matrix, which is defined by
@@ -29,7 +29,7 @@ Due to the linearity of the propagation function $a^l = a^l\left(x^{l-1}\right) 
     \label{derivative:activation}
     \frac{\mathrm{d}}{\mathrm{d} \ x^{l-1}} \ a^{l}\left(x^{l-1}\right) = W^l.
 \end{equation}
-Using equation \cref{derivative:activation:function} and equation \cref{derivative:activation}, we can now differentiate the FNN defined by \cref{model prediction} with respect to its input $x^0 \in \mathbb{R}^{n_0}$ layer by layer 
+Using equation \cref{derivative:activation:function} and equation \cref{derivative:activation}, we can now differentiate the FNN defined by \cref{model prediction} with respect to its input $x^0 \in \mathbb{R}^{n_0}$ layer by layer to get the Jacobian matrix of \cref{model prediction}
 \begin{align*}
     \frac{\mathrm{d}}{\mathrm{d} \ x} f_{\theta}\left(x^0\right) & = \frac{\mathrm{d}}{\mathrm{d} \ a^{L}} \ \sigma_{L} \left(a^{L}\left(x^{L-1}\right)\right) = \\
     & = D^L \cdot \frac{\mathrm{d}}{\mathrm{d} \ x^{L-1}} \ a^{L}\left(x^{L-1}\right) = D^L \cdot \frac{\mathrm{d}}{\mathrm{d} \ x^{L-1}} \ \left(W^{L} x^{L-1} + b^{L}\right) = \\
@@ -39,10 +39,14 @@ Using equation \cref{derivative:activation:function} and equation \cref{derivati
     & = D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \in \mathbb{R}^{n_L \times n_0}.
 \end{align*}
 
-
+Next, we derive the second order derivative of the neural network with respect to an input variable. This can be represented by a tensor of order 3, which we denote by $\mathrm{H} \left[f_{\theta} \right]\left(x^0\right) \in \mathbb{n_L \times n_0 \times n_0}$, where the entries are defined by
 \begin{equation*}
-    x
+    \left[ \mathrm{H} \left[f_{\theta} \right]\left(x^0\right) \right]_{i,j,k} = \frac{\partial^2 \left[f_{\theta}\left(x^0\right)\right]_i}{\partial x^0_{j} \ \partial x^0_{k}} \quad \text{for} \quad i = 1,\ldots, n_L, \ j = 1,\ldots, n_0, \ k = 1,\ldots, n_0.
 \end{equation*}
+
+
+
+
 
 Let us return to our case where an FNN rho approximates the solution of the drift-diffusion equation on an edge. In the following we use the vector z, where its first component is the time and the second component is the position on an edge. The gradient is due to equation 3 and equation 4 given by 
 \begin{equation}
