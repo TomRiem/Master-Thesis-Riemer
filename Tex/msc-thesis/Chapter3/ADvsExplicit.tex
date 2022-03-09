@@ -2,8 +2,8 @@
 \label{ch3:sec3}
 
 In this section we show how the neural networks used in the previous numerical tests can be explicitly differentiated so that the use of automatic differentiation in a PINN approach can be omitted. We compare the time to convergence and the computational resources required for a PINN approach programmed in Python with explicit derivatives with the results previously obtained for a PINN that uses automatic differentiation. This aims to show whether an explicit computation of the derivatives for our approximation problem brings computational advantages with it and whether the performance of a PINN approach can be improved as a result. \\
-We first consider the case of explicit derivatives with respect to the input of a feed-forward neural network. In this thesis we used two FNNs with different topologies, one FNN for each edge of the graph given by \cref{one_for_each} and one FNN for all edges of the graph given by \cref{one_for_all}. We therefore describe the first and second order explicit derivatives of a general FNN and then we will discuss the FNNs used in this work. \\
-Let this general FNN with $L$ layers be defined by 
+We first consider the case of explicit derivatives with respect to the input of a feed-forward neural network. In this thesis we used two $FNN$s with different topologies, one $FNN$ for each edge of the graph given by \cref{one_for_each} and one $FNN$ for all edges of the graph given by \cref{one_for_all}. We therefore describe the first and second order explicit derivatives of a general $FNN$ and then we will discuss the $FNN$s used in this work. \\
+Let this general $FNN$ with $L$ layers be defined by 
 \begin{gather}
     \label{model prediction}
     f_{\theta} \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_L}, \\
@@ -19,7 +19,7 @@ The first order derivative of this vector-valued map $f_{\theta}\left(x^0\right)
     \frac{\textup{d}}{\textup{d} \ x^0} f_{\theta}\left(x^0\right) = \mathrm{J} \left[f_{\theta} \right]\left(x^0\right) = \begin{pmatrix} \nabla {\left[f_{\theta}\left(x^0\right)\right]_{1}}^{\mathrm{T}} \\ \vdots \\  \nabla {\left[f_{\theta}\left(x^0\right)\right]_{n_L}}^{\mathrm{T}} \end{pmatrix} = \begin{pmatrix} \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{1}} & \cdots & \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_1}{\partial x^0_{n_0}} \\ \vdots & \ddots & \vdots \\ \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{1}} & \cdots & \frac{\partial \left[f_{\theta}\left(x^0\right)\right]_{n_L}}{\partial x^0_{n_0}} \end{pmatrix} \in \mathbb{R}^{n_L \times n_0}, 
 \end{equation}
 where $\left[f_{\theta}\left(x^0\right)\right]_i$ is the $i$-th component of the output $f_{\theta}\left(x^0\right) \in \mathbb{R}^{n_L}$ and $\nabla {\left[f_{\theta}\left(x^0\right)\right]_i}^{\mathrm{T}}$ is the transpose of the gradient of $\left[f_{\theta}\left(x^0\right)\right]_i$. \\
-We are interested in deriving the Jacobi matrix for the FNN given by \cref{model prediction}. Since a FNN consists of the composition of (generally) several layers, and each layer consists of the composition of a linear map, which is the propagation function defined in \cref{propagation function}, and a non-linear map, which is activation function defined in \cref{activation function}, we have to apply the chain rule layer by layer, a total of $2L$ many times. We remind that the activation function $\sigma_{l} \colon \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$ of layer $l$ is defined component-wise, i.e. for $\sigma_{l}\left(a^l\right) \in \mathbb{R}^{n_l}$ holds $\sigma_{l}\left(a^l_i\right) = \left[ \sigma_{l}\left(a^l\right) \right]_i$. Therefore is the Jacobian matrix of the vector-valued activation function $\sigma_{l}\left(a^l\right) \in \mathbb{R}^{n_l}$ of layer $l$ with respect to the activation $a^l = a^l\left(x^{l-1}\right) = W^{l} x^{l-1} + b^{l} \in \mathbb{R}^{n_l}$ of layer $l$ a diagonal matrix, which is defined by
+We are interested in deriving the Jacobi matrix for the $FNN$ given by \cref{model prediction}. Since a $FNN$ consists of the composition of (generally) several layers, and each layer consists of the composition of a linear map, which is the propagation function defined in \cref{propagation function}, and a non-linear map, which is activation function defined in \cref{activation function}, we have to apply the chain rule layer by layer, a total of $2L$ many times. We remind that the activation function $\sigma_{l} \colon \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$ of layer $l$ is defined component-wise, i.e. for $\sigma_{l}\left(a^l\right) \in \mathbb{R}^{n_l}$ holds $\sigma_{l}\left(a^l_i\right) = \left[ \sigma_{l}\left(a^l\right) \right]_i$. Therefore is the Jacobian matrix of the vector-valued activation function $\sigma_{l}\left(a^l\right) \in \mathbb{R}^{n_l}$ of layer $l$ with respect to the activation $a^l = a^l\left(x^{l-1}\right) = W^{l} x^{l-1} + b^{l} \in \mathbb{R}^{n_l}$ of layer $l$ a diagonal matrix, which is defined by
 \begin{equation}
     \label{derivative:activation:function}
     \frac{\textup{d}}{\textup{d} \ a^{l}} \ \sigma_{l} \left(a^l\right) = D^{l} = \begin{pmatrix} {\sigma_{l}}^{\prime} \left( a^{l}_1 \right) & & \\ & \ddots & \\ & & {\sigma_{l}}^{\prime} \left( a^{l}_{n_l} \right) \end{pmatrix} \in \mathbb{R}^{n_l \times n_l}, 
@@ -30,10 +30,10 @@ Due to the linearity of the propagation function $a^l = a^l\left(x^{l-1}\right) 
     \label{derivative:activation}
     \frac{\textup{d}}{\textup{d} \ x^{l-1}} \ a^{l}\left(x^{l-1}\right) = W^l.
 \end{equation}
-Using equation \cref{derivative:activation:function} and equation \cref{derivative:activation}, we can now differentiate the FNN defined by \cref{model prediction} with respect to its input $x^0 \in \mathbb{R}^{n_0}$ layer by layer to get the Jacobian matrix of \cref{model prediction}
+Using equation \cref{derivative:activation:function} and equation \cref{derivative:activation}, we can now differentiate the $FNN$ defined by \cref{model prediction} with respect to its input $x^0 \in \mathbb{R}^{n_0}$ layer by layer to get the Jacobian matrix of \cref{model prediction}
 \begin{align}
     \label{first order derivative}
-    \frac{\textup{d}}{\textup{d} \ x} f_{\theta}\left(x^0\right) & = \frac{\textup{d}}{\textup{d} \ a^{L}} \ \sigma_{L} \left(a^{L}\left(x^{L-1}\right)\right) = \\
+    \frac{\textup{d}}{\textup{d} \ x^0} f_{\theta}\left(x^0\right) & = \frac{\textup{d}}{\textup{d} \ a^{L}} \ \sigma_{L} \left(a^{L}\left(x^{L-1}\right)\right) = \\
     & = D^L \cdot \frac{\textup{d}}{\textup{d} \ x^{L-1}} \ a^{L}\left(x^{L-1}\right) = D^L \cdot \frac{\textup{d}}{\textup{d} \ x^{L-1}} \ \left(W^{L} x^{L-1} + b^{L}\right) = \\
     & = D^L \cdot W^L \cdot \frac{\textup{d}}{\textup{d} \ a^{L_1}} \ \sigma_{L-1} \left(a^{L-1}\left(x^{L-2}\right)\right) = \\
     & = \ldots = \\
@@ -46,14 +46,14 @@ Next, we derive the second order derivative of the neural network with respect t
     \label{second derivative tensor}
     \left[ \mathrm{H} \left[f_{\theta} \right]\left(x^0\right) \right]_{i,j,k} = \frac{\partial^2 \left[f_{\theta}\left(x^0\right)\right]_i}{\partial x^0_{j} \ \partial x^0_{k}} \quad \text{for} \quad i = 1,\ldots, n_L, \ j = 1,\ldots, n_0, \ k = 1,\ldots, n_0.
 \end{equation}
-For the derivation of the individual entries given by \cref{second derivative tensor} we proceed as follows: we consider the individual entries of the output $f_{\theta}\left(x^0\right)$ of the neural network given by \cref{model prediction}, i.e. we consider the maps $f_{\theta, i} \colon \mathbb{R}^{n_0} \to \mathbb{R}$ with $f_{\theta, i} \left( x^0 \right) = \left[ f_{\theta} (x^0) \right]_i$ for $i = 1, \ldots, n_L$, and derive the Hessian matrix of each of them. We take advantage of the fact that these maps $f_{\theta, i}$ only differ by the forward propagation of the last layer $l = L$ of $f_{\theta}$, since we assume that the FNN $f_{\theta}$ is fully connected, i.e. the output of the $i$-th map is given by 
+For the derivation of the individual entries given by \cref{second derivative tensor} we proceed as follows: we consider the individual entries of the output $f_{\theta}\left(x^0\right)$ of the neural network given by \cref{model prediction}, i.e. we consider the maps $f_{\theta, i} \colon \mathbb{R}^{n_0} \to \mathbb{R}$ with $f_{\theta, i} \left( x^0 \right) = \left[ f_{\theta} (x^0) \right]_i$ for $i = 1, \ldots, n_L$, and derive the Hessian matrix of each of them. We take advantage of the fact that these maps $f_{\theta, i}$ only differ by the forward propagation of the last layer $l = L$ of $f_{\theta}$, since we assume that the $FNN$ $f_{\theta}$ is fully connected, i.e. the output of the $i$-th map is given by 
 \begin{gather}
     \label{ith model prediction}
     f_{\theta, i} (x^0) = \sigma_L\left(W^L_{i,:} x^{L-1}  + b^{L}_{i} \right) \in \mathbb{R} \\
     \\
     x^l = \sigma_l\left(W^l x^{l-1} + b^l\right) \in \mathbb{R}^{n_l} \quad \text{for} \quad l = 1, \ldots, L-1,
 \end{gather}
-where $W^L_{i,:} \in \mathbb{R}^{1 \times n_{L-1}}$ is the ith row of $W^L \in \mathbb{R}^{n_L \times n_{L-1}}$ and $b^{L}_{i} \in \mathbb{R}$ is the ith entry of $b^{L} \in \mathbb{R}^{n_L}$. We note that the computation of $x^l$ in \cref{ith model prediction} is the same for all $n_L$ maps $f_{\theta, i}$ and that the map $f_{\theta, i}$ is of course also fully connected FNN with $L$ layers. \\
+where $W^L_{i,:} \in \mathbb{R}^{1 \times n_{L-1}}$ is the ith row of $W^L \in \mathbb{R}^{n_L \times n_{L-1}}$ and $b^{L}_{i} \in \mathbb{R}$ is the ith entry of $b^{L} \in \mathbb{R}^{n_L}$. We note that the computation of $x^l$ in \cref{ith model prediction} is the same for all $n_L$ maps $f_{\theta, i}$ and that the map $f_{\theta, i}$ is of course also fully connected $FNN$ with $L$ layers. \\
 The gradient of \cref{ith model prediction} is given using \cref{Jacobi} and \cref{first order derivative} by
 \begin{align}
     \label{ith first order derivative}
@@ -62,22 +62,63 @@ The gradient of \cref{ith model prediction} is given using \cref{Jacobi} and \cr
 \end{align}
 where $D^l$ is defined by \cref{derivative:activation:function} for $l = 1, \ldots, L$. \\
 In an implementation of the gradient given by \cref{ith first order derivative}, the gradient $\nabla f_{\theta, i} \left(x^0\right)$ can be computed recursively, using a similar approach to that of the back-propagation method. First, the neural network $f_{\theta, i}$ is evaluated at the point $x^0 \in \mathbb{R}^{n_0}$ where the gradient is required and while the information is propagated forward through the neural network, the activation given by \cref{propagation function} is stored for each layer. Then the so-called error is propagated backwards through the network by applying the chain rule from the last layer to the first layer in the reverse. The following iterative computation can be used for this
-\begin{align*}
+\begin{align}
+    \label{gradient recursive}
     \nabla f_{\theta, i} \left(x^0\right) & = \delta^1 \\
     \delta^1 & = {W^{1}}^{\mathrm{T}} \cdot D^{1} \cdot \delta^2 \in \mathbb{R}^{n_0}, \\
     \vdots & \\
     \delta^l & = {W^{l}}^{\mathrm{T}} \cdot D^{l} \cdot \delta^{l+1} \in \mathbb{R}^{n_{l-1}}, \\
     \vdots & \\
     \delta^{L} & = {W^L_{i,:}}^{\mathrm{T}} \cdot D^{L} \in \mathbb{R}^{n_{L-1}},
-\end{align*}
+\end{align}
 we note that $D^{L} \in \mathbb{R}$ holds. \\
-To obtain the Hessian matrix for f, we have to differentiate the gradient again with respect to x. Since x is needed for the computation of each D, we have to differentiate each D with respect to x. 
+To obtain the Hessian matrix of $f_{\theta, i}$, we have to differentiate the gradient again with respect to the input $x^0 \in \mathbb{R}^{n_0}$. Since $x^0$ is needed for the computation of each $D^l$ for $l = 1, \ldots, L$, we have to differentiate each $D^l$ with respect to $x^0$. It follows that we have to apply the product rule $L$ times. \\
+We proceed as follows: We consider the gradient for the $l$-th layer, which is given by ${W^{l}}^{\mathrm{T}} \cdot D^{l} \cdot \delta^{l+1}$, see \cref{gradient recursive}. We differentiate $D^{l}$ in ${W^{l}}^{\mathrm{T}} \cdot D^{l} \cdot \delta^{l+1}$ with respect to $x^0$, doing this element by element, since $x^0$ appears in every diagonal element of $D^{l}$. We recall that $D^{l} \cdot \delta^{l+1} \in \mathbb{R}^{n_l}$ is a vector. Of course we have to apply the chain rule again:
+\begin{align}
+    \label{pervert differential}
+    \frac{\textup{d} \ D^{l}}{\textup{d} \ x^0} {W^{l}}^{\mathrm{T}} \cdot D^{l} \cdot \delta^{l+1} & = {W^{l}}^{\mathrm{T}} \begin{pmatrix} \frac{\textup{d} \ {\sigma_{l}}^{\prime}}{\textup{d} \ x^0} {\sigma_{l}}^{\prime} \left( a^{l}_1 \right) \left[ \delta^{l+1} \right]_1 \\ \vdots \\ \frac{\textup{d} \ {\sigma_{l}}^{\prime}}{\textup{d} \ x^0} {\sigma_{l}}^{\prime} \left( a^{l}_{n_l} \right) \left[ \delta^{l+1} \right]_{n_l} \end{pmatrix} = \\
+    & = {W^{l}}^{\mathrm{T}} \begin{pmatrix} {\sigma_{l}}^{\prime \prime} \left( a^{l}_1 \right) \left[ \delta^{l+1} \right]_1 \frac{\textup{d}}{\textup{d} \ x^0} \left( W^{l}_{1,:} x^{l-1} + b^l_{1} \right) \\ \vdots \\ {\sigma_{l}}^{\prime \prime} \left( a^{l}_{n_l} \right) \left[ \delta^{l+1} \right]_{n_l} \frac{\textup{d}}{\textup{d} \ x^0} \left( W^{l}_{n_l,:} x^{l-1} + b^l_{n_l} \right) \end{pmatrix} = \\
+    & = {W^{l}}^{\mathrm{T}} \begin{pmatrix} {\sigma_{l}}^{\prime \prime} \left( a^{l}_1 \right) \left[ \delta^{l+1} \right]_1 W^{l}_{1,:} \frac{\textup{d}}{\textup{d} \ x^0} \sigma_{l-1}(a^{l-1})\\ \vdots \\ {\sigma_{l}}^{\prime \prime} \left( a^{l}_{n_l} \right) \left[ \delta^{l+1} \right]_{n_l}  W^{l}_{n_l,:} \frac{\textup{d}}{\textup{d} \ x^0} \sigma_{l-1}(a^{l-1}) \end{pmatrix}.
+\end{align}
+To simplify the consideration, we now look at the $j$-th row of the right term
+\begin{equation}
+    \label{ith row differential}
+    {\sigma_{l}}^{\prime \prime} \left( a^{l}_{j} \right) \left[ \delta^{l+1} \right]_{j}  W^{l}_{j,:} \frac{\textup{d}}{\textup{d} \ x^0} \sigma_{l-1}(a^{l-1}).
+\end{equation}
+We know that ${\sigma_{l}}^{\prime \prime} \left( a^{l}_{j} \right) \left[ \delta^{l+1} \right]_{j}$ is a scalar, $W^{l}_{j,:} \in \mathbb{R}^{1 \times n_{l-1}}$ holds and by \cref{first order derivative} we know that
+\begin{equation}
+    \label{ith row differential 2}
+    \frac{\textup{d}}{\textup{d} \ x^0} \sigma_{l-1}(a^{l-1}) = D^{l-1} \cdot W^{l-1} \cdot D^{L-2} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \in \mathbb{R}^{n_{l-1} \times n_0}.
+\end{equation}
+Therefore the term given by \cref{ith row differential} is an element of $\mathbb{R}^{1 \times n_0}$. Consequently, the term given by \cref{pervert differential} is an element of $\mathbb{R}^{n_{l-1} \times n_0}$. \\
+To simplify the notation, we define the following diagonal matrix for $l = 1, \ldots, L-1$
+\begin{equation}
+    \label{second:derivative:activation:function}
+    H^{l} = \begin{pmatrix} {\sigma_{l}}^{\prime \prime} \left( a^{l}_1 \right) \left[ \delta^{l+1} \right]_1 & & \\ & \ddots & \\ & & {\sigma_{l}}^{\prime \prime} \left( a^{l}_{n_l} \right) \left[ \delta^{l+1} \right]_{n_l} \end{pmatrix} \in \mathbb{R}^{n_l \times n_l}, 
+\end{equation}
+where $\left[ \delta^{l+1} \right]_j$ is the $j$-th element of $\delta^{l+1}$ defined by \cref{gradient recursive} and we set $H^{L} = {\sigma_L}^{\prime \prime} \left(W^L_{i,:} x^{L-1}  + b^{L}_{i} \right) \in \mathbb{R}$. \\
+Using the definition of $H^{l}$ and by simple arithmetic, it can be shown that the term given by \cref{pervert differential} can be written as
+\begin{equation*}
+    \frac{\textup{d} \ D^{l}}{\textup{d} \ x^0} {W^{l}}^{\mathrm{T}} \cdot D^{l} \cdot \delta^{l+1} = {W^{l}}^{\mathrm{T}} \cdot H^{l} \cdot W^l \cdot D^{l-1} \cdot W^{l-1} \cdot D^{l-2} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \in \mathbb{R}^{n_{l-1} \times n_0}.
+\end{equation*}
+It follows that if we differentiate D with respect to x within the gradient of f given by equation 3, we get 
+\begin{equation*}
+    \frac{\textup{d} \ D^{l}}{\textup{d} \ x^0} \nabla f_{\theta, i} \left(x^0\right) = {W^{1}}^{\mathrm{T}} \cdot D^{1} \cdot {W^{2}}^{\mathrm{T}} \cdot \ldots \cdot {W^{l}}^{\mathrm{T}} \cdot H^{l} \cdot W^l \cdot D^{l-1} \cdot W^{l-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \in \mathbb{R}^{n_{0} \times n_0}.
+\end{equation*}
+If we apply the product rule $L$ times we can compute the Hessian matrix with the following recursive iteration
+\begin{align*}
+    \nabla^{2} f_{\theta, i} \left(x^0\right) & = \eta^{1} \in \mathbb{R}^{2 \times 2} \\
+    \eta^{1} & = {W^{1}}^{\mathrm{T}} \left( H^{1} + D^{1} \eta^{2} D^{1} \right) W^{1} \\
+    & \vdots \\
+    \eta^{l} & = {W^{l}}^{\mathrm{T}} \left( H^{l} + D^{l} \eta^{l+1} D^{l} \right) W^{l} \in \mathbb{R}^{n_{l-1} \times n_{l-1}} \\
+    & \vdots \\
+    \eta^{L} & = {W^{L}}^{\mathrm{T}} H^{L} W^{L} \in \mathbb{R}^{n_{L-1} \times n_{L-1}}
+\end{align*} 
 
 
 
 
-
-Let us return to our case where an FNN rho approximates the solution of the drift-diffusion equation on an edge. In the following we use the vector z, where its first component is the time and the second component is the position on an edge. The gradient is due to equation 3 and equation 4 given by 
+Let us return to our case where an $FNN$ rho approximates the solution of the drift-diffusion equation on an edge. In the following we use the vector z, where its first component is the time and the second component is the position on an edge. The gradient is due to equation 3 and equation 4 given by 
 \begin{equation}
     \begin{split}
         \nabla_{z}  \ \rho_{\theta_e}\left(z\right) & = \left(\nabla_{z} \rho_{\theta_e}\left(z\right)^{\mathrm{T}} \right)^{\mathrm{T}} = \left(D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \right)^{\mathrm{T}} = \\
@@ -96,26 +137,12 @@ The partial derivatives can be obtained by
 
 
 
-We set 
-% Tensor + n-Modul-Produkt
-\begin{equation*}
-    H^{l} = \mathrm{diag}\left({\sigma_{l}}^{\prime \prime}\left(W^{l} a^{l-1}\left(s\right) + b^{l}\right)\right) \in \mathbb{R}^{n_l \times n_l}, \quad \left(H^{l}\right)_{i, i} = {\sigma_{l}}^{\prime \prime} \left(z_{i}^{l}\right)
-\end{equation*}
-
-\begin{align*}
-    \nabla^{2} f_{\theta}\left(s\right) & = \eta^{[1]} \in \mathbb{R}^{2 \times 2} \\
-    \eta^{[1]} & = {W^{[1]}}^{\mathrm{T}} \left( \mathrm{diag}\left(H^{[1]} \delta^{[2]}\right) + D^{[1]} \eta^{[2]} D^{[1]} \right) W^{[1]} \\
-    & \vdots \\
-    \eta^{l} & = {W^{l}}^{\mathrm{T}} \left( \mathrm{diag}\left(H^{l} \delta^{[l+1]}\right) + D^{l} \eta^{[l+1]} D^{l} \right) W^{l} \in \mathbb{R}^{n_{l-1} \times n_{l-1}} \\
-    & \vdots \\
-    \eta^{L} & = {W^{L}}^{\mathrm{T}} H^{L} W^{L} \in \mathbb{R}^{n_{L-1} \times n_{L-1}}
-\end{align*} 
 
 
 \begin{algorithm}[H]
     \caption{Computation of the gradient and a Hessian of an L-layer feed-forward neural network.}
     \begin{algorithmic}[1]
-        \State \textbf{Input:} vector $z^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = \left(\left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}\right)$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\left\{ b^l \right\}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a FNN $f$
+        \State \textbf{Input:} vector $z^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = \left(\left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}\right)$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\left\{ b^l \right\}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a $FNN$ $f$
         \For{$ l = 1, \ldots, L$}
             \State Set $z^l = \sigma_l\left(W^l z^{l-1} + b^l\right)$
         \EndFor
@@ -160,13 +187,13 @@ We note that for $A \in \mathbb{R}^{m \times n}$, $b \in \mathbb{R}^{m}$, $c, d 
 
 
 
-where $W^{[1]} \in \mathbb{R}^{m \times 2}$ and $b^{[1]} \in \mathbb{R}^{m}$.
+where $W^{1} \in \mathbb{R}^{m \times 2}$ and $b^{1} \in \mathbb{R}^{m}$.
 
 \begin{equation*}
     a^{l}\left(x\right) = a^{l-1}\left(x\right) + h \, \sigma_{l} \left(z^{l}\left(x\right)\right) = a^{l-1}\left(x\right) + h \, \sigma_{l} \left(W^{l} a^{l-1}\left(x\right) + b^{l}\right) \in \mathbb{R}^{m}, 
 \end{equation*}
 
-for $l = 2, \ldots, L$, where $W^{[2]}, \ldots, W^{L} \in \mathbb{R}^{m \times m}$ and $b^{[2]}, \ldots, b^{L} \in \mathbb{R}^{m}$.
+for $l = 2, \ldots, L$, where $W^{2}, \ldots, W^{L} \in \mathbb{R}^{m \times m}$ and $b^{2}, \ldots, b^{L} \in \mathbb{R}^{m}$.
 
 \begin{equation*}
     f_{\theta}\left(x\right) = f_{\theta}\left(s\right) = w^{\mathrm{T}} a^{L}\left(s\right) + \frac{1}{2} s^{\mathrm{T}} A s + c^{\mathrm{T}} s 
@@ -187,11 +214,11 @@ We set
 \end{equation*}
 
 \begin{align*}
-    \nabla_s a^{L}\left(s\right) \, w & = \delta^{[1]}  \\
-    \delta^{[1]} & = {W^{[1]}}^{\mathrm{T}} D^{[1]} \, \delta^{[2]} \\
-    \delta^{[2]} & = \delta^{[3]} + h \, {W^{[2]}}^{\mathrm{T}} D^{[2]} \, \delta^{[3]} \\
+    \nabla_s a^{L}\left(s\right) \, w & = \delta^{1}  \\
+    \delta^{1} & = {W^{1}}^{\mathrm{T}} D^{1} \, \delta^{2} \\
+    \delta^{2} & = \delta^{3} + h \, {W^{2}}^{\mathrm{T}} D^{2} \, \delta^{3} \\
     &\vdots\\
-    \delta^{l} & = \delta^{[l+1]} + h \, {W^{l}}^{\mathrm{T}} D^{l} \, \delta^{[l+1]} \\
+    \delta^{l} & = \delta^{l+1} + h \, {W^{l}}^{\mathrm{T}} D^{l} \, \delta^{l+1} \\
     &\vdots\\
     \delta^{L-1} & = \delta^{L} + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \, \delta^{L} \\
     \delta^{L} & = w + h \, {W^{L}}^{\mathrm{T}} D^{L} \, w
@@ -215,22 +242,22 @@ where the columns of $E \in \mathbb{R}^{\left(d+1\right) \times d}$ are given by
 Ruthotto sets
 
 \begin{align*}
-    \Delta_x \left(a^{L}\left(s\right) \, w\right) & = t^{[0]} + h \, \sum^{L}_{l=1} t^{l} = \mathrm{tr}\left(\eta^{[0]}\right) + h \, \sum^{L}_{l=1} \mathrm{tr}\left(\eta^{l}\right) = \\
-    & = \mathrm{tr} \left( \eta^{[0]} + h \, \sum^{L}_{l=1} \eta^{l} \right) = \mathrm{tr} \left( \nabla^{2}_x a^{L}\left(s\right) \, w \right)
+    \Delta_x \left(a^{L}\left(s\right) \, w\right) & = t^{0} + h \, \sum^{L}_{l=1} t^{l} = \mathrm{tr}\left(\eta^{0}\right) + h \, \sum^{L}_{l=1} \mathrm{tr}\left(\eta^{l}\right) = \\
+    & = \mathrm{tr} \left( \eta^{0} + h \, \sum^{L}_{l=1} \eta^{l} \right) = \mathrm{tr} \left( \nabla^{2}_x a^{L}\left(s\right) \, w \right)
 \end{align*}
 
 \begin{equation*}
-    \partial_{xx} a^{L}\left(s\right) w = \nabla^{2}_x a^{L}\left(s\right) w = E^{\mathrm{T}} \, \nabla^{2}_s a^{L}\left(s\right) \, w \, E = \eta^{[0]} + h \, \sum^{L}_{l=1} \eta^{l}
+    \partial_{xx} a^{L}\left(s\right) w = \nabla^{2}_x a^{L}\left(s\right) w = E^{\mathrm{T}} \, \nabla^{2}_s a^{L}\left(s\right) \, w \, E = \eta^{0} + h \, \sum^{L}_{l=1} \eta^{l}
 \end{equation*}
 
 where 
 
 \begin{equation*}
-    \eta^{[0]} = E^T {W^{[1]}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{[1]}}^{\prime \prime}\left(W^{[1]} s + b^{[1]}\right) \odot \delta^{[2]}\right) W^{[1]} E
+    \eta^{0} = E^T {W^{1}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{1}}^{\prime \prime}\left(W^{1} s + b^{1}\right) \odot \delta^{2}\right) W^{1} E
 \end{equation*}
 
 \begin{equation*}
-    \eta^{l} = {J^{l-1}}^{\mathrm{T}} {W^{l}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{l}}^{\prime \prime}\left(W^{l} a^{l-1}\left(s\right) + b^{l}\right) \odot \delta^{[l+1]}\right) W^{l} J^{l-1}
+    \eta^{l} = {J^{l-1}}^{\mathrm{T}} {W^{l}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{l}}^{\prime \prime}\left(W^{l} a^{l-1}\left(s\right) + b^{l}\right) \odot \delta^{l+1}\right) W^{l} J^{l-1}
 \end{equation*}
 
 where 
@@ -243,13 +270,13 @@ where
 Now to the Hessian as it has been implemented: 
 
 \begin{align*}
-    \eta^{[1]} & = h \, {W^{[1]}}^{\mathrm{T}} \mathrm{diag} \left( H^{[1]} \delta^{[2]} \right) W^{[1]} + \\
-    & \quad + \left( I + h \, {W^{[1]}}^{\mathrm{T}} D^{[1]} \right) \, \left( \left( I + h \, {W^{[1]}}^{\mathrm{T}} D^{[1]} \right) \, \eta^{[2]} \right)^{\mathrm{T}} \\ 
+    \eta^{1} & = h \, {W^{1}}^{\mathrm{T}} \mathrm{diag} \left( H^{1} \delta^{2} \right) W^{1} + \\
+    & \quad + \left( I + h \, {W^{1}}^{\mathrm{T}} D^{1} \right) \, \left( \left( I + h \, {W^{1}}^{\mathrm{T}} D^{1} \right) \, \eta^{2} \right)^{\mathrm{T}} \\ 
     &\vdots\\
-    \eta^{l} & = h \, {W^{l}}^{\mathrm{T}} \mathrm{diag} \left( H^{l} \delta^{[l+1]} \right) W^{l} + \\
-    & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \left( \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \eta^{[l+1]} \right)^{\mathrm{T}} \\ 
-    \eta^{l} & = h \, {W^{l}}^{\mathrm{T}} \mathrm{diag} \left( H^{l} \delta^{[l+1]} \right) W^{l} + \\
-    & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \eta^{[l+1]}  \left( I + h \,  D^{l} {W^{l}} \right) \\ 
+    \eta^{l} & = h \, {W^{l}}^{\mathrm{T}} \mathrm{diag} \left( H^{l} \delta^{l+1} \right) W^{l} + \\
+    & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \left( \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \eta^{l+1} \right)^{\mathrm{T}} \\ 
+    \eta^{l} & = h \, {W^{l}}^{\mathrm{T}} \mathrm{diag} \left( H^{l} \delta^{l+1} \right) W^{l} + \\
+    & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \eta^{l+1}  \left( I + h \,  D^{l} {W^{l}} \right) \\ 
     &\vdots\\
     \eta^{L-1} & = h \, {W^{L-1}}^{\mathrm{T}} \mathrm{diag} \left( H^{L-1} \delta^{L} \right) W^{L-1} + \\
     & \quad + \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \left( \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \eta^{L} \right)^{\mathrm{T}} \\
