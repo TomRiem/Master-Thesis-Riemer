@@ -32,11 +32,13 @@ with $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b}$ as introduced before. Here, we introd
 \end{equation}
 Here, on average over all time collocation points $\left\{ t_{v,b}^i \right\}_{i=1}^{n_b}$, the value $\rho_{\theta_e}  \left( t_{v,b}^i, v \right)$ of each edge $e \in \mathcal{E}_v$ should be equal to the average of all edges connected to this interior vertex $v \in \mathcal{V}_\mathcal{K}$. Both misfit terms have their numerical advantages and disadvantages. The misfit term defined by \cref{misfit:continuity} is not so complex, from which can follow that the derivatives with respect to the trainable parameters $\theta$ in the used optimization method is easier to compute, but therefore adds \cref{misfit:continuity} just as much trainable parameters as collocation points to the set of trainable parameters. No further trainable parameters need to be added for the misfit term given by \cref{misfit:continuity:average}, but it is more complex for that. \\
 We enforce the flux vertex conditions given by \cref{eq:Dirichlet_conditions} for each exterior vertex $v \in \mathcal{V}_\mathcal{D}$ by defining the following misfit term  
-\begin{align} 
+\begin{equation}
     \label{misfit:Dirichlet}
-    \phi_{v,D}  \left( X_{v,b} \right) \coloneqq & \frac{1}{n_b} \sum_{i=1}^{n_b} \bigg( \sum_{e \in \mathcal{E}_v} \left(- \varepsilon \partial_x \rho_{\theta_e}  \left( t_{v,b}^i, v \right) + f\left(\rho_{\theta_e}  \left( t_{v,b}^i, v \right)\right) \partial_x V_e\left( t_{v,b}^i, v \right) \right) n_e  \left( v \right) + \\
-    & \alpha_v \left( t_{v,b}^i \right)  \left( 1- \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \right) - \beta_v \left( t_{v,b}^i \right) \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \bigg)^2
-\end{align}
+    \begin{aligned} 
+        \phi_{v,D}  \left( X_{v,b} \right) \coloneqq & \frac{1}{n_b} \sum_{i=1}^{n_b} \bigg( \sum_{e \in \mathcal{E}_v} \left(- \varepsilon \partial_x \rho_{\theta_e}  \left( t_{v,b}^i, v \right) + f\left(\rho_{\theta_e}  \left( t_{v,b}^i, v \right)\right) \partial_x V_e\left( t_{v,b}^i, v \right) \right) n_e  \left( v \right) + \\
+        & \alpha_v \left( t_{v,b}^i \right)  \left( 1- \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \right) - \beta_v \left( t_{v,b}^i \right) \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \bigg)^2
+    \end{aligned}
+\end{equation}
 with $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b}$ as introduced before. \\
 To enforce the initial conditions for each edge $e \in \mathcal{E}$, \cref{eq:initial_conditions}, we define the following misfit term  
 \begin{equation} 
@@ -45,11 +47,13 @@ To enforce the initial conditions for each edge $e \in \mathcal{E}$, \cref{eq:in
 \end{equation} 
 where $X_{e,0} = \{x_{e,0}^i\}_{i=1}^{n_0} \subset [0, \ell_e]$ is a set of collocation points along $t=0$. \\ 
 Now we combine all misfit terms defined above to form the cost function $\Phi_\theta$ by adding the different mean values over the units in which the concerned misfit term is applicable: 
-\begin{align} 
+\begin{equation}
     \label{eq:loss:1}
-    \Phi_{\theta} \left( X_{data} \right) & =  \frac{1}{\abs{\mathcal{V}_\mathcal{D}}} \sum_{v \in \mathcal{V}_\mathcal{D}} \phi_{v,D} \left( X_{v,b} \right) + \frac{1}{\abs{\mathcal{V}_\mathcal{K}}} \sum_{v \in \mathcal{V}_\mathcal{K}}  \left(  \phi_{v,K}  \left( X_{v,b} \right) + \phi_{v,c} \left( X_{v,b} \right)  \right) + \\
-    & \quad + \frac{1}{\abs{\mathcal{E}}} \sum_{e \in \mathcal{E}}  \left(  \phi_{e,r}  \left( X_{e,r} \right) + \phi_{e,0}  \left( X_{e,0} \right)  \right), 
-\end{align}
+    \begin{aligned} 
+        \Phi_{\theta} \left( X_{data} \right) & =  \frac{1}{\abs{\mathcal{V}_\mathcal{D}}} \sum_{v \in \mathcal{V}_\mathcal{D}} \phi_{v,D} \left( X_{v,b} \right) + \frac{1}{\abs{\mathcal{V}_\mathcal{K}}} \sum_{v \in \mathcal{V}_\mathcal{K}}  \left(  \phi_{v,K}  \left( X_{v,b} \right) + \phi_{v,c} \left( X_{v,b} \right)  \right) + \\
+        & \quad + \frac{1}{\abs{\mathcal{E}}} \sum_{e \in \mathcal{E}}  \left(  \phi_{e,r}  \left( X_{e,r} \right) + \phi_{e,0}  \left( X_{e,0} \right)  \right), 
+    \end{aligned}
+\end{equation}
 where $X_{data}$ represents the union of the different collocation points $X_e$, $X_{v,b}$ and $X_{e,0}$. In the learning phase, this cost function $\Phi_{\theta}$ is minimized with respect to the trainable parameters $\theta$, in the hope that the resulting trained surrogate network $\rho_{\theta_e}$ for each edge $e \in \mathcal{E}$ will approximate the solution of the drift diffusion equation given by \cref{Drift-Diffusion-equation} well to a certain degree under the given initial and vertex conditions. 
 
 So far we have not specified what type of neural network with which topology we use for $\rho_{\theta_e}$, i.e. to approximate the solution of \cref{Drift-Diffusion-equation} on an individual edge $e \in \mathcal{E}$ under the given initial and vertex conditions. Of course, we have an infinite freedom of choice, the only constraints being the dimension of the input $(x,t) \in \mathbb{R}^2$, the dimension of the output $\rho_{\theta_e}(t, x) \in \mathbb{R}$ and the differentiability of the corresponding neural network up to order two (due to $\partial_{xx} \rho_{\theta_e}$ appears in \cref{Drift-Diffusion-equation}). We now introduce three different types of neural network for the approximation of $\rho_e \colon (0, T) \times [0, \ell_e] \to \mathbb{R}$, which we use in the numerical experiments. \\
@@ -57,36 +61,44 @@ Since we have to find an approximation $\rho_{\theta_e}$ for each edge $e \in \m
 
 % Noch die richtigen Hyperparameter hinzufügen
 We adopt this approach of using a single neural network to approximate $\rho_e$ on a single edge $e \in \mathcal{E}$ for the numerical experiments and we use two different types of neural networks for that. For the first numerical experiment, we use for $\rho_{\theta_e}$ a feed-forward neural network, denoted by $fnn_{\theta_e}$, with $L$-layers for each edge $e \in \mathcal{E}$, which is defined by 
-\begin{gather}
+\begin{equation} 
     \label{one_for_each}
-    fnn_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}, \\
-    \\
-    fnn_{\theta_e}(x, t) = \sigma_L(W^L \sigma_{L-1}(W^{L-1}\sigma_{L-2}(\cdots \sigma_{1}(W^{1}x^0 +b^1) \cdots) + b^{L-1}) + b^{L}),
-\end{gather}
+    \begin{gathered}
+        fnn_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}, \\
+        \\
+        fnn_{\theta_e}(x, t) = \sigma_L(W^L \sigma_{L-1}(W^{L-1}\sigma_{L-2}(\cdots \sigma_{1}(W^{1}x^0 +b^1) \cdots) + b^{L-1}) + b^{L}),
+    \end{gathered} 
+\end{equation} 
 where $x^0 = (t, x)^{\mathrm{T}} \in (0, T) \times [0, \ell_e] \subset \mathbb{R}^2$ and $\theta_e = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L} \right\}$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$, where $n_0 = 2$ and $n_L = 1$. The total set of all trainable parameters for the resulting $PINN$ approach is therefore $\theta = \bigcup_{e \in \mathcal{E}} \ \theta_e$. Feed-forward neural networks have already been used in various $PINN$ setups, so this choice can be considered as reasonable.  \\
 For the second numerical experiment, we use for $\rho_{\theta_e}$ a neural network, which is defined by the following architecture and the following forward propagation
-\begin{gather}
+\begin{equation} 
     \label{Resnet1}
-    R_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}, \\
-    \\
-    R_{\theta_e}(x^0) = \frac{1}{2} {x^0}^{\mathrm{T}} A x^0 + w^{\mathrm{T}} x^{L} + c^{\mathrm{T}} x^0,
-\end{gather}
+    \begin{gathered}
+        R_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}, \\
+        \\
+        R_{\theta_e}(x^0) = \frac{1}{2} {x^0}^{\mathrm{T}} A x^0 + w^{\mathrm{T}} x^{L} + c^{\mathrm{T}} x^0,
+    \end{gathered} 
+\end{equation} 
 with
-\begin{gather}
-    \label{Resnet2}
-    x^1 = \sigma_1(W^1 x^{0} + b^1) \in \mathbb{R}^m, \\
-    \\
-    x^l = x^{l-1} + h \, \sigma_l(W^l x^{l-1} + b^l) \in \mathbb{R}^m \quad \text{for} \quad l = 2, \ldots, L, 
-\end{gather}
+\begin{equation}
+    \label{Resnet2} 
+    \begin{gathered}
+        x^1 = \sigma_1(W^1 x^{0} + b^1) \in \mathbb{R}^m, \\
+        \\
+        x^l = x^{l-1} + h \, \sigma_l(W^l x^{l-1} + b^l) \in \mathbb{R}^m \quad \text{for} \quad l = 2, \ldots, L, 
+    \end{gathered} 
+\end{equation} 
 where $h > 0$ is called stepsize and is a hyperparameter, $x^0 = (t, x)^{\mathrm{T}} \in (0, T) \times [0, \ell_e] \subset \mathbb{R}^2$, $W^1 \in \mathbb{R}^{m \times 2}$ and $W^l \in \mathbb{R}^{m \times m}$ for $l = 2, \ldots, L$, $b^l \in \mathbb{R}^{m}$ for $l = 1, \ldots, L$ and $A \in \mathbb{R}^{2 \times 2}$, $w \in \mathbb{R}^m$, $c \in \mathbb{R}^2$ are also trainable parameters, i.e. $\theta_e = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}, A, w, c \right\}$ and $\theta = \bigcup_{e \in \mathcal{E}} \ \theta_e$. The idea of using this type of neural network originates from \cite{RuthottoOsherLiNurbekyanFung2020}, in which high-dimensional mean field games and mean field control models are approximately solved by combining Lagrangian and Eulerian viewpoints and by using a tailored neural network parameterization for the potential of the solution, which can be understood as a density, to avoid any spatial discretisation. The neural network given by the forward propagation in \cref{Resnet2} is also called residual network and abbreviated with ResNet, \cite{HeZhangRenSun:2015}. We refer to it only as ResNet to avoid confusion with the residual network of a $PINN$. ResNets have been successful in a wide range of machine learning tasks and have been found to be trainable even for many layers. By interpreting \cref{Resnet2} as a forward Euler discretization of an initial value problem, the continuous limit of a ResNet is amenable to mathematical analysis, \cite[p.~6]{RuthottoOsherLiNurbekyanFung2020}. \\
 
 For a further numerical experiment we use a completely different approach of utilizing a neural network to approximate the solutions of the set of drift-diffusion equations. We use one single feed-forward neural network with $L \in \mathbb{N}$ layers for the approximation of the solution of \cref{Drift-Diffusion-equation} under the given initial and vertex conditions on all edges of the graph $\Gamma$, i.e. this network returns for a point $(t,x) \in \mathcal{R}^2$ the values $\rho_{\theta_{e_i}}(x, t)$ for all edges $\mathcal{E} = \left\{ e_i \right\}_{i = 1, \ldots, E}$, where $E = \abs{\mathcal{E}}$. We define this neural network as follows
-\begin{gather}
+\begin{equation} 
     \label{one_for_all}
-    \mathbf{FNN}_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^E \\
-    \\
-    \mathbf{FNN}_{\theta}(x, t) = \sigma_L(W^L \sigma_{L-1}(W^{L-1}\sigma_{L-2}(\cdots \sigma_{1}(W^{1}x^0 +b^1) \cdots) + b^{L-1}) + b^{L}) \in \mathbb{R}^E, 
-\end{gather}
+    \begin{gathered}
+        \mathbf{FNN}_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^E \\
+        \\
+        \mathbf{FNN}_{\theta}(x, t) = \sigma_L(W^L \sigma_{L-1}(W^{L-1}\sigma_{L-2}(\cdots \sigma_{1}(W^{1}x^0 +b^1) \cdots) + b^{L-1}) + b^{L}) \in \mathbb{R}^E, 
+    \end{gathered} 
+\end{equation} 
 where $x^0 = (t, x)^{\mathrm{T}} \in (0, T) \times [0, \ell_e] \subset \mathbb{R}^2$ and $\theta = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L} \right\}$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$, where $n_0 = 2$ and $n_L = E$. The individual approximations are given by 
 \begin{equation*}
     \rho_{\theta_{e_i}}(x, t) = \left[ \mathbf{FNN}_{\theta}(x, t) \right]_i \in \mathbb{R},

@@ -32,7 +32,7 @@ Due to the linearity of the propagation function $a^l = a^l\left(x^{l-1}\right) 
     \label{derivative:activation}
     \frac{\textup{d}}{\textup{d} \ x^{l-1}} \ a^{l}\left(x^{l-1}\right) = W^l.
 \end{equation}
-Using equation \cref{derivative:activation:function} and equation \cref{derivative:activation}, we can now differentiate the $FNN$ defined by \cref{model prediction} with respect to its input $x^0 \in \mathbb{R}^{n_0}$ layer by layer to get the Jacobian matrix of \cref{model prediction}
+Using \cref{derivative:activation:function} and \cref{derivative:activation}, we can now differentiate the $FNN$ defined by \cref{model prediction} with respect to its input $x^0 \in \mathbb{R}^{n_0}$ layer by layer to get the Jacobian matrix of \cref{model prediction}
 \begin{equation} 
     \label{first order derivative}
     \begin{aligned}
@@ -59,7 +59,7 @@ For the derivation of the individual entries given by \cref{second derivative te
         x^l = \sigma_l\left(W^l x^{l-1} + b^l\right) \in \mathbb{R}^{n_l} \quad \text{for} \quad l = 1, \ldots, L-1,
     \end{gathered} 
 \end{equation} 
-where $W^L_{i,:} \in \mathbb{R}^{1 \times n_{L-1}}$ is the ith row of $W^L \in \mathbb{R}^{n_L \times n_{L-1}}$ and $b^{L}_{i} \in \mathbb{R}$ is the ith entry of $b^{L} \in \mathbb{R}^{n_L}$. We note that the computation of $x^l$ in \cref{ith model prediction} is the same for all $n_L$ maps $f_{\theta, i}$ and that the map $f_{\theta, i}$ is of course also fully connected $FNN$ with $L$ layers. \\
+where $W^L_{i,:} \in \mathbb{R}^{1 \times n_{L-1}}$ is the $i$-th row of $W^L \in \mathbb{R}^{n_L \times n_{L-1}}$ and $b^{L}_{i} \in \mathbb{R}$ is the $i$-th entry of $b^{L} \in \mathbb{R}^{n_L}$. We note that the computation of $x^l$ in \cref{ith model prediction} is the same for all $n_L$ maps $f_{\theta, i}$ and that the map $f_{\theta, i}$ is of course also fully connected $FNN$ with $L$ layers. \\
 The gradient of \cref{ith model prediction} is given using \cref{Jacobi} and \cref{first order derivative} by
 \begin{equation} 
     \label{ith first order derivative}
@@ -68,7 +68,8 @@ The gradient of \cref{ith model prediction} is given using \cref{Jacobi} and \cr
         & = {W^{1}}^{\mathrm{T}} \cdot D^{1} \cdot {W^{2}}^{\mathrm{T}} \cdot \ldots \cdot {W^L_{i,:}}^{\mathrm{T}}  \cdot  D^{L} \in \mathbb{R}^{n_0}, 
     \end{aligned} 
 \end{equation} 
-where $D^l$ is defined by \cref{derivative:activation:function} for $l = 1, \ldots, L$. We note that $D^L = {\sigma_{L}}^{\prime} \left( W^L_{i,:} x^{L-1} + b^{L}_{i} \right) \in \mathbb{R}$ holds.  \\
+where $D^l$ is defined by \cref{derivative:activation:function} for $l = 1, \ldots, L$. We note that \\
+$D^L = {\sigma_{L}}^{\prime} \left( W^L_{i,:} x^{L-1} + b^{L}_{i} \right) \in \mathbb{R}$ holds.  \\
 In an implementation of the gradient given by \cref{ith first order derivative}, the gradient $\nabla f_{\theta, i} \left(x^0\right)$ can be computed recursively, using a similar approach to that of the back-propagation method. First, the neural network $f_{\theta, i}$ is evaluated at the point $x^0 \in \mathbb{R}^{n_0}$ where the gradient is required and while the information is propagated forward through the neural network, the activation given by \cref{propagation function} is stored for each layer. Then the so-called error is propagated backwards through the network by applying the chain rule from the last layer to the first layer in the reverse. The following iterative computation can be used for this
 \begin{equation} 
     \label{gradient recursive}
@@ -88,7 +89,7 @@ We proceed as follows: we differentiate $D^{l} \in \mathbb{R}^{n_l \times n_l}$ 
     \begin{aligned}
         \frac{\textup{d} \ D^{l}}{\textup{d} \ x^0} \  {W^{l}}^{\mathrm{T}} \cdot D^{l} \cdot \delta^{l+1} & = {W^{l}}^{\mathrm{T}} \begin{pmatrix}\ \frac{\textup{d} \ {\sigma_{l}}^{\prime}}{\textup{d} \ x^0} \  {\sigma_{l}}^{\prime} \left( a^{l}_1 \right) \delta^{l+1}_1 \\ \vdots \\ \ \frac{\textup{d} \ {\sigma_{l}}^{\prime}}{\textup{d} \ x^0} \  {\sigma_{l}}^{\prime} \left( a^{l}_{n_l} \right) \delta^{l+1}_{n_l} \end{pmatrix} = \\
         & = {W^{l}}^{\mathrm{T}} \begin{pmatrix} {\sigma_{l}}^{\prime \prime} \left( a^{l}_1 \right) \delta^{l+1}_1\ \frac{\textup{d}}{\textup{d} \ x^0} \  \left( W^{l}_{1,:} x^{l-1} + b^l_{1} \right) \\ \vdots \\ {\sigma_{l}}^{\prime \prime} \left( a^{l}_{n_l} \right) \delta^{l+1}_{n_l} \ \frac{\textup{d}}{\textup{d} \ x^0} \  \left( W^{l}_{n_l,:} x^{l-1} + b^l_{n_l} \right) \end{pmatrix} = \\
-        & = {W^{l}}^{\mathrm{T}} \begin{pmatrix} {\sigma_{l}}^{\prime \prime} \left( a^{l}_1 \right) \delta^{l+1}_1 W^{l}_{1,:} \ \frac{\textup{d}}{\textup{d} \ x^0} \  \sigma_{l-1}(a^{l-1})\\ \vdots \\ {\sigma_{l}}^{\prime \prime} \left( a^{l}_{n_l} \right) \delta^{l+1}_{n_l}  W^{l}_{n_l,:} \ \frac{\textup{d}}{\textup{d} \ x^0} \  \sigma_{l-1}(a^{l-1}) \end{pmatrix}.
+        & = {W^{l}}^{\mathrm{T}} \begin{pmatrix} {\sigma_{l}}^{\prime \prime} \left( a^{l}_1 \right) \delta^{l+1}_1 W^{l}_{1,:} \ \frac{\textup{d}}{\textup{d} \ x^0} \  \sigma_{l-1}(a^{l-1})\\ \vdots \\ {\sigma_{l}}^{\prime \prime} \left( a^{l}_{n_l} \right) \delta^{l+1}_{n_l}  W^{l}_{n_l,:} \ \frac{\textup{d}}{\textup{d} \ x^0} \  \sigma_{l-1}(a^{l-1}) \end{pmatrix},
     \end{aligned} 
 \end{equation}
 where $\delta^{l+1}_j$ is the $j$-th element of $\delta^{l+1}$ defined by \cref{gradient recursive} and $a^{l}_j$ is the $j$-th element of the activation $W^l x^{l-1} + b^l$. \\
@@ -117,7 +118,7 @@ It follows that the derivative of $D^l$ within the gradient given by \cref{ith f
 \begin{equation*}
     \frac{\textup{d} \ D^{l}}{\textup{d} \ x^0} \  \nabla f_{\theta, i} \left(x^0\right) = {W^{1}}^{\mathrm{T}} \cdot D^{1} \cdot {W^{2}}^{\mathrm{T}} \cdot \ldots \cdot {W^{l}}^{\mathrm{T}} \cdot H^{l} \cdot W^l \cdot D^{l-1} \cdot W^{l-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \in \mathbb{R}^{n_{0} \times n_0}.
 \end{equation*}
-If we apply the product rule $L-1$ times and differentiate each of the $D^l$ $l = 1, \ldots, L$ with respect to $x^0$, we by simple arithmetic obtain the following recursive iteration for the computation of the Hessian matrix of $f_{\theta, i}$ defined by \cref{ith model prediction} 
+If we apply the product rule $L-1$ times and differentiate each of the $D^l$ $l = 1, \ldots, L$ with respect to $x^0$, we obtain by simple arithmetic the following recursive iteration for the computation of the Hessian matrix of $f_{\theta, i}$ defined by \cref{ith model prediction} 
 \begin{equation}
     \label{Hessian recursion}
     \begin{aligned}
@@ -126,7 +127,7 @@ If we apply the product rule $L-1$ times and differentiate each of the $D^l$ $l 
         & \vdots \\
         \eta^{l} & = {W^{l}}^{\mathrm{T}} \left( H^{l} + D^{l} \eta^{l+1} D^{l} \right) W^{l} \in \mathbb{R}^{n_{l-1} \times n_{l-1}} \\
         & \vdots \\
-        \eta^{L} & = {W^L_{i,:}}^{\mathrm{T}} H^{L} W^L_{i,:} \in \mathbb{R}^{n_{L-1} \times n_{L-1}}
+        \eta^{L} & = {W^L_{i,:}}^{\mathrm{T}} H^{L} W^L_{i,:} \in \mathbb{R}^{n_{L-1} \times n_{L-1}}.
     \end{aligned}
 \end{equation}
 In order to get the second order derivative $\mathrm{H} \left[f_{\theta} \right]\left(x^0\right) \in \mathbb{R}^{n_L \times n_0 \times n_0}$ given by \cref{second derivative tensor} of the $FNN$ given by \cref{model prediction}, we have to apply \cref{Hessian recursion} for each $f_{\theta, i} \colon \mathbb{R}^{n_0} \to \mathbb{R}$, in total $n_L$ times.  \\
