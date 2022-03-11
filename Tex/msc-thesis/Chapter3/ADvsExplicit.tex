@@ -131,42 +131,72 @@ If we apply the product rule $L-1$ times and differentiate each of the $D^l$ $l 
 \end{equation}
 In order to get the second order derivative $\mathrm{H} \left[f_{\theta} \right]\left(x^0\right) \in \mathbb{R}^{n_L \times n_0 \times n_0}$ given by \cref{second derivative tensor} of the $FNN$ given by \cref{model prediction}, we have to apply \cref{Hessian recursion} for each $f_{\theta, i} \colon \mathbb{R}^{n_0} \to \mathbb{R}$, in total $n_L$ times.  \\
 
-We have implemented this method presented above for computing the explicit derivatives of an FNN in Python. The methodology follows the pseudo code below. Since many implementations can be easily vectorised in Python, this implementation could also be applied to a general FNN by making small changes.
+
+Let f be an FNN with one-dimensional output, i.e. n = 1, then the first derivative of can be represented by the gradient and the second derivative of f by the Hessian matrix. In this case, of course, the gradient can be iteratively calculated by equation 3 and the Hessian matrix can be iteratively calculated by equation 4. We have implemented these recursive iterative calculations for this case in Python. Here, the methodology of the implementation for calculating F follows the pseudo code below. For the implementation to calculate G, all lines 1, 2 and 3 can simply be omitted. By clever use of multidimensional arrays and vectorisation, which is easy to implement in Python, we implemented for an FNN with n>1 the recursive calculation for the Jacobi matrix defined by equation 3 and a recursive calculation for the entries given by equation 4 for the tensors H. The implementation followed the method just mentioned. In doing so, the implementation just mentioned was applied vectorised for all outputs of the network. 
+
+The following pseudocode describes how to realise the recursive iterat
+
+gradient and the Hessian matrix of a one-dimensional FNN with L-layers, as described by equation 3 and equation 4, in an implementation. If only the gradient needs to be calculated, all lines that are necessary for the calculation of eta, i.e. lines 1, 2 and 3, are omitted. We have implemented the methodology for the calculation of x, delta and eta given by the following pseudo code in Python and generalised it to an FNN with multidimensional output by using multidimensional arrays and the vectorisation that can be easily realised by Python. 
+
 \begin{algorithm}[H]
     \caption{Computation of the gradient and a Hessian of an L-layer feed-forward neural network.}
     \begin{algorithmic}[1]
-        \State \textbf{Input:} vector $z^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = \left(\left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}\right)$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\left\{ b^l \right\}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a $FNN$ $f$
+        \State \textbf{Input:} vector $x^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = \left(\left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}\right)$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\left\{ b^l \right\}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a $FNN$ $f$
         \For{$ l = 1, \ldots, L$}
-            \State Set $z^l = \sigma_l\left(W^l z^{l-1} + b^l\right)$
+            \State Set $x^l = \sigma_l\left(W^l x^{l-1} + b^l\right)$
         \EndFor
-        \State Set $\delta^{L} = {W^{L}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{L}}^{\prime}\left(W^{L} z^{L-1} + b^{L}\right)\right)$.
+        \State Set $\delta^{L} = {W^{L}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{L}}^{\prime}\left(W^{L} x^{L-1} + b^{L}\right)\right)$.
         \State Set $\eta^{L}$.
         \For{$ l = L-1, \ldots, 1$}
-            \State Set $\delta^{l} = {W^{l}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{l}}^{\prime}\left(W^{l} z^{l-1} + b^{l}\right)\right) \cdot \delta^{l+1}$.
+            \State Set $\delta^{l} = {W^{l}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{l}}^{\prime}\left(W^{l} x^{l-1} + b^{l}\right)\right) \cdot \delta^{l+1}$.
             \State Set $\eta^{l}$.
         \EndFor
-        \State \textbf{Input:} $z^L$, $\delta^1$, $\eta^1$.
+        \State \textbf{Output:} $x^L$, $\delta^1$, $\eta^1$.
     \end{algorithmic}
 \end{algorithm}
 We have performed a numerical experiment in which we compare the time required for the calculations of the explicit derivatives with the time required for the calculation with automatic differentiation of the same values. 
 
 We have performed this experiment for a FNN f which corresponds to the neural network given by equation 3 and another time which corresponds to the network given by equation 4. 
 
-\begin{table}[H]\label{tab:advs ecplicit}
-    \resizebox{\textwidth}{!}{
-        \begin{tabular}{l l l l }
+$L = 4$ $n_0 = 2$ $n_1, \ldots, n_3 = 10$ $n_4 = 1$
+\begin{table}[H]\label{tab:advs ecplicit: fnn}
+    \resizebox{\textwidth}{!}
+    {
+        \begin{tabular}{l l l l l }
             \toprule
-            Neural Network given by & One each egde & Resnet & One  \\ 
+            Derivative & \multicolumn{2}{c}{$\nabla fnn_{\theta_e}$}& \multicolumn{2}{c}{$\nabla^2 fnn_{\theta_e}$} \\ 
             \midrule
-            Error & $0.15$ & $0.21$ & $0.54$ \\ 
+            Method & \cref{gradient recursive} & Automatic Differentiation & \cref{Hessian recursion} & Automatic Differentiation \\ 
             \midrule
-            Time in seconds & $0.15$ & $0.21$ & $0.54$  \\ 
+            $N = 100$ & $6.88$ & $1.22$ & $76.95$ & $9.68$ \\ 
             \midrule
-            Number of Iterations & $72$ & $68$ & $72$ \\
+            $N = 1000$ & $8.75$ & $1.31$ & $773.53$ & $14.06$ \\ 
+            \midrule
+            $N = 10000$ & $16.33$ & $3.46$ & $8379.95$ & $28.10$ \\ 
             \bottomrule
         \end{tabular}
     }
-    \caption{Comparison of different types of neural networks.}
+    \caption{Will come soon...}
+\end{table}
+
+\begin{table}[H]\label{tab:advs ecplicit: FNN}
+    \resizebox{\textwidth}{!}
+    {
+        \begin{tabular}{l l l l l }
+            \toprule
+            Derivative & \multicolumn{2}{c}{$ \mathbf{FNN}_{\theta}$}& \multicolumn{2}{c}{$\nabla^2 \mathbf{FNN}_{\theta}$} \\ 
+            \midrule
+            Method & \cref{gradient recursive} & Automatic Differentiation & \cref{Hessian recursion} & Automatic Differentiation \\ 
+            \midrule
+            $N = 100$ & $15.10$ & $13.30$ & $323.99$ & $57.72$ \\ 
+            \midrule
+            $N = 1000$ & $18.42$ & $16.86$ & $3292.42$ & $88.82$ \\ 
+            \midrule
+            $N = 10000$ & $46.59$ & $52.27$ & $37580.87$ & $340.43$ \\ 
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Comparison of RBFGS from \lstinline!Manopt.jl! with RBFGS from \cite{Qi:2011} on $\mathbb{S}^{n-1}$ for $n=100,300$.}
 \end{table}
 
 
@@ -239,36 +269,40 @@ We have implemented this method presented above for computing the explicit deriv
 \begin{algorithm}[H]
     \caption{Computation of the gradient and a Hessian of an L-layer feed-forward neural network.}
     \begin{algorithmic}[1]
-        \State \textbf{Input:} vector $z^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = \left(\left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}\right)$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\left\{ b^l \right\}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a $FNN$ $f$
+        \State \textbf{Input:} vector $x^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = \left(\left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}\right)$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\left\{ b^l \right\}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a $FNN$ $f$
         \For{$ l = 1, \ldots, L$}
-            \State Set $z^l = \sigma_l\left(W^l z^{l-1} + b^l\right)$
+            \State Set $x^l = \sigma_l\left(W^l x^{l-1} + b^l\right)$
         \EndFor
-        \State Set $\delta^{L} = {W^{L}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{L}}^{\prime}\left(W^{L} z^{L-1} + b^{L}\right)\right)$.
+        \State Set $\delta^{L} = {W^{L}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{L}}^{\prime}\left(W^{L} x^{L-1} + b^{L}\right)\right)$.
         \State Set $\eta^{L}$.
         \For{$ l = L-1, \ldots, 1$}
-            \State Set $\delta^{l} = {W^{l}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{l}}^{\prime}\left(W^{l} z^{l-1} + b^{l}\right)\right) \cdot \delta^{l+1}$.
+            \State Set $\delta^{l} = {W^{l}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{l}}^{\prime}\left(W^{l} x^{l-1} + b^{l}\right)\right) \cdot \delta^{l+1}$.
             \State Set $\eta^{l}$.
         \EndFor
-        \State \textbf{Input:} $z^L$, $\delta^1$, $\eta^1$.
+        \State \textbf{Input:} $x^L$, $\delta^1$, $\eta^1$.
     \end{algorithmic}
 \end{algorithm}
 We have performed a numerical experiment in which we compare the time required for the calculations of the explicit derivatives with the time required for the calculation with automatic differentiation of the same values. 
 
 We have performed this experiment for a FNN f which corresponds to the neural network given by equation 3 and another time which corresponds to the network given by equation 4. 
 
-\begin{table}[H]\label{tab:advs ecplicit Resnet}
-    \resizebox{\textwidth}{!}{
-        \begin{tabular}{l l l l }
+$L = 4$ $n_0 = 2$ $n_1, \ldots, n_3 = 10$ $n_4 = 1$
+\begin{table}[H]\label{tab:advs ecplicit: ResNet}
+    \resizebox{\textwidth}{!}
+    {
+        \begin{tabular}{l l l l l }
             \toprule
-            Neural Network given by & One each egde & Resnet & One  \\ 
+            Derivative & \multicolumn{2}{c}{$\nabla R_{\theta_e}$}& \multicolumn{2}{c}{$\nabla^2 R_{\theta_e}$} \\ 
             \midrule
-            Error & $0.15$ & $0.21$ & $0.54$ \\ 
+            Method & \cref{gradient recursive} & Automatic Differentiation & \cref{Hessian recursion} & Automatic Differentiation \\ 
             \midrule
-            Time in seconds & $0.15$ & $0.21$ & $0.54$  \\ 
+            $N = 100$ & $13.66$ & $5.12$ & $255.88$ & $27.74$ \\ 
             \midrule
-            Number of Iterations & $72$ & $68$ & $72$ \\
+            $N = 1000$ & $15.95$ & $6.49$ & $2371.42$ & $28.11$ \\ 
+            \midrule
+            $N = 10000$ & $21.80$ & $12.18$ & $26053.93$ & $70.63$ \\ 
             \bottomrule
         \end{tabular}
     }
-    \caption{Comparison of different types of neural networks.}
+    \caption{Will come soon...}
 \end{table}
