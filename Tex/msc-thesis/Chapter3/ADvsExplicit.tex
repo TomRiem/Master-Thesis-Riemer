@@ -1,7 +1,7 @@
-\section{Automatic differentiation vs explicit derivatives}
+\section{$AD$ vs explicit derivatives}
 \label{ch3:sec3}
 
-In this section we show how the neural networks used in the previous numerical tests can be explicitly differentiated so that the use of automatic differentiation in a $PINN$ approach can be omitted. We compare the time to convergence and the computational resources required for a $PINN$ approach programmed in Python with explicit derivatives with the results previously obtained for a $PINN$ that uses automatic differentiation. This aims to show whether an explicit computation of the derivatives for our approximation problem brings computational advantages with it and whether the performance of a $PINN$ approach can be improved as a result. \\
+In this section we show how the neural networks used in the previous numerical tests can be explicitly differentiated so that the use of $AD$ in a $PINN$ approach can be omitted. We compare the time to convergence and the computational resources required for a $PINN$ approach programmed in Python with explicit derivatives with the results previously obtained for a $PINN$ that uses $AD$. This aims to show whether an explicit computation of the derivatives for our approximation problem brings computational advantages with it and whether the performance of a $PINN$ approach can be improved as a result. \\
 We first consider the case of explicit derivatives with respect to the input of a feed-forward neural network. In this thesis we used two $FNN$s with different topologies, one $FNN$ for each edge of the graph given by \cref{one_for_each} and one $FNN$ for all edges of the graph given by \cref{one_for_all}. We therefore describe the first and second order explicit derivatives of a general $FNN$ and then we will discuss the $FNN$s used in this work. \\
 Let this general $FNN$ with $L$ layers be defined by 
 \begin{equation} 
@@ -26,7 +26,7 @@ We are interested in deriving the Jacobi matrix for the $FNN$ given by \cref{mod
     \label{derivative:activation:function}
     \frac{\textup{d}}{\textup{d} \ a^{l}} \ \sigma_{l} \left(a^l\right) = D^{l} = \begin{pmatrix} {\sigma_{l}}^{\prime} \left( a^{l}_1 \right) & & \\ & \ddots & \\ & & {\sigma_{l}}^{\prime} \left( a^{l}_{n_l} \right) \end{pmatrix} \in \mathbb{R}^{n_l \times n_l}, 
 \end{equation}
-where ${\sigma_{l}}^{\prime} \left( a^{l}_{n_l} \right)$ is the first derivative of the 1-dimensional activation function $\sigma_{l} \colon \mathbb{R} \to \mathbb{R}$ applied to the i-th component of $a_l \in \mathbb{R}^{n_l}$. \\
+where ${\sigma_{l}}^{\prime} \left( a^{l}_{n_l} \right)$ is the first derivative of the $1$-dimensional activation function $\sigma_{l} \colon \mathbb{R} \to \mathbb{R}$ applied to the i-th component of $a_l \in \mathbb{R}^{n_l}$. \\
 Due to the linearity of the propagation function $a^l = a^l\left(x^{l-1}\right) = W^{l} x^{l-1} + b^{l} \in \mathbb{R}^{n_l}$, its derivative with respect to $x^{l-1} \in \mathbb{R}^{n_{l-1}}$ is simply
 \begin{equation}
     \label{derivative:activation}
@@ -50,27 +50,27 @@ Next, we derive the second order derivative of the neural network with respect t
     \label{second derivative tensor}
     \left[ \mathrm{H} \left[f_{\theta} \right]\left(x^0\right) \right]_{i,j,k} =\ \frac{\partial^2 \left[f_{\theta}\left(x^0\right)\right]_i}{\partial x^0_{j} \ \partial x^0_{k}} \quad \text{for} \quad i = 1,\ldots, n_L, \ j = 1,\ldots, n_0, \ k = 1,\ldots, n_0.
 \end{equation}
-For the derivation of the individual entries given by \cref{second derivative tensor} we proceed as follows: we consider the individual entries of the output $f_{\theta}\left(x^0\right)$ of the neural network given by \cref{model prediction}, i.e. we consider the maps $f_{\theta, i} \colon \mathbb{R}^{n_0} \to \mathbb{R}$ with $f_{\theta, i} \left( x^0 \right) = \left[ f_{\theta} (x^0) \right]_i$ for $i = 1, \ldots, n_L$, and derive the Hessian matrix $\nabla^2 f_{\theta, i} \left( x^0 \right) \in \mathbb{R}^{n_0 \times n_0}$ of each of them. We take advantage of the fact that these maps $f_{\theta, i}$ only differ in the forward propagation of the last layer $l = L$ of $f_{\theta}$, since we assume that the $FNN$ $f_{\theta}$ is fully connected, i.e. the output of the $i$-th map is given by 
+For the derivation of the individual entries given by \cref{second derivative tensor} we proceed as follows: we consider the individual entries of the output $f_{\theta}\left(x^0\right)$ of the neural network given by \cref{model prediction}, i.e. we consider the maps $f_{\theta, i} \colon \mathbb{R}^{n_0} \to \mathbb{R}$ with $f_{\theta, i} \left( x^0 \right) = \left[ f_{\theta} (x^0) \right]_i$ for $i = 1, \ldots, n_L$, and derive the Hessian matrix $\nabla^2 f_{\theta, i} \left( x^0 \right) \in \mathbb{R}^{n_0 \times n_0}$ of each of them. We take advantage of the fact that these maps $f_{\theta, i}$ only differ in the forward propagation of the last layer $l = L$ of $f_{\theta}$, since we assume that the $FNN$ $f_{\theta}$ is fully-connected, i.e. the output of the $i$-th map is given by 
 \begin{equation} 
     \label{ith model prediction}
     \begin{gathered}
-        f_{\theta, i} (x^0) = \sigma_L\left(W^L_{i,:} x^{L-1}  + b^{L}_{i} \right) \in \mathbb{R} \\
+        f_{\theta, i} \left( x^0 \right) = \sigma_L\left(W^L_{i,:} x^{L-1}  + b^{L}_{i} \right) \in \mathbb{R} \\
         \\
         x^l = \sigma_l\left(W^l x^{l-1} + b^l\right) \in \mathbb{R}^{n_l} \quad \text{for} \quad l = 1, \ldots, L-1,
     \end{gathered} 
 \end{equation} 
-where $W^L_{i,:} \in \mathbb{R}^{1 \times n_{L-1}}$ is the $i$-th row of $W^L \in \mathbb{R}^{n_L \times n_{L-1}}$ and $b^{L}_{i} \in \mathbb{R}$ is the $i$-th entry of $b^{L} \in \mathbb{R}^{n_L}$. We note that the computation of $x^l$ in \cref{ith model prediction} is the same for all $n_L$ maps $f_{\theta, i}$ and that the map $f_{\theta, i}$ is of course also fully connected $FNN$ with $L$ layers. \\
+where $W^L_{i,:} \in \mathbb{R}^{1 \times n_{L-1}}$ is the $i$-th row of $W^L \in \mathbb{R}^{n_L \times n_{L-1}}$ and $b^{L}_{i} \in \mathbb{R}$ is the $i$-th entry of $b^{L} \in \mathbb{R}^{n_L}$. We note that the computation of $x^l$ in \cref{ith model prediction} is the same for all $n_L$ maps $f_{\theta, i}$ and that the map $f_{\theta, i}$ is of course also fully-connected $FNN$ with $L$ layers. Therefore, for the sake of simplifying the notation, we will use $W^L = W^L_{i,:}$ and $b^{L} = b^{L}_{i}$ in the following.  \\
 The gradient of \cref{ith model prediction} is given using \cref{Jacobi} and \cref{first order derivative} by
 \begin{equation} 
     \label{ith first order derivative}
     \begin{aligned}
-        \nabla f_{\theta, i} \left(x^0\right) & = \left( D^L \cdot W^L_{i,:} \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \right)^{\mathrm{T}} = \\
-        & = {W^{1}}^{\mathrm{T}} \cdot D^{1} \cdot {W^{2}}^{\mathrm{T}} \cdot \ldots \cdot {W^L_{i,:}}^{\mathrm{T}}  \cdot  D^{L} \in \mathbb{R}^{n_0}, 
+        \nabla f_{\theta, i} \left(x^0\right) & = \left( D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \right)^{\mathrm{T}} = \\
+        & = {W^{1}}^{\mathrm{T}} \cdot D^{1} \cdot {W^{2}}^{\mathrm{T}} \cdot \ldots \cdot {W^L}^{\mathrm{T}}  \cdot  D^{L} \in \mathbb{R}^{n_0}, 
     \end{aligned} 
 \end{equation} 
 where $D^l$ is defined by \cref{derivative:activation:function} for $l = 1, \ldots, L$. We note that \\
-$D^L = {\sigma_{L}}^{\prime} \left( W^L_{i,:} x^{L-1} + b^{L}_{i} \right) \in \mathbb{R}$ holds.  \\
-In an implementation of the gradient given by \cref{ith first order derivative}, the gradient $\nabla f_{\theta, i} \left(x^0\right)$ can be computed recursively, using a similar approach to that of the back-propagation method. First, the neural network $f_{\theta, i}$ is evaluated at the point $x^0 \in \mathbb{R}^{n_0}$ where the gradient is required and while the information is propagated forward through the neural network, the activation given by \cref{propagation function} is stored for each layer. Then the so-called error is propagated backwards through the network by applying the chain rule from the last layer to the first layer in the reverse. The following iterative computation can be used for this
+$D^L = {\sigma_{L}}^{\prime} \left( W^L x^{L-1} + b^L \right) \in \mathbb{R}$ holds.  \\
+In an implementation of the gradient given by \cref{ith first order derivative}, the gradient $\nabla f_{\theta, i} \left(x^0\right)$ can be computed recursively, using a similar approach to that of the back-propagation method. First, the neural network $f_{\theta, i}$ is evaluated at the point $x^0 \in \mathbb{R}^{n_0}$ where the gradient is required and while the information is propagated forward through the neural network, the activation given by \cref{propagation function} is stored for each layer. Then the so-called error is propagated backwards through the network by applying the chain rule from the last layer to the first layer in the reverse. The following recursive iteration can be used for this
 \begin{equation} 
     \label{gradient recursive}
     \begin{aligned}
@@ -79,7 +79,7 @@ In an implementation of the gradient given by \cref{ith first order derivative},
         \vdots & \\
         \delta^l & = {W^{l}}^{\mathrm{T}} \cdot D^{l} \cdot \delta^{l+1} \in \mathbb{R}^{n_{l-1}}, \\
         \vdots & \\
-        \delta^{L} & = {W^L_{i,:}}^{\mathrm{T}} \cdot D^{L} \in \mathbb{R}^{n_{L-1}}.
+        \delta^{L} & = {W^L}^{\mathrm{T}} \cdot D^{L} \in \mathbb{R}^{n_{L-1}}.
     \end{aligned} 
 \end{equation} 
 To obtain the Hessian matrix of $f_{\theta, i}$, we have to differentiate the gradient given by \cref{ith first order derivative} with respect to the input $x^0 \in \mathbb{R}^{n_0}$. Since $x^0$ is needed for the computation of each $D^l$ for $l = 1, \ldots, L$, we have to differentiate each $D^l$ with respect to $x^0$. It follows that we have to apply the product rule $L-1$ times, such that we have $L$ terms with dimension $n_0 \times n_0$, in each of which one of the $D^l$ is differentiated with respect to $x^0$ within the gradient $\nabla f_{\theta, i} \left(x^0\right)$, and the sum of these $L$ terms is the Hessian matrix of $f_{\theta, i}$. This can be proved by simple arithmetic. \\
@@ -92,7 +92,7 @@ We proceed as follows: we differentiate $D^{l} \in \mathbb{R}^{n_l \times n_l}$ 
         & = {W^{l}}^{\mathrm{T}} \begin{pmatrix} {\sigma_{l}}^{\prime \prime} \left( a^{l}_1 \right) \delta^{l+1}_1 W^{l}_{1,:} \ \frac{\textup{d}}{\textup{d} \ x^0} \  \sigma_{l-1}(a^{l-1})\\ \vdots \\ {\sigma_{l}}^{\prime \prime} \left( a^{l}_{n_l} \right) \delta^{l+1}_{n_l}  W^{l}_{n_l,:} \ \frac{\textup{d}}{\textup{d} \ x^0} \  \sigma_{l-1}(a^{l-1}) \end{pmatrix},
     \end{aligned} 
 \end{equation}
-where $\delta^{l+1}_j$ is the $j$-th element of $\delta^{l+1}$ defined by \cref{gradient recursive} and $a^{l}_j$ is the $j$-th element of the activation $W^l x^{l-1} + b^l$. \\
+where $\delta^{l+1}_j$ is the $j$-th element of $\delta^{l+1}$ defined by \cref{gradient recursive} and $a^{l}_j$ as well as $W^{l}_{j,:} x^{l-1} + b^l_{j}$ is the $j$-th element of the activation $W^l x^{l-1} + b^l$. \\
 To simplify the consideration, we now look at the $j$-th row of the right term
 \begin{equation}
     \label{ith row differential}
@@ -109,7 +109,7 @@ To simplify the notation, we define the following diagonal matrix for $l = 1, \l
     \label{second:derivative:activation:function}
     H^{l} = \begin{pmatrix} {\sigma_{l}}^{\prime \prime} \left( a^{l}_1 \right) \delta^{l+1}_1 & & \\ & \ddots & \\ & & {\sigma_{l}}^{\prime \prime} \left( a^{l}_{n_l} \right) \delta^{l+1}_{n_l} \end{pmatrix} \in \mathbb{R}^{n_l \times n_l}, 
 \end{equation}
-and we set $H^{L} = {\sigma_L}^{\prime \prime} \left(W^L_{i,:} x^{L-1}  + b^{L}_{i} \right) \in \mathbb{R}$. \\
+and we set $H^{L} = {\sigma_L}^{\prime \prime} \left(W^L x^{L-1}  + W^L \right) \in \mathbb{R}$. \\
 Using the definition of $H^{l}$ and by simple arithmetic, it can be shown that the term given by \cref{pervert differential} can be written as
 \begin{equation*}
     \frac{\textup{d} \ D^{l}}{\textup{d} \ x^0} \  {W^{l}}^{\mathrm{T}} \cdot D^{l} \cdot \delta^{l+1} = {W^{l}}^{\mathrm{T}} \cdot H^{l} \cdot W^l \cdot D^{l-1} \cdot W^{l-1} \cdot D^{l-2} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \in \mathbb{R}^{n_{l-1} \times n_0}.
@@ -127,104 +127,36 @@ If we apply the product rule $L-1$ times and differentiate each of the $D^l$ $l 
         & \vdots \\
         \eta^{l} & = {W^{l}}^{\mathrm{T}} \left( H^{l} + D^{l} \eta^{l+1} D^{l} \right) W^{l} \in \mathbb{R}^{n_{l-1} \times n_{l-1}} \\
         & \vdots \\
-        \eta^{L} & = {W^L_{i,:}}^{\mathrm{T}} H^{L} W^L_{i,:} \in \mathbb{R}^{n_{L-1} \times n_{L-1}}.
+        \eta^{L} & = {W^L}^{\mathrm{T}} H^{L} W^L \in \mathbb{R}^{n_{L-1} \times n_{L-1}}.
     \end{aligned}
 \end{equation}
 In order to get the second order derivative $\mathrm{H} \left[f_{\theta} \right]\left(x^0\right) \in \mathbb{R}^{n_L \times n_0 \times n_0}$ given by \cref{second derivative tensor} of the $FNN$ given by \cref{model prediction}, we have to apply \cref{Hessian recursion} for each $f_{\theta, i} \colon \mathbb{R}^{n_0} \to \mathbb{R}$, in total $n_L$ times.  \\
 
-
-Let f be an FNN with one-dimensional output, i.e. n = 1, then the first derivative of can be represented by the gradient and the second derivative of f by the Hessian matrix. In this case, of course, the gradient can be iteratively calculated by equation 3 and the Hessian matrix can be iteratively calculated by equation 4. We have implemented these recursive iterative calculations for this case in Python. Here, the methodology of the implementation for calculating F follows the pseudo code below. For the implementation to calculate G, all lines 1, 2 and 3 can simply be omitted. By clever use of multidimensional arrays and vectorisation, which is easy to implement in Python, we implemented for an FNN with n>1 the recursive calculation for the Jacobi matrix defined by equation 3 and a recursive calculation for the entries given by equation 4 for the tensors H. The implementation followed the method just mentioned. In doing so, the implementation just mentioned was applied vectorised for all outputs of the network. 
-
-The following pseudocode describes how to realise the recursive iterat
-
-gradient and the Hessian matrix of a one-dimensional FNN with L-layers, as described by equation 3 and equation 4, in an implementation. If only the gradient needs to be calculated, all lines that are necessary for the calculation of eta, i.e. lines 1, 2 and 3, are omitted. We have implemented the methodology for the calculation of x, delta and eta given by the following pseudo code in Python and generalised it to an FNN with multidimensional output by using multidimensional arrays and the vectorisation that can be easily realised by Python. 
-
+The following pseudocode describes how to realize the implementation of the recursive iterations for the computation of the gradient $\nabla f_{\theta, i} \left(x^0\right)$, defined by \cref{gradient recursive}, and the Hessian matrix $\nabla^{2} f_{\theta, i} \left(x^0\right)$, defined by \cref{Hessian recursion}, of an $1$-dimensional $FNN$ $f_{\theta, i} \colon \mathbb{R}^{n_0} \to \mathbb{R}$ with $L$ layers. If only the gradient $\nabla f_{\theta, i} \left(x^0\right)$ needs to be computed, all lines that are necessary for the calculation of $\eta^1$, i.e. lines $7$ and $10$, are omitted. We have implemented this pseudocode with \lstinline!Python 3.8.8! both for the computation of the Hessian matrix and the gradient of $f_{\theta, i} \left(x^0\right)$ and also only for the computation of the gradient of $f_{\theta, i} \left(x^0\right)$. We extended the implementations for the $FNN$ $f_{\theta} \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_l}$ with $L$ layers described by \cref{model prediction} by exploiting multi-dimensional arrays and vectorisation, which can be easily realised by \lstinline!Python!. This means that our code can also recursively compute the Jacobian matrix $\mathrm{J} \left[f_{\theta} \right]\left(x^0\right) \in \mathbb{R}^{n_L \times n_0}$ defined by \cref{Jacobi} and the entries of the tensor $\mathrm{H} \left[f_{\theta} \right]\left(x^0\right) \in \mathbb{R}^{n_L \times n_0 \times n_0}$ defined by \cref{second derivative tensor}. Furthermore, we have been able to vectorize the implementation in such a way that it computes the gradients $\left\{ \nabla f_{\theta, i} \left(x^0_j \right) \right\}_{j=1,\ldots,N}$ and the Hessian matrices $\left\{ \nabla^2 f_{\theta, i} \left(x^0_j \right) \right\}_{j=1,\ldots,N}$ for $N$ input vectors $\left\{ x^0_j \right\}_{j=1,\ldots,N} \subset \mathbb{R}^{n_0}$ at the same time. We were also able to extend this for the calculation of the Jacobi matrices $\left\{ \mathrm{J} \left[f_{\theta} \right]\left( x^0_j \right) \right\}_{j=1,\ldots,N}$ and the entries of the tensors $\left\{ \mathrm{H} \left[f_{\theta} \right]\left(x^0_j\right) \right\}_{j=1,\ldots,N}$ for the more general $FNN$ $f_{\theta} \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_l}$. 
 \begin{algorithm}[H]
-    \caption{Computation of the gradient and a Hessian of an L-layer feed-forward neural network.}
+    \caption{Computation of the gradient $\nabla f_{\theta, i} \left(x^0\right)$ and the Hessian matrix $\nabla^{2} f_{\theta, i} \left(x^0\right)$ of a fully-connected $FNN$ $FNN$ $f_{\theta, i} \colon \mathbb{R}^{n_0} \to \mathbb{R}$ with $L$ layers.} \label{Algorithm 1}
     \begin{algorithmic}[1]
-        \State \textbf{Input:} vector $x^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = \left(\left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}\right)$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\left\{ b^l \right\}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a $FNN$ $f$
+        \State \textbf{Input:} vector $x^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = \left(\left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}\right)$ of $f_{\theta, i}$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\left\{ \sigma_{l} \right\}_{l = 1, \ldots, L}$ of $f_{\theta, i}$ and their component-wise derivatives up to order $2$.
         \For{$ l = 1, \ldots, L$}
-            \State Set $x^l = \sigma_l\left(W^l x^{l-1} + b^l\right)$
+            \State Set $a^l = W^l x^{l-1} + b^l$.
+            \State Set $x^l = \sigma_l\left( a^l \right)$.
         \EndFor
-        \State Set $\delta^{L} = {W^{L}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{L}}^{\prime}\left(W^{L} x^{L-1} + b^{L}\right)\right)$.
-        \State Set $\eta^{L}$.
+        \State Set $\delta^{L} = {W^{L}}^{\mathrm{T}} {\sigma_{L}}^{\prime} \left( a^L \right) \in \mathbb{R}^{n_{L-1}}$.
+        \State Set $\eta^{L} = {W^L}^{\mathrm{T}} {\sigma_L}^{\prime \prime} \left(W^L x^{L-1}  + W^L \right) W^L \in \mathbb{R}^{n_{L-1} \times n_{L-1}}$.
         \For{$ l = L-1, \ldots, 1$}
-            \State Set $\delta^{l} = {W^{l}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{l}}^{\prime}\left(W^{l} x^{l-1} + b^{l}\right)\right) \cdot \delta^{l+1}$.
-            \State Set $\eta^{l}$.
+            \State Set $\delta^{l} = {W^{l}}^{\mathrm{T}} D^l \cdot \delta^{l+1}$ with $D^l$ defined by \cref{derivative:activation:function} using $a^l$.
+            \State Set $\eta^{l} = {W^{l}}^{\mathrm{T}} \left( H^{l} + D^{l} \eta^{l+1} D^{l} \right) W^{l}$ with $H^l$ defined by \cref{second:derivative:activation:function} and 
+            \StatexIndent[1] $D^l$ defined by \cref{derivative:activation:function} using $a^l$ and $\delta^{l+1}$.
         \EndFor
         \State \textbf{Output:} $x^L$, $\delta^1$, $\eta^1$.
     \end{algorithmic}
 \end{algorithm}
-We have performed a numerical experiment in which we compare the time required for the calculations of the explicit derivatives with the time required for the calculation with automatic differentiation of the same values. 
 
-We have performed this experiment for a FNN f which corresponds to the neural network given by equation 3 and another time which corresponds to the network given by equation 4. 
-
-$L = 4$ $n_0 = 2$ $n_1, \ldots, n_3 = 10$ $n_4 = 1$
-\begin{table}[H]\label{tab:advs ecplicit: fnn}
-    \resizebox{\textwidth}{!}
-    {
-        \begin{tabular}{l l l l l }
-            \toprule
-            Derivative & \multicolumn{2}{c}{$\nabla fnn_{\theta_e}$}& \multicolumn{2}{c}{$\nabla^2 fnn_{\theta_e}$} \\ 
-            \midrule
-            Method & \cref{gradient recursive} & Automatic Differentiation & \cref{Hessian recursion} & Automatic Differentiation \\ 
-            \midrule
-            $N = 100$ & $6.88$ & $1.22$ & $76.95$ & $9.68$ \\ 
-            \midrule
-            $N = 1000$ & $8.75$ & $1.31$ & $773.53$ & $14.06$ \\ 
-            \midrule
-            $N = 10000$ & $16.33$ & $3.46$ & $8379.95$ & $28.10$ \\ 
-            \bottomrule
-        \end{tabular}
-    }
-    \caption{Will come soon...}
-\end{table}
-
-\begin{table}[H]\label{tab:advs ecplicit: FNN}
-    \resizebox{\textwidth}{!}
-    {
-        \begin{tabular}{l l l l l }
-            \toprule
-            Derivative & \multicolumn{2}{c}{$ \mathbf{FNN}_{\theta}$}& \multicolumn{2}{c}{$\nabla^2 \mathbf{FNN}_{\theta}$} \\ 
-            \midrule
-            Method & \cref{gradient recursive} & Automatic Differentiation & \cref{Hessian recursion} & Automatic Differentiation \\ 
-            \midrule
-            $N = 100$ & $15.10$ & $13.30$ & $323.99$ & $57.72$ \\ 
-            \midrule
-            $N = 1000$ & $18.42$ & $16.86$ & $3292.42$ & $88.82$ \\ 
-            \midrule
-            $N = 10000$ & $46.59$ & $52.27$ & $37580.87$ & $340.43$ \\ 
-            \bottomrule
-        \end{tabular}
-    }
-    \caption{Comparison of RBFGS from \lstinline!Manopt.jl! with RBFGS from \cite{Qi:2011} on $\mathbb{S}^{n-1}$ for $n=100,300$.}
-\end{table}
-
-
-
-
-Let us return to our case where an $FNN$ rho approximates the solution of the drift-diffusion equation on an edge. In the following we use the vector z, where its first component is the time and the second component is the position on an edge. The gradient is due to equation 3 and equation 4 given by 
+In \cref{ch3:sec1}, a second type of neural network was introduced, the so-called $ResNet$ defined by \cref{Resnet1} and \cref{Resnet2}. We present the explicit first and second order derivatives of a $ResNet$ $R_{\theta} \colon \mathbb{R}^{n_0} \to \mathbb{R}$, which follows the methodology described by \cref{Resnet1} and \cref{Resnet2}, but is designed for the more general case $n_0 \in \mathbb{N}$. The gradient of $R_{\theta}$ is given by 
 \begin{equation}
-    \begin{split}
-        \nabla_{z}  \ \rho_{\theta_e}\left(z\right) & = \left(\nabla_{z} \rho_{\theta_e}\left(z\right)^{\mathrm{T}} \right)^{\mathrm{T}} = \left(D^L \cdot W^L \cdot D^{L-1} \cdot \ldots \cdot W^2 \cdot D^1 \cdot W^{1} \right)^{\mathrm{T}} = \\
-        & = {W^{1}}^{\mathrm{T}} \cdot D^{1} \cdot {W^{2}}^{\mathrm{T}} \cdot \ldots \cdot {W^{L}}^{\mathrm{T}}  \cdot  D^{L}. 
-    \end{split}
+    \label{ResNetGradientcomplete}
+    \nabla R_{\theta} \left( x^0 \right) = A x^0 + \nabla \left( {x^{L}}^{\mathrm{T}} w \right) + c,
 \end{equation}
-The partial derivatives can be obtained by 
-\begin{equation*}
-    \begin{split}
-        \partial_t \rho_{\theta_e}\left(t,x\right) = \nabla_{z} \ \rho_{\theta_e}\left(z\right)_1 \quad & \text{and} \quad \partial_x \rho_{\theta_e}\left(t,x\right) = \nabla_{z} \ \rho_{\theta_e}\left(z\right)_2 \\
-        \partial_t \rho_{\theta_e}\left(t,x\right) = {\nabla_{z} \ \rho_{\theta_e}\left(z\right)}^{\mathrm{T}} \begin{pmatrix} 1 \\ 0 \end{pmatrix} \quad & \text{and} \quad \partial_x \rho_{\theta_e}\left(t,x\right) = {\nabla_{z} \ \rho_{\theta_e}\left(z\right)}^{\mathrm{T}} \begin{pmatrix} 0 \\ 1 \end{pmatrix}.
-    \end{split}
-\end{equation*}
-
-
-
-
-In \cref{ch3:sec1}, a second type of neural network was introduced, the so-called ResNet defined by \cref{Resnet1} and \cref{Resnet2}. We present explicit first and second order derivatives for the more general case $R_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}$ with $n_0 \in \mathbb{N}$. The gradient of $R_{\theta_e}$ is given by 
-\begin{equation*}
-    \nabla R_{\theta_e}(x^0) = A x^0 + \nabla \left( {x^{L}}^{\mathrm{T}} w \right) + c,
-\end{equation*}
 with $A \in \mathbb{R}^{n_0 \times n_0}$, $c \in \mathbb{R}^{n_0}$, $w \in \mathbb{R}^{m}$ and $x^{L} \in \mathbb{R}^{m}$ is defined by \cref{Resnet2}. \\
 The interesting term here is given by $\nabla \left( {x^{L}}^{\mathrm{T}} w \right)$, but we do not present a derivation for it, since this is done by repeated application of the chain rule and by using \cref{derivative:activation:function} as well as \cref{derivative:activation}. One first writes the whole recursive computation for $x^{L}$ given by \cref{Resnet2} down and then the resulting individual terms are differentiated with respect to $x^0 \in \mathbb{R}^{n_0}$. We note that $x^l \in \mathbb{R}^{m}$ holds for all $l = 1, \ldots, L$. This results again in a recursive iteration, which is given by 
 \begin{equation}
@@ -241,61 +173,110 @@ The interesting term here is given by $\nabla \left( {x^{L}}^{\mathrm{T}} w \rig
     \end{aligned}   
 \end{equation}
 
-Since the neural network $R_{\theta_e}$ generates a 1-dimensional output, the second derivative can be represented by the Hessian matrix, which is given by 
-\begin{equation*}
-    \nabla^2 R_{\theta_e}(x^0) = A + \nabla^2 \left( {x^{L}}^{\mathrm{T}} w \right). 
-\end{equation*}
+Since the neural network $R_{\theta}$ generates a $1$-dimensional output, the second derivative can be represented by the Hessian matrix, which is given by 
+\begin{equation}
+    \label{ResNetHessiancomplete}
+    \nabla^2 R_{\theta} \left( x^0 \right) = A + \nabla^2 \left( {x^{L}}^{\mathrm{T}} w \right). 
+\end{equation}
 Here, the interesting term is also given by $\nabla^2 \left( {x^{L}}^{\mathrm{T}} w \right)$, but we do not derive it either. This can be done by writing down the recursive iteration for $\nabla \left( {x^{L}}^{\mathrm{T}} w \right)$ given by \cref{ResNetgradient} and differentiating the individual terms using the chain rule. We note that we also need the derivative of $D^l$ with respect to $x_0$. This is defined for $l = 1, \ldots, L-1$ by \cref{derivative:activation:function} and for the last Layer we use 
-\begin{equation*}
+\begin{equation}
+    \label{ResNet first hessian}
     H^{L} = \begin{pmatrix} {\sigma_{L}}^{\prime \prime} \left( a^{L}_1 \right) w_1 & & \\ & \ddots & \\ & & {\sigma_{L}}^{\prime \prime} \left( a^{L}_{m} \right) w_{m} \end{pmatrix} \in \mathbb{R}^{m \times m},
-\end{equation*}
+\end{equation}
 where $w_{j}$ is the $j$-th component of $w \in \mathbb{R}^m$ and $a^{L}_j$ is the $j$-th component of the activation $W^L x^{L-1} + b^L \in \mathbb{R}^m$ in Layer $L$. \\
-With simple arithmetic, the following iterative calculation for the Hessian matrix can be found
-\begin{align*}
-    \nabla^2 \left( {x^{L}}^{\mathrm{T}} w \right) & = \eta^{1} \in \mathbb{R}^{n_0 \times n_0}  \\
-    \eta^{1} & = {W^{1}}^{\mathrm{T}} \left( H^{1} + D^{1} \eta^{2} D^{1} \right) W^{1} \in \mathbb{R}^{n_0 \times n_0} \\
-    \eta^{2} & = h \, {W^{2}}^{\mathrm{T}} H^2 W^{l} + \\
-    & \quad + \left( I + h \, {W^{2}}^{\mathrm{T}} D^{2} \right) \, \eta^{3}  \left( I + h \,  D^{2} {W^{2}} \right) \in \mathbb{R}^{m \times m}\\ 
-    &\vdots\\
-    \eta^{l} & = h \, {W^{l}}^{\mathrm{T}} H^{l} W^{l} + \\
-    & \quad + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \eta^{l+1}  \left( I + h \,  D^{l} {W^{l}} \right) \in \mathbb{R}^{m \times m} \\ 
-    &\vdots\\
-    \eta^{L-1} & = h \, {W^{L-1}}^{\mathrm{T}} H^{L-1} W^{L-1} + \\
-    & \quad + \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \left( \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \eta^{L} \right)^{\mathrm{T}} \\
-    \eta^{L} &  = {W^{L}}^{\mathrm{T}} H^{L} W^{L}.
-\end{align*}
+With simple arithmetic, the following recursive iteration for the Hessian matrix can be found
+\begin{equation}
+    \label{Hessian recursion resnet}
+    \begin{aligned}
+        \nabla^2 \left( {x^{L}}^{\mathrm{T}} w \right) & = \eta^{1} \in \mathbb{R}^{n_0 \times n_0}  \\
+        \eta^{1} & = {W^{1}}^{\mathrm{T}} \left( H^{1} + D^{1} \eta^{2} D^{1} \right) W^{1} \in \mathbb{R}^{n_0 \times n_0} \\
+        \eta^{2} & = h \, {W^{2}}^{\mathrm{T}} H^2 W^{l} + \left( I + h \, {W^{2}}^{\mathrm{T}} D^{2} \right) \, \eta^{3} \, \left( I + h \,  D^{2} W^{2} \right) \in \mathbb{R}^{m \times m}\\ 
+        &\vdots\\
+        \eta^{l} & = h \, {W^{l}}^{\mathrm{T}} H^{l} W^{l} + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \eta^{l+1} \, \left( I + h \,  D^{l} {W^{l}} \right) \in \mathbb{R}^{m \times m} \\ 
+        &\vdots\\
+        \eta^{L-1} & = h \, {W^{L-1}}^{\mathrm{T}} H^{L-1} W^{L-1} + \left( I + h \, {W^{L-1}}^{\mathrm{T}} D^{L-1} \right) \, \eta^{L-2} \, \left( I + h \,  D^{L-1} W^{L-1} \right) \in \mathbb{R}^{m \times m} \\ 
+        \eta^{L} &  = {W^{L}}^{\mathrm{T}} H^{L} W^{L}.
+    \end{aligned}
+\end{equation}
 
-
-We have implemented this method presented above for computing the explicit derivatives of an FNN in Python. The methodology follows the pseudo code below. Since many implementations can be easily vectorised in Python, this implementation could also be applied to a general FNN by making small changes.
+The following pseudocode describes how to realize the implementation of the computation of the gradient $\nabla R_{\theta} \left( x^0 \right)$ defined by \cref{ResNetGradientcomplete}, where $\nabla \left( {x^{L}}^{\mathrm{T}} w \right)$ is recursively computed by \cref{ResNetgradient}, and the Hessian matrix $\nabla^{2} R_{\theta} \left( x^0 \right)$ defined by \cref{ResNetHessiancomplete}, where $\nabla^2 \left( {x^{L}}^{\mathrm{T}} w \right)$ is recursively computed by \cref{Hessian recursion resnet}, of a $ResNet$ $R_{\theta} \colon \mathbb{R}^{n_0} \to \mathbb{R}$, which follows the methodology described by \cref{Resnet1} and \cref{Resnet2} with $L$ layers. If only the gradient $\nabla R_{\theta} \left( x^0 \right)$ needs to be computed, all lines that are necessary for the calculation of $\eta^1$, i.e. lines $6$ and $9$, are omitted. We have implemented this pseudocode with \lstinline!Python 3.8.8! both for the computation of the Hessian matrix and the gradient of $R_{\theta} \left( x^0 \right)$ and also only for the computation of the gradient of $R_{\theta} \left( x^0 \right)$. We also vectorized this implementation in such a way that it computes the gradients $\left\{ \nabla R_{\theta} \left(x^0_j \right) \right\}_{j=1,\ldots,N}$ and the Hessian matrices $\left\{ \nabla^2 R_{\theta} \left(x^0_j \right) \right\}_{j=1,\ldots,N}$ for $N$ input vectors $\left\{ x^0_j \right\}_{j=1,\ldots,N} \subset \mathbb{R}^{n_0}$ at the same time. 
 \begin{algorithm}[H]
-    \caption{Computation of the gradient and a Hessian of an L-layer feed-forward neural network.}
+    \caption{Computation of the gradient $\nabla R_{\theta} \left( x^0 \right)$ and the Hessian matrix $\nabla^2 R_{\theta} \left( x^0 \right)$ of a $ResNet$ $R_{\theta} \colon \mathbb{R}^{n_0} \to \mathbb{R}$ with $L$ layers.} \label{Algorithm 2}
     \begin{algorithmic}[1]
-        \State \textbf{Input:} vector $x^0 \in \mathbb{R}^{n_0}$; trainable parameters $\theta = \left(\left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}\right)$ with $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$ and $b^l \in \mathbb{R}^{n_l}$ for $l = 1, \ldots, L$, where $n_L = 1$; activation functions $\left\{ b^l \right\}_{l = 1, \ldots, L}$ and their first order derivative up to order 2 of a $FNN$ $f$
-        \For{$ l = 1, \ldots, L$}
-            \State Set $x^l = \sigma_l\left(W^l x^{l-1} + b^l\right)$
+        \State \textbf{Input:} vector $x^0 \in \mathbb{R}^{n_0}$; stepsize $h > 0$; trainable parameters $\theta = \left\{ \left\{ W^l \right\}_{l = 1, \ldots, L}, \left\{ b^l \right\}_{l = 1, \ldots, L}, A, w, c \right\}$ of $R_{\theta}$, where $W^1 \in \mathbb{R}^{m \times 2}$, $W^l \in \mathbb{R}^{m \times m}$ for $l = 2, \ldots, L$, $b^l \in \mathbb{R}^{m}$ for $l = 1, \ldots, L$, $A \in \mathbb{R}^{2 \times 2}$, $w \in \mathbb{R}^m$, $c \in \mathbb{R}^2$; activation functions $\left\{ \sigma_{l} \right\}_{l = 1, \ldots, L}$ of $R_{\theta}$ and their component-wise derivatives up to order $2$.
+        \State Set $a^1 = W^1 x^{0} + b^1$.
+        \State Set $x^1 = \sigma_1(a^1)$.
+        \For{$ l = 2, \ldots, L$}
+            \State Set $a^l = W^l x^{l-1} + b^l$.
+            \State Set $x^l = x^{l-1} + h \, \sigma_l(a^l)$.
         \EndFor
-        \State Set $\delta^{L} = {W^{L}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{L}}^{\prime}\left(W^{L} x^{L-1} + b^{L}\right)\right)$.
-        \State Set $\eta^{L}$.
-        \For{$ l = L-1, \ldots, 1$}
-            \State Set $\delta^{l} = {W^{l}}^{\mathrm{T}} \mathrm{diag}\left({\sigma_{l}}^{\prime}\left(W^{l} x^{l-1} + b^{l}\right)\right) \cdot \delta^{l+1}$.
-            \State Set $\eta^{l}$.
+        \State Set $\delta^{L} = w + h \, {W^{L}}^{\mathrm{T}} D^{L} \, w$ with $D^L$ defined by \cref{derivative:activation:function} using $a^L$.
+        \State Set $\eta^{L} = {W^L}^{\mathrm{T}} H^L W^L$ with $H^L$ defined by \cref{ResNet first hessian} using $a^L$.
+        \For{$ l = L-1, \ldots, 2$}
+            \State Set $\delta^{l} = \delta^{l+1} + h \, {W^{l}}^{\mathrm{T}} D^{l} \, \delta^{l+1}$ with $D^l$ defined by \cref{derivative:activation:function} using $a^l$.
+            \State Set $\eta^{l} = h \, {W^{l}}^{\mathrm{T}} H^{l} W^{l} + \left( I + h \, {W^{l}}^{\mathrm{T}} D^{l} \right) \, \eta^{l+1}  \left( I + h \,  D^{l} {W^{l}} \right)$
+            \StatexIndent[1] with $H^l$ defined by \cref{second:derivative:activation:function} and $D^l$ defined by \cref{derivative:activation:function} 
+            \StatexIndent[1] using $a^l$ and $\delta^{l+1}$.
         \EndFor
-        \State \textbf{Input:} $x^L$, $\delta^1$, $\eta^1$.
+        \State Set $\delta^{1} = {W^{1}}^{\mathrm{T}} D^{1} \, \delta^{2}$ with $D^1$ defined by \cref{derivative:activation:function} using $a^1$.
+        \State Set $\eta^{1} = {W^{1}}^{\mathrm{T}} \left( H^{1} + D^{1} \eta^{2} D^{1} \right) W^{1}$ with $H^1$ defined by \cref{second:derivative:activation:function} and 
+        \StatexIndent[1] $D^1$ defined by \cref{derivative:activation:function} using $a^1$ and $\delta^{2}$.
+        \State Set $\delta^{0} = A x^0 + \delta^{1} + c$.
+        \State Set $\eta^{0} = A + \eta^{1}$.
+        \State \textbf{Output:} $x^L$, $\delta^0$, $\eta^0$.
     \end{algorithmic}
 \end{algorithm}
-We have performed a numerical experiment in which we compare the time required for the calculations of the explicit derivatives with the time required for the calculation with automatic differentiation of the same values. 
 
-We have performed this experiment for a FNN f which corresponds to the neural network given by equation 3 and another time which corresponds to the network given by equation 4. 
-
-$L = 4$ $n_0 = 2$ $n_1, \ldots, n_3 = 10$ $n_4 = 1$
+We have performed numerical experiments in which we compare the time required to compute the explicit derivatives using \cref{Algorithm 1} and \cref{Algorithm 2}, both implemented with \lstinline!Python 3.8.8!, with the time required to compute the equivalent values using $AD$ provided the method \lstinline!tf.GradientTape! from the module \lstinline!TensorFlow!. The aim is to verify whether the explicit computation of the derivatives is worth using in our $PINN$ approach. Since all implementations are vectorised, including \lstinline!tf.GradientTape!, we applied them on a set of input vectors $\left\{ x^0_j \right\}_{j=1,\ldots,N} \subset \mathbb{R}^{n_0}$ at once, setting $N=100$, $N=1000$ and $N=1000$. The values shown in the tables below are the time averages over $10$ runs of the respective method for the respective neural network for the respective number of input vectors in milliseconds. The values in the column $AD$ represent the values generated with \lstinline!tf.GradientTape! and the values in the other columns represent the values generated with respective implemented recursive iteration. \\   
+For the values in \cref{tab:advs ecplicit: fnn} we have used a fully-connected $FNN$ $f_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}$ with $L = 4$ layers, where $n_0 = 2$, $n_1, n_2, n_3 = 10$ and $n_4 = 1$. The sigmoid activation function defined by \cref{Sigmoid} was used for each hidden layer and for the output layer. 
+\begin{table}[H]\label{tab:advs ecplicit: fnn}
+    \resizebox{\textwidth}{!}
+    {
+        \begin{tabular}{l l l l l }
+            \toprule
+            Derivative & \multicolumn{2}{c}{$\nabla f_{\theta} \left( x^0 \right)$}& \multicolumn{2}{c}{$\nabla^2 f_{\theta} \left(x^0\right)$} \\ 
+            \midrule
+            Method & \cref{gradient recursive} & $AD$ & \cref{Hessian recursion} & $AD$ \\ 
+            \midrule
+            $N = 100$ & $6.88$ & $1.22$ & $76.95$ & $9.68$ \\ 
+            \midrule
+            $N = 1000$ & $8.75$ & $1.31$ & $773.53$ & $14.06$ \\ 
+            \midrule
+            $N = 10000$ & $16.33$ & $3.46$ & $8379.95$ & $28.10$ \\ 
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Average time in milliseconds required to compute first and second order derivatives of the fully-connected $FNN$ $f_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}$.}
+\end{table}
+For the values in \cref{tab:advs ecplicit: FNN} we have used a fully-connected $FNN$ $F_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^5$ with $L = 4$ layers, where $n_0 = 2$, $n_1, n_2, n_3 = 10$ and $n_4 = 5$. The sigmoid activation function defined by \cref{Sigmoid} was used for each hidden layer and for the output layer. 
+\begin{table}[H]\label{tab:advs ecplicit: FNN}
+    \resizebox{\textwidth}{!}
+    {
+        \begin{tabular}{l l l l l }
+            \toprule
+            Derivative & \multicolumn{2}{c}{$\mathrm{J} \left[ F_{\theta} \right]\left(x^0\right)$}& \multicolumn{2}{c}{$\mathrm{H} \left[F_{\theta} \right]\left(x^0\right)$} \\ 
+            \midrule
+            Method & \cref{gradient recursive} & $AD$ & \cref{Hessian recursion} & $AD$ \\ 
+            \midrule
+            $N = 100$ & $15.10$ & $13.30$ & $323.99$ & $57.72$ \\ 
+            \midrule
+            $N = 1000$ & $18.42$ & $16.86$ & $3292.42$ & $88.82$ \\ 
+            \midrule
+            $N = 10000$ & $46.59$ & $52.27$ & $37580.87$ & $340.43$ \\ 
+            \bottomrule
+        \end{tabular}
+    }
+    \caption{Average time in milliseconds required to compute first and second order derivatives of the fully-connected $FNN$ $F_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^5$.}
+\end{table}
+For the values in \cref{tab:advs ecplicit: ResNet} we have used a $ResNet$ $R_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}$, which follows the methodology described by \cref{Resnet1} and \cref{Resnet2} with with $L = 4$ layers, where $n_0 = 2$, $n_1, n_2, n_3 = 10$ and $n_4 = 1$. The sigmoid activation function defined by \cref{Sigmoid} was used for each hidden layer and for the output layer. 
 \begin{table}[H]\label{tab:advs ecplicit: ResNet}
     \resizebox{\textwidth}{!}
     {
         \begin{tabular}{l l l l l }
             \toprule
-            Derivative & \multicolumn{2}{c}{$\nabla R_{\theta_e}$}& \multicolumn{2}{c}{$\nabla^2 R_{\theta_e}$} \\ 
+            Derivative & \multicolumn{2}{c}{$\nabla R_{\theta} \left(x^0 \right)$}& \multicolumn{2}{c}{$\nabla^2 R_{\theta} \left(x^0 \right)$} \\ 
             \midrule
-            Method & \cref{gradient recursive} & Automatic Differentiation & \cref{Hessian recursion} & Automatic Differentiation \\ 
+            Method & \cref{gradient recursive} & $AD$ & \cref{Hessian recursion} & $AD$ \\ 
             \midrule
             $N = 100$ & $13.66$ & $5.12$ & $255.88$ & $27.74$ \\ 
             \midrule
@@ -305,5 +286,6 @@ $L = 4$ $n_0 = 2$ $n_1, \ldots, n_3 = 10$ $n_4 = 1$
             \bottomrule
         \end{tabular}
     }
-    \caption{Will come soon...}
+    \caption{Average time in milliseconds required to compute first and second order derivatives of the $ResNet$ $R_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}$.}
 \end{table}
+

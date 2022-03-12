@@ -8,20 +8,20 @@ We imagine a compact road network, where we mean a finite number of finitely lon
     \begin{center}
         \begin{subfigure}[b]{0.4\textwidth}
             \begin{center}
-                \includegraphics[scale=0.45]{img/Kaßberg2.png}
+                \includegraphics[scale=0.40]{img/Kaßberg2.png}
             \end{center}
-            \caption{Non-directed graph}
+            \caption{Metric graph.}
             \label{fig8:f1}
         \end{subfigure}
         \begin{subfigure}[b]{0.4\textwidth}
             \begin{center}
-                \includegraphics[scale=0.2]{img/Kaßberg2-Darstellung.png}
+                \includegraphics[scale=0.16]{img/Kaßberg2-Darstellung.png}
             \end{center}
-            \caption{Directed graph}
+            \caption{Will come soon...}
             \label{fig8:f2}
         \end{subfigure}
     \end{center}
-    \caption{Two different types of graphs.}
+    \caption{Will come soon...}
 \end{figure}
 
 There exist several approaches to model the traffic flow on a road network. One of the most important approaches was presented in \cite{LighthillWhitham:1955}, and independently in \cite{Richards:1956}, in which the traffic flow is described by equations describing the flow of water. These fluid dynamics equations are a set of partial differential equations known as the Navier-Stokes equations, which express the conservation of mass, momentum, and energy. The basic idea of this approach is to look at large scales so to consider individual cars as small particles, a set of cars as mass, and their density as the main quantity to be considered, \cite[p.~1]{GaravelloPiccoli:2006}. The model in this thesis is inspired by the same idea. We also focus on the density of cars on an individual edge $e \in \mathcal{E}$ and we model it with a function $\rho_e \colon (0, T) \times [0, \ell_e] \to \mathbb{R}_{+}$. The value $\rho_e (t,x)$ describes the concentration of some quantity at the time $t \in (0, T)$ at the coordinate $x \in [0, \ell_e]$ on the edge $e \in \mathcal{E}$. It is reasonable to assume the conservation of the number of cars, which can be expressed by the following continuity equation for each individual edge $e \in \mathcal{E}$
