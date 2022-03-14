@@ -229,7 +229,7 @@ The following pseudocode describes how to realize the implementation of the comp
 
 We have performed numerical experiments in which we compare the time required to compute the explicit derivatives using \cref{Algorithm 1} and \cref{Algorithm 2}, both implemented with \lstinline!Python 3.8.8!, with the time required to compute the equivalent values using $AD$ provided the method \lstinline!tf.GradientTape! from the module \lstinline!TensorFlow!. The aim is to verify whether the explicit computation of the derivatives is worth using in our $PINN$ approach. Since all implementations are vectorised, including \lstinline!tf.GradientTape!, we applied them on a set of input vectors $\left\{ x^0_j \right\}_{j=1,\ldots,N} \subset \mathbb{R}^{n_0}$ at once, setting $N=100$, $N=1000$ and $N=1000$. The values shown in the tables below are the time averages over $10$ runs of the respective method for the respective neural network for the respective number of input vectors in milliseconds. The values in the column $AD$ represent the values generated with \lstinline!tf.GradientTape! and the values in the other columns represent the values generated with respective implemented recursive iteration. \\   
 For the values in \cref{tab:advs ecplicit: fnn} we have used a fully-connected $FNN$ $f_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}$ with $L = 4$ layers, where $n_0 = 2$, $n_1, n_2, n_3 = 10$ and $n_4 = 1$. The sigmoid activation function defined by \cref{Sigmoid} was used for each hidden layer and for the output layer. 
-\begin{table}[H]\label{tab:advs ecplicit: fnn}
+\begin{table}[H]
     \resizebox{\textwidth}{!}
     {
         \begin{tabular}{l l l l l }
@@ -247,9 +247,10 @@ For the values in \cref{tab:advs ecplicit: fnn} we have used a fully-connected $
         \end{tabular}
     }
     \caption{Average time in milliseconds required to compute first and second order derivatives of the fully-connected $FNN$ $f_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}$.}
+    \label{tab:advs ecplicit: fnn}
 \end{table}
 For the values in \cref{tab:advs ecplicit: FNN} we have used a fully-connected $FNN$ $F_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^5$ with $L = 4$ layers, where $n_0 = 2$, $n_1, n_2, n_3 = 10$ and $n_4 = 5$. The sigmoid activation function defined by \cref{Sigmoid} was used for each hidden layer and for the output layer. 
-\begin{table}[H]\label{tab:advs ecplicit: FNN}
+\begin{table}[H]
     \resizebox{\textwidth}{!}
     {
         \begin{tabular}{l l l l l }
@@ -267,9 +268,10 @@ For the values in \cref{tab:advs ecplicit: FNN} we have used a fully-connected $
         \end{tabular}
     }
     \caption{Average time in milliseconds required to compute first and second order derivatives of the fully-connected $FNN$ $F_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^5$.}
+    \label{tab:advs ecplicit: FNN}
 \end{table}
 For the values in \cref{tab:advs ecplicit: ResNet} we have used a $ResNet$ $R_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}$, which follows the methodology described by \cref{Resnet1} and \cref{Resnet2} with with $L = 4$ layers, where $n_0 = 2$, $n_1, n_2, n_3 = 10$ and $n_4 = 1$. The sigmoid activation function defined by \cref{Sigmoid} was used for each hidden layer and for the output layer. 
-\begin{table}[H]\label{tab:advs ecplicit: ResNet}
+\begin{table}[H]
     \resizebox{\textwidth}{!}
     {
         \begin{tabular}{l l l l l }
@@ -287,5 +289,7 @@ For the values in \cref{tab:advs ecplicit: ResNet} we have used a $ResNet$ $R_{\
         \end{tabular}
     }
     \caption{Average time in milliseconds required to compute first and second order derivatives of the $ResNet$ $R_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}$.}
+    \label{tab:advs ecplicit: ResNet}
 \end{table}
 
+The times in \cref{tab:advs ecplicit: fnn}, \cref{tab:advs ecplicit: FNN} and \cref{tab:advs ecplicit: ResNet} show that the use of explicit derivatives has no advantage over the use of automatic differentiation. Except for the explicit computation of $\mathrm{J} \left[ F_{\theta} \right]\left(x^0\right)$ for the case $N = 10000$, the computation using $AD$ always took less time. It is interesting that the times for the explicit calculation of the second derivative increase almost linearly with the number of points to be evaluated. For the $AD$ it is noticeable that both with the calculation of the first derivative and with the calculation of the second derivative the times make a greater jump from $N = 1000$ to $N = 10000$ than from $N = 100$ to $N = 1000$, so that no linearity can be concluded with respect to the number of points to be evaluated. This behaviour can also be suspected for the first derivative using the explicit method.  In summary, it can be concluded that the options presented here for the explicit calculation of the derivatives do not offer an alternative to \lstinline!tf.GradientTape! from \lstinline!TensorFlow! and that one should therefore resort to $AD$ differentiation for the $PINN$ approach presented in \cref{ch3:sec1}.
