@@ -48,8 +48,9 @@
       \begin{itemize}
           \item $\Gamma = \left(\mathcal{V}, \mathcal{E} \right),$ \\ $\mathcal{V} = \left\{ v_i \right\}_{i = 1, \ldots, V}, \; V = \abs{\mathcal{V}} \in \mathbb{N},$ \\
           $\mathcal{E} = \left\{ e_i \right\}_{i = 1, \ldots, E}, \; E = \abs{\mathcal{E}} \in \mathbb{N}$.
-          \item $\forall e \in \mathcal{E} \colon \; e = (v^{\operatorname{o}}, v^{\operatorname{t}}), \;v^{\operatorname{o}}, v^{\operatorname{t}} \in \mathcal{V}$.
-          \item Adjacency: $v, w \in \mathcal{V}$ \\ $v \sim w \Leftrightarrow \exists e \in \mathcal{E}$ s.t. $w$ can be reached from $v$ via this edge $e$. \\
+          \item $\forall e \in \mathcal{E} \colon \; e = \left( v^{\operatorname{o}}, v^{\operatorname{t}} \right)$, \\
+            $v^{\operatorname{o}}, v^{\operatorname{t}} \in \mathcal{V}$.
+          \item Adjacency: $v_1, v_2 \in \mathcal{V}$ \\ $v_1 \sim v_2 \Leftrightarrow \exists e \in \mathcal{E}$ s.t. $v_2$ can be reached from $v_1$ via this edge $e$. \\
           \begin{equation*}
             A^{\Gamma} = 
             \begin{blockarray}{ccccc}
@@ -66,21 +67,21 @@
   \end{minipage} \hfill
   \begin{minipage}{0.45\textwidth}
       \begin{figure}[H]
-          \resizebox{45mm}{45mm}
+          \resizebox{40mm}{40mm}
           {
               \begin{tikzpicture}
                   % vertices
-                  \node[shape=circle,draw=black] (v1) at (0,4) {$v_1$};
+                  \node[shape=circle,draw=black] (v4) at (0,4) {$v_4$};
                   \node[shape=circle,draw=black] (v2) at (4,4) {$v_2$};
-                  \node[shape=circle,draw=black] (v4) at (0,0) {$v_4$};
+                  \node[shape=circle,draw=black] (v1) at (0,0) {$v_1$};
                   \node[shape=circle,draw=black] (v3) at (4,0) {$v_3$};
                   
                   % edges
-                  \path [->](v1) edge node[above] {$e_1$} (v2);
-                  \path [->](v2) edge [bend left = 10] node[right]{$e_4$} (v4);
-                  \path [->](v4) edge [bend left = 10] node[left]{$e_5$} (v2);
-                  \path [->](v3) edge node[below] {$e_3$} (v4);
-                  \path [->](v3) edge node[right] {$e_2$} (v2);
+                  \path [->](v3) edge node[below] {$e_4$} (v1);
+                  \path [->](v2) edge [bend left = 10] node[right]{$e_2$} (v1);
+                  \path [->](v1) edge [bend left = 10] node[left]{$e_1$} (v2);
+                  \path [->](v3) edge node[right] {$e_3$} (v2);
+                  \path [->](v4) edge node[above] {$e_5$} (v2);
               \end{tikzpicture}
           }
       \end{figure}
@@ -91,17 +92,43 @@
     \vspace{-1\baselineskip}\hfill{\tiny{[Berkolaiko, Kuchment, 2013]}} \\
     \begin{minipage}{0.5\textwidth}
         \begin{itemize}
-            \item $\Gamma = \left(\mathcal{V}, \mathcal{E} \right),$ \\ $\mathcal{V} = \left\{ v_i \right\}_{i = 1, \ldots, V}, \; V = \abs{\mathcal{V}} \in \mathbb{N},$ \\
-            $\mathcal{E} = \left\{ e_i \right\}_{i = 1, \ldots, E}, \; E = \abs{\mathcal{E}} \in \mathbb{N}$.
-            \item $\forall e \in \mathcal{E} \colon \; e = (v^{\operatorname{o}}, v^{\operatorname{t}}), \;v^{\operatorname{o}}, v^{\operatorname{t}} \in \mathcal{V}$.
-            \item 
+            \item Reversal: $e_1, e_2 \in \mathcal{E} \colon e_1 = \overline{e_2}$ \\
+            $\Leftrightarrow e_1 = \left( v_1, v_2 \right), e_2 = \left( v_2, v_1 \right)$.
+        \end{itemize} 
+        \noindent \\
+        \textbf{Metric Graph}
+        \begin{itemize}
+            \item $\forall e \in \mathcal{E} \colon \, \exists \ell_e > 0$.
+            \item $\ell_{e_1} = \ell_{\overline{e_1}} = \ell_{e_2} = \ell_{\tilde{e}}$.
+            \item $x_{e_1} \in [0, \ell_{e_1}] \colon \, x_{e_1} = \ell_{e_2} - x_{e_2}$.
+            \item $\operatorname{dist}(v_i, v_j) = \sum^{N}_{k = 1} \ell_{e_k}$, \\ where $\left\{ e_k \right\}_{k = 1, \ldots, N}$ is path of minimal length.
         \end{itemize}
     \end{minipage} \hfill
     \begin{minipage}{0.45\textwidth}
         \begin{figure}[H]
-            \includegraphics[scale=0.15]{img/diagram-20220315.png}
+            \includegraphics[scale=0.15]{img/diagram-20220315 (2).png}
         \end{figure}
     \end{minipage}
-  \end{frame}
+\end{frame}
+  
+
+\begin{frame}{Metric Graphs}
+    $L_2(e)$:
+    \begin{equation*}
+        \lVert f \rVert^{2}_{L_2(e)} \coloneqq \int_e \lvert f(x) \rvert^2 \, \textup{d} x < \infty.
+    \end{equation*}
+    $L_2(\Gamma) = \bigotimes_{e \in \mathcal{E}} L_2(e)$:
+    \begin{equation*}
+        \lVert f \rVert^{2}_{L_2(\Gamma)} \coloneqq \sum_{e \in \mathcal{E}} \lVert f \rVert^{2}_{L_2(e)} < \infty.
+    \end{equation*}
+    $H^1 (e)$:
+    \begin{equation*}
+        \lVert f \rVert^{2}_{H^1(e)} \coloneqq \int_e \lvert f(x) \rvert^2 + \lvert f^{\prime}(x) \rvert^2 \, dx < \infty.
+    \end{equation*}
+    $H^1 (\Gamma) =  \bigotimes_{e \in \mathcal{E}} H^1 (e) \cap C^{0}(\Gamma)$:
+    \begin{equation*}
+        \lVert f \rVert^{2}_{H^1 (\Gamma)} \coloneqq \sum_{e \in \mathcal{E}} \lVert f \rVert^{2}_{H^1 (e)} < \infty.
+    \end{equation*}
+\end{frame}
 
 \end{document}
