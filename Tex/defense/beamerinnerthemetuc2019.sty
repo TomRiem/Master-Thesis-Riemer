@@ -1,0 +1,49 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+% Beamer-Template für das Corporate Design 2019 der TU Chemnitz               %
+% (c) Mario Haustein (mario.haustein@hrz.tu-chemnitz.de), 2013-2019           %
+%                                                                             %
+% Dieses Material steht unter der Creative-Commons-Lizenz Namensnennung -     %
+% Weitergabe unter gleichen Bedingungen 4.0 International. Um eine Kopie      %
+% dieser Lizenz zu sehen, besuchen Sie                                        %
+% http://creativecommons.org/licenses/by-sa/4.0/deed.de.                      %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mode<presentation>
+
+% Schlichte Aufzählungen verwenden.
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{enumerate items}[default]
+
+% Kapitel in TOC durchnummerieren.
+\setbeamertemplate{sections/subsections in toc}[sections numbered]
+
+% Hervorhebungen durch Fettschrift auszeichnen.
+\setbeamertemplate{structure text begin}{\bfseries}
+\setbeamertemplate{alerted text begin}{\bfseries}
+
+% Die -4pt vertikaler Abstand am Ende kompensieren den Abstand, der zwischen
+% Fußzeile und Folienkörper eingefügt wird. Der Wert ist Makro, mit welchem
+% Beamer die Folie zusammensetzt hart kodiert.
+\newcommand{\tuc@titlepage}[2]{%
+  \frametitle{\inserttitle}
+  \vspace*{0pt plus 1filll}
+  \begingroup
+  \setlength{\hsize}{\textwidth}
+  \addtolength{\hsize}{#1}
+  \addtolength{\hsize}{#2}
+  \vbox{\hbox{%
+  \hskip-#1%
+  \parbox{\hsize}{\centering%
+  \usebeamercolor[fg]{titlegraphic}%
+  \inserttitlegraphic}%
+  \hskip-#2}%
+  \vskip-4pt}%
+  \endgroup%
+}
+
+\defbeamertemplate{title page}{tucpicture}{\tuc@titlepage{\Gm@lmargin}{\Gm@rmargin}}
+\defbeamertemplate{title page}{tucnarrowpicture}{\tuc@titlepage{\beamer@leftmargin}{\beamer@rightmargin}}
+
+\mode<all>

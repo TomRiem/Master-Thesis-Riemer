@@ -1,0 +1,13 @@
+\lstinline!using Manopt, Manifolds, Random! \\
+    \lstinline!Random.seed!(42)! \\
+    \lstinline!A = randn(100,100)! \\
+    \lstinline!A_symm = (A+A')/2! \\
+    \lstinline!M = Sphere(99)! \\
+    \lstinline!F(X::Array{Float64,1}) = X'*A_symm*X! \\
+    \lstinline!grad_F(X::Array{Float64,1}) = 2*(A_symm*X-X*X'*A_symm*X)! \\
+    \lstinline!x = random_point(M)! \\[1.\baselineskip]
+
+    \lstinline!quasi_Newton(M, F, grad_F, x;! \\
+    \lstinline!memory_size = -1,! \\
+    \lstinline!stopping_criterion =! \\
+    \lstinline!StopWhenGradientNormLess(norm(M, x, grad_F(x)) * 10^(-6)))! \\

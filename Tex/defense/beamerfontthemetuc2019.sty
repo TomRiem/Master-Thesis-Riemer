@@ -1,0 +1,43 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+% Beamer-Template für das Corporate Design 2019 der TU Chemnitz               %
+% (c) Mario Haustein (mario.haustein@hrz.tu-chemnitz.de), 2013-2019           %
+%                                                                             %
+% Dieses Material steht unter der Creative-Commons-Lizenz Namensnennung -     %
+% Weitergabe unter gleichen Bedingungen 4.0 International. Um eine Kopie      %
+% dieser Lizenz zu sehen, besuchen Sie                                        %
+% http://creativecommons.org/licenses/by-sa/4.0/deed.de.                      %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newif\iftuc@roboto\tuc@robototrue
+\newif\iftuc@robotoheader\tuc@robotoheadertrue
+
+\DeclareOptionBeamer{latexfonts}{\tuc@robotofalse\tuc@robotoheaderfalse}
+\DeclareOptionBeamer{latexfontsbody}{\tuc@robotofalse}
+\DeclareOptionBeamer{lining}{\PassOptionsToPackage{\CurrentOption}{roboto}}
+\DeclareOptionBeamer{nf}{\PassOptionsToPackage{\CurrentOption}{roboto}}
+\DeclareOptionBeamer{lf}{\PassOptionsToPackage{\CurrentOption}{roboto}}
+\DeclareOptionBeamer{oldstyle}{\PassOptionsToPackage{\CurrentOption}{roboto}}
+\DeclareOptionBeamer{osf}{\PassOptionsToPackage{\CurrentOption}{roboto}}
+\DeclareOptionBeamer{tabular}{\PassOptionsToPackage{\CurrentOption}{roboto}}
+\DeclareOptionBeamer{t}{\PassOptionsToPackage{\CurrentOption}{roboto}}
+\DeclareOptionBeamer{proportional}{\PassOptionsToPackage{\CurrentOption}{roboto}}
+\DeclareOptionBeamer{p}{\PassOptionsToPackage{\CurrentOption}{roboto}}
+\ProcessOptionsBeamer
+
+
+% Standardschrift auf Roboto umstellen.
+\iftuc@roboto
+\def\mdseries@sf{regular} % einen Bug in roboto.sty umschiffen
+\RequirePackage[default,rm]{roboto}
+\IfFileExists{roboto-mono.sty}{\RequirePackage{roboto-mono}}{\relax}
+\renewcommand{\familydefault}{\sfdefault}
+\fi
+
+% Kopf- und Fußzeilenschrift auf Roboto umstellen.
+\iftuc@robotoheader
+\setbeamerfont{headline}{family=\roboto}
+\setbeamerfont{footline}{family=\roboto}
+\setbeamerfont{tiny structure}{family=\roboto}
+\fi

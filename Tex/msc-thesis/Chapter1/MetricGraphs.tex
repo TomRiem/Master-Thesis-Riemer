@@ -191,9 +191,10 @@ In the following we introduce differential operators on metric graphs, by which 
     \mathcal{H} \left[ f \right](x) = -\frac{\textup{d}^2 f}{\textup{d} x^2}(x) + V(x)f(x)
 \end{equation*}
 with a potential function $V$. One can formulate the differential equation for each edge $e \in \mathcal{E}$ of the form
-\begin{equation*}
+\begin{equation}
+    \label{source term}
     \mathcal{H} \left[ f |_e \right] (x_e) = g|_e(x_e), \quad \text{for all  } x_e \in (0, \ell_e),
-\end{equation*}
+\end{equation}
 where the functions $g|_e \colon (0, \ell_e) \to \mathbb{R}$ are given source terms. We note that for this operator the direction of the edge is irrelevant. This is not the case if one wants to include first order derivative terms. Then we need to assume the graph to be directed and consider bonds $b \in \mathcal{B}$ and the corresponding coordinates. \\
 The classical case of differential operators on an interval, which we can understand as a graph with one edge and two vertices, makes clear that the definition of a differential operator on a metric graph is not complete until its domain is described. The domain description should involve continuity conditions along the edges and some appropriate boundary value conditions at the vertices, which we call vertex conditions and are an analogue of boundary conditions for a single interval. The addition of these conditions justifies the introduction of the following notion:
 

@@ -1,0 +1,262 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+% Beamer-Template für das Corporate Design 2019 der TU Chemnitz               %
+% (c) Mario Haustein (mario.haustein@hrz.tu-chemnitz.de), 2013-2019           %
+%                                                                             %
+% Dieses Material steht unter der Creative-Commons-Lizenz Namensnennung -     %
+% Weitergabe unter gleichen Bedingungen 4.0 International. Um eine Kopie      %
+% dieser Lizenz zu sehen, besuchen Sie                                        %
+% http://creativecommons.org/licenses/by-sa/4.0/deed.de.                      %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mode<presentation>
+
+%
+% Aufteilung des Logos
+%
+% Logo (mit Schutzraum):  202.89853pt x 132.57797pt
+% Logo (ohne Schutzraum): 142.53214pt x  72.26980pt
+% Schutzraum:             30.09920pt
+%
+% Die Maßangaben beziehen sich auf die Entwurfsgröße des Logos und nicht auf
+% dessen Größe in der Folie.
+%
+% 0.227 * Höhe   = Schutzraum oben
+% 0.546 * Höhe   = Logokörper
+% 0.227 * Höhe   = Schutzraum unten
+% 0.148 * Breite = Schutzraum links
+% 0.704 * Breite = Logokörper
+% 0.148 * Breite = Schutzraum rechts
+%
+%
+%       (l)
+% |--------------|
+% |              |
+% |(m)        (s)|(s)
+% |---|      |---|---|
+%
+% +------------------------------------- ... -----------------+ ----------
+% |                                                           |  | (s)  |
+% |   ********   |   Zeile 1                                  | ---     |
+% |   * Logo *   |   Zeile 2                                  |         | (h)
+% |   ********   |   Zeile 3                                  | ---     |
+% |                                                           |  | (s)  |
+% +------------------------------------- ... -----------------+ ----------
+% |                                                           |
+% |                                                           |
+% |                                                           |
+% |                                                           |
+%
+%
+% - Die Höhe (h) der Kopfzeile beträgt bei 3 Zeilen 0.22\paperheight.
+% - Die Höhe (h) der Kopfzeile beträgt bei 2 Zeilen 0.11\paperheight.
+% - Der Schutzraum (s) beträgt 0.227*(h)
+% - Rer Rand (m) ist für beide Kopfzeilen gleich breit und entspricht dem
+%   Schutzraum (s) bei 3-zeiliger Kopfzeile. D.h.
+%      (m) = 0.227*0.22\paperheight = 0.04994\paperheight
+% - Die Breite (b) ergibt sich aus dem Seitenverhältnis des Logos
+%      (b) = 1.53 * (h)
+% - Bei 3-zeiliger Kopfzeile gilt: (l) = (b)       = 1.530 * (h)
+% - Bei 2-zeiliger Kopfzeile gilt: (l) = (b) + (s) = 1.757 * (h)
+%
+
+
+%
+% Gemäß CI sind Folienvorlagen mit unterschiedlichem Satzspiegel definiert.
+% Das Ändern des Satzspiegels im Dokument wird von Beamer nicht unterstützt,
+% weswegen wir hier einige finstere Tricks anwenden müssen.
+%
+
+\newlength{\tuc@logoheight}	% Höhe des Logos (h)
+\newlength{\tuc@sidebarwidth}	% Breite der Logo-Spalte (l)
+
+% Neuen Satzspiegel aktivieren.
+\newcommand{\tuc@calculatepage}{%
+\@tempdima=\beamer@leftmargin
+\advance\@tempdima by\beamer@leftsidebar
+\@tempdimb=\beamer@rightmargin
+\advance\@tempdimb by\beamer@rightsidebar
+\newgeometry{left=\the\@tempdima,right=\the\@tempdimb,top=0mm,bottom=0mm,includeheadfoot}
+\beamer@calculateheadfoot}
+
+
+%
+% Kopfzeile
+%
+
+\defbeamertemplate{tuc3 headline 1}{section}{\insertshorttitle}
+\defbeamertemplate{tuc3 headline 2}{section}{\insertsectionhead}
+\defbeamertemplate{tuc3 headline 3}{section}{\insertsubsectionhead}
+\defbeamertemplate{tuc2 headline 1}{section}{\insertsectionhead}
+\defbeamertemplate{tuc2 headline 2}{section}{\insertsubsectionhead}
+\defbeamertemplate{tuc3 headline 1}{title}{\insertshorttitle}
+\defbeamertemplate{tuc3 headline 2}{title}{\ifx\beamer@shortsubtitle\@empty\insertinstitute\else\insertshortsubtitle\fi}
+\defbeamertemplate{tuc3 headline 3}{title}{\ifx\beamer@shortsubtitle\@empty\relax\else\insertinstitute\fi}
+\defbeamertemplate{tuc2 headline 1}{title}{\insertshorttitle}
+\defbeamertemplate{tuc2 headline 2}{title}{\ifx\beamer@shortsubtitle\@empty\insertinstitute\else\insertshortsubtitle\fi}
+\defbeamertemplateparent{tuc3 headlines}{tuc3 headline 1,tuc3 headline 2,tuc3 headline 3}{}
+\defbeamertemplateparent{tuc2 headlines}{tuc2 headline 1,tuc2 headline 2}{}
+\setbeamertemplate{tuc3 headlines}[title]
+\setbeamertemplate{tuc2 headlines}[section]
+
+\defbeamertemplate{headline}{tuc3}
+{
+  \leavevmode%
+  \hbox{\setlength{\vsize}{0.22\paperheight}%
+%  \global\setlength{\tuc@logoheight}{\vsize}%
+%  \global\setlength{\tuc@sidebarwidth}{1.53\vsize}%
+  \global\tuc@logoheight=\vsize%
+  \global\tuc@sidebarwidth=1.53\vsize%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=\vsize,dp=0pt,left]{palette primary}%
+    \usebeamerfont{section in head/foot}%
+    \includegraphics[height=\vsize]{tuc2019/logo/tuc_white_margin}%
+    \hspace*{-0.2pt}\rule[0.227\vsize]{0.4pt}{0.546\vsize}\hspace*{-0.2pt}%
+    \hspace*{0.227\vsize}%
+    \fontsize{9pt}{11.6pt}\selectfont%
+    \raisebox{0.227\vsize}{%
+      \raisebox{26pt}{\rlap{\usebeamertemplate{tuc3 headline 1}}}%
+      \raisebox{13pt}{\rlap{\usebeamertemplate{tuc3 headline 2}}}%
+      \raisebox{00pt}{\rlap{\usebeamertemplate{tuc3 headline 3}}}%
+    }%
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+% Hinweis: Laut Powerpoint-Vorgabe wird nach links der selbe Schutzraum
+%          angewendet wie in der dreizeiligen Kopfzeile. Hierdurch kommt das
+%          zweite \hspace*{0.227\vsize} zu Stande.
+\defbeamertemplate*{headline}{tuc2}
+{
+  \leavevmode%
+  \hbox{\setlength{\vsize}{0.11\paperheight}%
+%  \global\setlength{\tuc@logoheight}{\vsize}%
+%  \global\setlength{\tuc@sidebarwidth}{1.757\vsize}%
+  \global\tuc@logoheight=\vsize%
+  \global\tuc@sidebarwidth=1.757\vsize%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=\vsize,dp=0pt,left]{palette primary}%
+    \usebeamerfont{section in head/foot}%
+    \fontsize{8pt}{9pt}\selectfont%
+    \hspace*{0.227\vsize}%
+    \includegraphics[height=\vsize]{tuc2019/logo/tuc_white_margin}%
+    \hspace*{-0.2pt}\rule[0.227\vsize]{0.4pt}{0.546\vsize}\hspace*{-0.2pt}%
+    \hspace*{0.227\vsize}%
+    \raisebox{0.227\vsize}{%
+      \raisebox{10pt}{\rlap{\usebeamertemplate{tuc2 headline 1}}}%
+      \raisebox{00pt}{\rlap{\usebeamertemplate{tuc2 headline 2}}}%
+    }%
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+% Dreizeilige Kopfzeile aktivieren.
+\newcommand{\tucthreeheadlines}{%
+\setbeamertemplate{headline}[tuc3]%
+\tucwideframe\aftergroup\tuc@calculatepage}
+
+% Zweizeilige Kopfzeile aktivieren.
+\newcommand{\tuctwoheadlines}{%
+\setbeamertemplate{headline}[tuc2]%
+\tucwideframe\aftergroup\tuc@calculatepage}
+
+
+%
+% Logospalte
+%
+
+% Logospalte aktivieren.
+\newcommand{\tucnarrowframe}{%
+\setbeamertemplate{sidebar left}[tuclogo]
+\beamer@leftmargin=0.227\tuc@logoheight
+\beamer@rightmargin=0.04994\paperheight
+\beamer@leftsidebar=\tuc@sidebarwidth
+\beamer@rightsidebar=0pt
+\tuc@calculatepage\aftergroup\tuc@calculatepage}
+
+% Logospalte deaktivieren.
+\newcommand{\tucwideframe}{%
+\setbeamertemplate{sidebar left}[empty]
+\beamer@leftmargin=0.04994\paperheight
+\beamer@rightmargin=0.04994\paperheight
+\beamer@leftsidebar=0pt
+\beamer@rightsidebar=0pt
+\tuc@calculatepage\aftergroup\tuc@calculatepage}
+
+% Standardeinstellungen festlegen.
+\setbeamersize{text margin left=0.04994\paperheight,text margin right=0.04994\paperheight}
+
+% Logos in die linke Spalte setzen.
+\setbeamerfont*{sidebar left}{}
+\setbeamercolor*{sidebar left}{}
+\defbeamertemplate{sidebar left}{tuclogo}{%
+\vspace*{0.227\tuc@logoheight}%
+\hbox to \tuc@sidebarwidth{%
+\setlength{\hsize}{1.07712\tuc@logoheight}%
+\hfill\parbox{\hsize}{%
+\def\\{\vspace*{0.227\tuc@logoheight}\par}%
+\insertlogo}\hspace*{0.227\tuc@logoheight}}}
+
+% Nur Navigationsleiste, aber keine Logos in der rechten Spalte.
+\setbeamerfont*{sidebar right}{}
+\setbeamercolor*{sidebar right}{}
+\defbeamertemplate*{sidebar right}{tuc}
+{
+  \vfill%
+  \llap{\usebeamertemplate***{navigation symbols}\hskip0.1cm}%
+  \vskip2pt%
+}
+
+% Einzug Titelzeile
+\def\beamer@fteleft{%
+\setlength{\leftskip}{\beamer@leftmargin}
+\setlength{\rightskip}{\beamer@rightmargin}}
+
+\def\beamer@fteright{%
+\setlength{\leftskip}{\beamer@leftmargin}
+\setlength{\rightskip}{\beamer@rightmargin}}
+
+\def\beamer@ftecenter{%
+\setlength{\leftskip}{\beamer@leftmargin}
+\setlength{\rightskip}{\beamer@rightmargin}}
+
+
+%
+% URL für die Fußzeile
+%
+
+\newcommand{\tucurl}{\@dblarg\tuc@url}
+\long\def\tuc@url[#1]#2{%
+\def\inserttucurl{\urlstyle{same}\url{#2}}%
+\def\tuc@shorturl{\urlstyle{same}\url{#1}}}
+\tucurl{https://www.tu-chemnitz.de/}
+
+\newcommand\insertshorttucurl[1][]{{%
+\beamer@setupshort{#1}%
+\beamer@insertshort{\tuc@shorturl}}}
+
+
+%
+% Fußzeile
+%
+
+\defbeamertemplate*{footline}{tuc}
+{
+  \begin{beamercolorbox}[colsep=0.25pt]{separation line}
+  \end{beamercolorbox}
+  \begin{beamercolorbox}[wd=\paperwidth,ht=8pt,dp=3pt]{fg=black,bg=white}%
+    \leavevmode%
+    \fontsize{7pt}{9pt}\selectfont%
+    \hspace*{0.04994\paperheight}%
+    \rlap{%
+      \@tempswafalse%
+      \expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{\insertshortinstitute\@tempswatrue}%
+      \expandafter\beamer@ifempty\expandafter{\beamer@shortdate}{}{\if@tempswa~$\cdot$~\fi\insertshortdate\@tempswatrue}%
+      \expandafter\beamer@ifempty\expandafter{\beamer@shortauthor}{}{\if@tempswa~$\cdot$~\fi\insertshortauthor\@tempswatrue}%
+    }\hfill%
+    \insertframenumber\ / \inserttotalframenumber\hfill%
+    \llap{\insertshorttucurl}%
+    \hspace*{0.04994\paperheight}%
+  \end{beamercolorbox}%
+}
+
+\mode<all>

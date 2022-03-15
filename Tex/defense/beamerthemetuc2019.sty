@@ -1,0 +1,55 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+% Beamer-Template für das Corporate Design 2019 der TU Chemnitz               %
+% (c) Mario Haustein (mario.haustein@hrz.tu-chemnitz.de), 2013-2019           %
+%                                                                             %
+% Dieses Material steht unter der Creative-Commons-Lizenz Namensnennung -     %
+% Weitergabe unter gleichen Bedingungen 4.0 International. Um eine Kopie      %
+% dieser Lizenz zu sehen, besuchen Sie                                        %
+% http://creativecommons.org/licenses/by-sa/4.0/deed.de.                      %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mode<presentation>
+
+\DeclareOptionBeamer{fakcolor}{\PassOptionsToPackage{fakcolor=#1}{beamercolorthemetuc2019}}
+\DeclareOptionBeamer{colorspace}{\PassOptionsToPackage{colorspace=#1}{beamercolorthemetuc2019}}
+\DeclareOptionBeamer{latexfonts}{\PassOptionsToPackage{latexfonts}{beamerfontthemetuc2019}}
+\DeclareOptionBeamer{latexfontsbody}{\PassOptionsToPackage{latexfontsbody}{beamerfontthemetuc2019}}
+\ProcessOptionsBeamer
+
+\usefonttheme{professionalfonts}
+\usecolortheme{tuc2019}
+\usefonttheme{tuc2019}
+\useinnertheme{tuc2019}
+\useoutertheme{tuc2019}
+
+% Noch nicht dargestellte Folieninhalte schattieren.
+\setbeamercovered{transparent}
+
+% Notizen für die aktuelle Folie nur einblenden, wenn es welche gibt.
+% Das ganze ist für die getrennte Anzeige von Beamer- und Monitorbild wichtig.
+% Wenn es keine Notizen gibt, wird auf dem Monitor die Folie in voller Größe
+% angezeigt.
+\defbeamertemplate{note page}{layout 1}{%
+\begin{minipage}{\textwidth}
+\begin{center}%
+\ifx\beamer@notes\@empty%
+  \ifx\beamer@noteimtes\@empty%
+    \hspace*{-\Gm@lmargin}\insertslideintonotes{1.0}\hspace*{-\Gm@rmargin}\hss%
+  \else%
+    \vbox{\hspace*{\fill}\insertslideintonotes{0.4}}%
+    \vspace*{1ex}%
+    \vbox{\parbox{\linewidth}{\insertnote}}%
+    \vspace*{1ex}%
+  \fi%
+\else%
+  \vbox{\hspace*{\fill}\insertslideintonotes{0.4}}%
+  \vspace*{1ex}%
+  \vbox{\parbox{\linewidth}{\insertnote}}%
+  \vspace*{1ex}%
+\fi%
+\end{center}%
+\end{minipage}}
+
+\mode<all>

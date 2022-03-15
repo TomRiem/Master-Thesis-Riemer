@@ -1,0 +1,104 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+% Beamer-Template für das Corporate Design 2019 der TU Chemnitz               %
+% (c) Mario Haustein (mario.haustein@hrz.tu-chemnitz.de), 2013-2019           %
+%                                                                             %
+% Dieses Material steht unter der Creative-Commons-Lizenz Namensnennung -     %
+% Weitergabe unter gleichen Bedingungen 4.0 International. Um eine Kopie      %
+% dieser Lizenz zu sehen, besuchen Sie                                        %
+% http://creativecommons.org/licenses/by-sa/4.0/deed.de.                      %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mode<presentation>
+
+\definecolor{tuccolor@black@rgb}{RGB}{0,0,0}
+\definecolor{tuccolor@tuc@rgb}{RGB}{0,95,80}
+\definecolor{tuccolor@natwi@rgb}{RGB}{111,112,112}
+\definecolor{tuccolor@ma@rgb}{RGB}{161,11,112}
+\definecolor{tuccolor@mb@rgb}{RGB}{18,51,117}
+\definecolor{tuccolor@etit@rgb}{RGB}{228,3,45}
+\definecolor{tuccolor@if@rgb}{RGB}{106,138,38}
+\definecolor{tuccolor@wiwi@rgb}{RGB}{157,7,54}
+\definecolor{tuccolor@phil@rgb}{RGB}{223,95,7}
+\definecolor{tuccolor@hsw@rgb}{RGB}{0,117,191}
+\definecolor{tuccolor@gold@rgb}{RGB}{141,104,49}
+\definecolor{tuccolor@silver@rgb}{RGB}{157,156,156}
+\definecolor{tuccolor@info@rgb}{RGB}{85,85,85}
+\definecolor{tuccolor@warning@rgb}{RGB}{255,153,0}
+\definecolor{tuccolor@danger@rgb}{RGB}{255,0,0}
+
+
+\definecolor{tuccolor@black@cmyk}{cmyk}{0.00,0.00,0.00,1.00}
+\definecolor{tuccolor@tuc@cmyk}{cmyk}{1.00,0.34,0.69,0.30}
+\definecolor{tuccolor@natwi@cmyk}{cmyk}{0.00,0.00,0.00,0.70}
+\definecolor{tuccolor@ma@cmyk}{cmyk}{0.30,1.00,0.00,0.17}
+\definecolor{tuccolor@mb@cmyk}{cmyk}{1.00,0.80,0.00,0.29}
+\definecolor{tuccolor@etit@cmyk}{cmyk}{0.00,1.00,0.81,0.00}
+\definecolor{tuccolor@if@cmyk}{cmyk}{0.60,0.20,1.00,0.20}
+\definecolor{tuccolor@wiwi@cmyk}{cmyk}{0.00,1.00,0.50,0.41}
+\definecolor{tuccolor@phil@cmyk}{cmyk}{0.00,0.71,1.00,0.01}
+\definecolor{tuccolor@hsw@cmyk}{cmyk}{1.00,0.40,0.00,0.00}
+\definecolor{tuccolor@gold@cmyk}{cmyk}{0.29,0.48,0.81,0.36}
+\definecolor{tuccolor@silver@cmyk}{cmyk}{0.00,0.00,0.00,0.50}
+\definecolor{tuccolor@info@cmyk}{cmyk}{0.00,0.00,0.00,0.76}
+\definecolor{tuccolor@warning@cmyk}{cmyk}{0,0.40,1.00,0.00}
+\definecolor{tuccolor@danger@cmyk}{cmyk}{0.0,1.00,1.00,0.00}
+
+\DeclareOptionBeamer{fakcolor}{\def\tuc@fakcolor{\@ifundefined{\string\color@tuccolor@#1@rgb}{tuc}{#1}}}
+\DeclareOptionBeamer{colorspace}{\def\tuc@colorspace{\@ifundefined{\string\color@tuccolor@tuc@#1}{rgb}{#1}}}
+\ExecuteOptionsBeamer{fakcolor=tuc}
+\ExecuteOptionsBeamer{colorspace=rgb}
+\ProcessOptionsBeamer
+
+%
+% Die Farben entsprechend der Farbräume definieren.
+%
+\colorlet{tuccolor@black}{tuccolor@black@\tuc@colorspace}
+\colorlet{tuccolor@tuc}{tuccolor@tuc@\tuc@colorspace}
+\colorlet{tuccolor@natwi}{tuccolor@natwi@\tuc@colorspace}
+\colorlet{tuccolor@ma}{tuccolor@ma@\tuc@colorspace}
+\colorlet{tuccolor@mb}{tuccolor@mb@\tuc@colorspace}
+\colorlet{tuccolor@etit}{tuccolor@etit@\tuc@colorspace}
+\colorlet{tuccolor@if}{tuccolor@if@\tuc@colorspace}
+\colorlet{tuccolor@wiwi}{tuccolor@wiwi@\tuc@colorspace}
+\colorlet{tuccolor@phil}{tuccolor@phil@\tuc@colorspace}
+\colorlet{tuccolor@hsw}{tuccolor@hsw@\tuc@colorspace}
+\colorlet{tuccolor@gold}{tuccolor@gold@\tuc@colorspace}
+\colorlet{tuccolor@silver}{tuccolor@silver@\tuc@colorspace}
+\colorlet{tuccolor@info}{tuccolor@info@\tuc@colorspace}
+\colorlet{tuccolor@warning}{tuccolor@warning@\tuc@colorspace}
+\colorlet{tuccolor@danger}{tuccolor@danger@\tuc@colorspace}
+
+%
+% Auszeichnungsfarbe für Autor hinterlegen.
+%
+\colorlet{tuccolor}{tuccolor@\tuc@fakcolor}
+
+%
+% Die Hauptfarben festlegen.
+%
+\setbeamercolor*{structure}{fg=tuccolor@\tuc@fakcolor}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{alerted text}{fg=tuccolor@warning}
+\setbeamercolor*{example text}{fg=tuccolor@info}
+
+
+%
+% Beamer-eigene Farbschemata verwenden, die alle Vorgaben aus der
+% Auszeichnungsfarbe ableiten.
+%
+\usecolortheme{whale}	% Die Kopfzeilen in der Auszeichnungsfarbe darstellen.
+\usecolortheme{orchid}	% Die Textblöcke in der Auszeichnungsfarbe darstellen.
+
+%
+% Folien-Titel in Auszeichnungsfarbe auf weißem Hintergrund
+%
+\setbeamercolor*{titlelike}{parent=structure}
+
+%
+% Farbe für Trennlinie über der Fußzeile
+%
+\setbeamercolor*{separation line}{bg=black!50!white}
+
+\mode<all>

@@ -10,18 +10,18 @@ We imagine a compact road network, where we mean a finite number of finitely lon
             \begin{center}
                 \includegraphics[scale=0.40]{img/Kaßberg2.png}
             \end{center}
-            \caption{Metric graph.}
+            \caption{A street network in Chemnitz, Saxony, Germany. Image from Google maps. Coordinates of the central point: $50.831877633783144$, $12.903810444090968$.}
             \label{fig8:f1}
-        \end{subfigure}
+        \end{subfigure}\hspace{15mm}
         \begin{subfigure}[b]{0.4\textwidth}
             \begin{center}
                 \includegraphics[scale=0.16]{img/Kaßberg2-Darstellung.png}
             \end{center}
-            \caption{Will come soon...}
+            \caption{A metric graph modelling a compact road network within the left road network.}
             \label{fig8:f2}
         \end{subfigure}
     \end{center}
-    \caption{Will come soon...}
+    \caption{A road network map and a modelling metric graph.}
 \end{figure}
 
 There exist several approaches to model the traffic flow on a road network. One of the most important approaches was presented in \cite{LighthillWhitham:1955}, and independently in \cite{Richards:1956}, in which the traffic flow is described by equations describing the flow of water. These fluid dynamics equations are a set of partial differential equations known as the Navier-Stokes equations, which express the conservation of mass, momentum, and energy. The basic idea of this approach is to look at large scales so to consider individual cars as small particles, a set of cars as mass, and their density as the main quantity to be considered, \cite[p.~1]{GaravelloPiccoli:2006}. The model in this thesis is inspired by the same idea. We also focus on the density of cars on an individual edge $e \in \mathcal{E}$ and we model it with a function $\rho_e \colon  \left( 0, T \right)  \times \left[ 0, \ell_e \right] \to \mathbb{R}_{+}$. The value $\rho_e  \left( t,x \right) $ describes the concentration of some quantity at the time $t \in  \left( 0, T \right) $ at the coordinate $x \in \left[ 0, \ell_e \right]$ on the edge $e \in \mathcal{E}$. It is reasonable to assume the conservation of the number of cars, which can be expressed by the following continuity equation for each individual edge $e \in \mathcal{E}$
@@ -73,7 +73,7 @@ We note that through \cref{Drift-Diffusion-equation} we obtain the following dif
     \label{eq:Hamiltonian}
     \mathcal{H} [\rho_e]  \left( t,x \right)  \coloneqq \partial_t \rho_e  \left( t,x \right)   - \partial_x  \left( \varepsilon \partial_x \rho_e  \left( t,x \right)  + f \left( \rho_e  \left( t,x \right)   \right)  \partial_x V_e  \left( t,x \right)  \right) ,
 \end{equation}
-and together with the above mentioned initial and vertex conditions we obtain a triple which satisfies the definition of a quantum graph, see \cref{quantum graph}. Nevertheless, for the sake of simplicity, we will refer to it as drift-diffusion equations on a metric graph in the rest of this thesis. \\
+and together with the above mentioned initial and vertex conditions we obtain a triple which satisfies the definition of a quantum graph, see \cref{quantum graph}. In the case we are discussing here, the source terms as described by \cref{source term} are $g|_e(x_e) = 0$ for all $ x_e \in (0, \ell_e)$ for each edge $e \in \mathcal{E}$. Nevertheless, for the sake of simplicity, we will refer to it as drift-diffusion equations on a metric graph in the rest of this thesis. \\
 Unfortunately, to the best of the author's knowledge, there is no constructive proof yet of any form of an analytical solution of the set of drift-diffusion equations given by \cref{Drift-Diffusion-equation} defined on a metric graph under the above mentioned initial and vertex conditions. Therefore it is a reasonable approach to approximate the solution, which results in the approximation problem that we will attempt to address in this thesis. The field of applied mathematics offers both well-known and new approaches to solve this approximation problem. In this paper we deal with (quite) new techniques, which will be introduced generally in the next section. 
 
 
