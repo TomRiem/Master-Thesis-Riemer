@@ -1,4 +1,4 @@
-\documentclass[9.4pt]{beamer}
+\documentclass[9pt]{beamer}
 
 \usepackage[T3,T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -10,6 +10,7 @@
 \usepackage{xcolor}
 \usepackage{comment}
 \usepackage{varwidth}
+\usepackage{subcaption}
 
 \hypersetup{pdfpagemode=FullScreen}
 
@@ -28,9 +29,9 @@
 \algdef{S}[WHILE]{WhileNoDo}[1]{\algorithmicwhile\ #1}%
 \makeatother
 
-\title{The Riemannian BFGS Method and its Implementation in Julia}
+\title{The Performance of \\ Physics Informed Neural Networks on \\ Metric Graphs}
 \author{Tom-Christian Riemer}
-\date{18.12.2020}
+\date{18.03.2022}
 \institute[TUC]{TU Chemnitz, Research Seminar Scientific Computing}
 \titlegraphic{\includegraphics[height=0.2\textheight]{tuc2019/logo/tuc_green}}
 \tucurl{http://www.tu-chemnitz.de/urz/}
@@ -48,17 +49,51 @@
 
 \section{Introduction}
 
-\begin{frame}{Riemannian Optimization}
-    Finding a \textbf{minimum} of a real-valued function $f$ on a Riemannian manifold, i.e.
-    \begin{equation*}
-        \min f(x), \quad x \in \mathcal{M}.
-    \end{equation*}\\[1.\baselineskip]
-    \begin{center}
-        \textbf{Riemannian manifold} = smooth manifold + Riemannian metric. \\[1.\baselineskip]
-    \end{center}
-    \begin{equation*}
-        \mathbb{S}^{n-1} = \{ x \in \mathbb{R}^n \colon \; \lVert x \rVert_2 = 1 \}.
-    \end{equation*}
+\begin{frame}{Graphs}
+    \begin{minipage}{0.5\textwidth}
+        \begin{itemize}
+            \item $\Gamma = \left(\mathcal{V}, \mathcal{E} \right),$ \\ $\mathcal{V} = \left\{ v_i \right\}_{i = 1, \ldots, V}, \; V = \abs{\mathcal{V}} \in \mathbb{N},$ \\
+            $\mathcal{E} = \left\{ e_i \right\}_{i = 1, \ldots, E}, \; E = \abs{\mathcal{E}} \in \mathbb{N}$.
+            \item $\forall e \in \mathcal{E} \colon \; e = (v^{\operatorname{o}}, v^{\operatorname{t}}), \;v^{\operatorname{o}}, v^{\operatorname{t}} \in \mathcal{V}$.
+            \item 
+        \end{itemize}
+    \end{minipage} \hfill
+    \begin{minipage}{0.45\textwidth}
+        \begin{figure}[H]
+            \resizebox{45mm}{45mm}
+            {
+                \begin{tikzpicture}
+                    % vertices
+                    \node[shape=circle,draw=black] (v1) at (0,4) {$v_1$};
+                    \node[shape=circle,draw=black] (v2) at (4,4) {$v_2$};
+                    \node[shape=circle,draw=black] (v4) at (0,0) {$v_4$};
+                    \node[shape=circle,draw=black] (v3) at (4,0) {$v_3$};
+                    
+                    % edges
+                    \path [->](v1) edge node[above] {$e_1$} (v2);
+                    \path [->](v2) edge [bend left = 10] node[right]{$e_4$} (v4);
+                    \path [->](v4) edge [bend left = 10] node[left]{$e_5$} (v2);
+                    \path [->](v3) edge node[below] {$e_3$} (v4);
+                    \path [->](v3) edge node[right] {$e_2$} (v2);
+                \end{tikzpicture}
+            }
+        \end{figure}
+    \end{minipage}
+\end{frame}
+
+\begin{frame}{Test}
+    \begin{minipage}{0.5\textwidth}
+        \begin{figure}[H]
+        \includegraphics{img/Tangent_Space.png}
+        \caption{\label{fig:blue_rectangle} Rectangle}
+        \end{figure}
+    \end{minipage} \hfill
+    \begin{minipage}{0.45\textwidth}
+        \begin{itemize}
+        \item *Rectangle
+        \item *Color: blue
+        \end{itemize}
+    \end{minipage}
 \end{frame}
 
 \begin{frame}{Optimization Methods}
