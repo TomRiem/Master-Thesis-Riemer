@@ -13,7 +13,7 @@ Using \cref{Drift-Diffusion residual network} we enforce the structured informat
     \label{misfit:residual}
     \phi_{e,r}  \left( X_e \right) \coloneqq \frac{1}{n_e} \sum_{i=1}^{n_e} r_{\theta_e}  \left( t_e^i, x_e^i  \right)^2,
 \end{equation} 
-where $X_e = \{ \left( t_e^i, x_e^i \right)\}_{i=1}^{n_e} \subset \left( 0, T \right) \times \left[0, \ell_e\right]$ is a set of time-space collocation points that are drawn randomly or chosen equidistantly. \\
+where $X_e = \left\{ \left( t_e^i, x_e^i \right) \right\}_{i=1}^{n_e} \subset \left( 0, T \right) \times \left[0, \ell_e\right]$ is a set of time-space collocation points that are drawn randomly or chosen equidistantly. \\
 To enforce the Kirchhoff-Neumann conditions, \cref{eq:Kirchhoff_Neumann_condition}, we define the following misfit term for each interior vertex $v \in \mathcal{V}_\mathcal{K}$ 
 \begin{equation} 
     \label{misfit:Kirchhoff}

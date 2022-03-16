@@ -26,12 +26,15 @@
 \usepackage{varwidth}
 \usepackage{subcaption}
 \usepackage{blkarray}
+\usepackage{svg}
 
 \lstset{basicstyle=\ttfamily,	tabsize=2}
 
 \newcommand\myeq{\stackrel{\mathclap{\mbox{$def$}}}{=}}
 
 \newcommand{\Pb}[1]{\expandafter\hat#1}
+
+\DeclareMathOperator*{\minimize}{minimize}
 
 \begin{document}
 
@@ -43,60 +46,63 @@
 
 \section{Introduction}
 
-\begin{frame}{Graphs}
-  \begin{minipage}{0.5\textwidth}
-      \begin{itemize}
-          \item $\Gamma = \left(\mathcal{V}, \mathcal{E} \right),$ \\ $\mathcal{V} = \left\{ v_i \right\}_{i = 1, \ldots, V}, \; V = \abs{\mathcal{V}} \in \mathbb{N},$ \\
-          $\mathcal{E} = \left\{ e_i \right\}_{i = 1, \ldots, E}, \; E = \abs{\mathcal{E}} \in \mathbb{N}$.
-          \item $\forall e \in \mathcal{E} \colon \; e = \left( v^{\operatorname{o}}, v^{\operatorname{t}} \right)$, \\
-            $v^{\operatorname{o}}, v^{\operatorname{t}} \in \mathcal{V}$.
-          \item Adjacency: $v_1, v_2 \in \mathcal{V}$ \\ $v_1 \sim v_2 \Leftrightarrow \exists e \in \mathcal{E}$ s.t. $v_2$ can be reached from $v_1$ via this edge $e$. \\
-          \begin{equation*}
-            A^{\Gamma} = 
-            \begin{blockarray}{ccccc}
-                v_1 & v_2 & v_3 & v_4 \\
-                \begin{block}{(cccc)c}
-                    0 & 1 & 0 & 0 & v_1 \\
-                    0 & 0 & 0 & 1 & v_2 \\
-                    0 & 1 & 0 & 1 & v_3 \\
-                    0 & 1 & 0 & 0 & v_4 \\
-                \end{block}
-            \end{blockarray}
-        \end{equation*}
-      \end{itemize}
-  \end{minipage} \hfill
-  \begin{minipage}{0.45\textwidth}
-      \begin{figure}[H]
-          \resizebox{40mm}{40mm}
-          {
-              \begin{tikzpicture}
-                  % vertices
-                  \node[shape=circle,draw=black] (v4) at (0,4) {$v_4$};
-                  \node[shape=circle,draw=black] (v2) at (4,4) {$v_2$};
-                  \node[shape=circle,draw=black] (v1) at (0,0) {$v_1$};
-                  \node[shape=circle,draw=black] (v3) at (4,0) {$v_3$};
-                  
-                  % edges
-                  \path [->](v3) edge node[below] {$e_4$} (v1);
-                  \path [->](v2) edge [bend left = 10] node[right]{$e_2$} (v1);
-                  \path [->](v1) edge [bend left = 10] node[left]{$e_1$} (v2);
-                  \path [->](v3) edge node[right] {$e_3$} (v2);
-                  \path [->](v4) edge node[above] {$e_5$} (v2);
-              \end{tikzpicture}
-          }
-      \end{figure}
-  \end{minipage}
+\begin{frame}{Introduction}
+    Keine Ahnung
 \end{frame}
 
+\section{Preliminaries}
+
+\subsection{Metric Graphs}
+
+\begin{frame}{Metric Graphs}
+    \begin{minipage}{0.5\textwidth}
+        \begin{itemize}
+            \item $\Gamma = \left(\mathcal{V}, \mathcal{E} \right),$ \\ $\mathcal{V} = \left\{ v_i \right\}_{i = 1, \ldots, V}, \; V = \abs{\mathcal{V}} \in \mathbb{N},$ \\
+            $\mathcal{E} = \left\{ e_i \right\}_{i = 1, \ldots, E}, \; E = \abs{\mathcal{E}} \in \mathbb{N}$.
+            \item directed: $\forall e \in \mathcal{E} \colon \; e = \left( v^{\operatorname{o}}, v^{\operatorname{t}} \right)$, \\
+            $v^{\operatorname{o}}, v^{\operatorname{t}} \in \mathcal{V}$.
+            \item Reversal: $e_1, e_2 \in \mathcal{E} \colon e_1 = \overline{e_2}$ \\
+            $\Leftrightarrow e_1 = \left( v_1, v_2 \right), e_2 = \left( v_2, v_1 \right)$.
+        \end{itemize}
+        \vspace{3mm}
+        \textbf{Metric Graph}:
+        \begin{itemize}
+            \item $\forall e \in \mathcal{E} \colon \, \exists \ell_e > 0$.
+            \item $\ell_{e_1} = \ell_{\overline{e_1}} = \ell_{e_2}$.
+            \item $x_{e_1} \in [0, \ell_{e_1}] \colon \, x_{e_1} = \ell_{e_2} - x_{e_2}$.
+            \item $\operatorname{dist}(v_i, v_j) = \sum^{N}_{k = 1} \ell_{e_k}$, \\ where $\left\{ e_k \right\}_{k = 1, \ldots, N}$ is path of minimal length.
+        \end{itemize}
+    \end{minipage} \hfill
+    \begin{minipage}{0.45\textwidth}
+        \begin{figure}[H]
+            \resizebox{40mm}{40mm}
+            {
+                \begin{tikzpicture}
+                    % vertices
+                    \node[shape=circle,draw=black] (v4) at (0,4) {$v_4$};
+                    \node[shape=circle,draw=black] (v2) at (4,4) {$v_2$};
+                    \node[shape=circle,draw=black] (v1) at (0,0) {$v_1$};
+                    \node[shape=circle,draw=black] (v3) at (4,0) {$v_3$};
+
+                    % edges
+                    \path [->](v3) edge node[below] {$e_4$} (v1);
+                    \path [->](v2) edge [bend left = 10] node[right]{$e_2$} (v1);
+                    \path [->](v1) edge [bend left = 10] node[left]{$e_1$} (v2);
+                    \path [->](v3) edge node[right] {$e_3$} (v2);
+                    \path [->](v4) edge node[above] {$e_5$} (v2);
+                \end{tikzpicture}
+            }
+        \end{figure}
+    \end{minipage}
+\end{frame}
+
+
+
+\begin{comment}
 \begin{frame}{Metric Graphs}
     \vspace{-1\baselineskip}\hfill{\tiny{[Berkolaiko, Kuchment, 2013]}} \\
     \begin{minipage}{0.5\textwidth}
-        \begin{itemize}
-            \item Reversal: $e_1, e_2 \in \mathcal{E} \colon e_1 = \overline{e_2}$ \\
-            $\Leftrightarrow e_1 = \left( v_1, v_2 \right), e_2 = \left( v_2, v_1 \right)$.
-        \end{itemize} 
-        \noindent \\
-        \textbf{Metric Graph}
+        \textbf{Metric Graph}:
         \begin{itemize}
             \item $\forall e \in \mathcal{E} \colon \, \exists \ell_e > 0$.
             \item $\ell_{e_1} = \ell_{\overline{e_1}} = \ell_{e_2} = \ell_{\tilde{e}}$.
@@ -110,25 +116,523 @@
         \end{figure}
     \end{minipage}
 \end{frame}
-  
+\end{comment}
+
+
 
 \begin{frame}{Metric Graphs}
     $L_2(e)$:
     \begin{equation*}
         \lVert f \rVert^{2}_{L_2(e)} \coloneqq \int_e \lvert f(x) \rvert^2 \, \textup{d} x < \infty.
     \end{equation*}
+    \vspace{2mm}
     $L_2(\Gamma) = \bigotimes_{e \in \mathcal{E}} L_2(e)$:
     \begin{equation*}
         \lVert f \rVert^{2}_{L_2(\Gamma)} \coloneqq \sum_{e \in \mathcal{E}} \lVert f \rVert^{2}_{L_2(e)} < \infty.
     \end{equation*}
+    \vspace{2mm}
     $H^1 (e)$:
     \begin{equation*}
         \lVert f \rVert^{2}_{H^1(e)} \coloneqq \int_e \lvert f(x) \rvert^2 + \lvert f^{\prime}(x) \rvert^2 \, dx < \infty.
     \end{equation*}
+    \vspace{2mm}
     $H^1 (\Gamma) =  \bigotimes_{e \in \mathcal{E}} H^1 (e) \cap C^{0}(\Gamma)$:
     \begin{equation*}
         \lVert f \rVert^{2}_{H^1 (\Gamma)} \coloneqq \sum_{e \in \mathcal{E}} \lVert f \rVert^{2}_{H^1 (e)} < \infty.
     \end{equation*}
+\end{frame}
+
+
+
+\subsection{Drift-Diffusion Equations}
+
+
+
+\begin{frame}{Traffic Flow}
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[scale=0.15]{img/diagram-20220316.png}
+        \end{center}
+        \caption{A compact road network modelled by a compact metric graph.}
+    \end{figure}
+    Continuity equation for each individual edge $e \in \mathcal{E}$:
+    \begin{equation*}
+        \partial_t \rho_e  \left( t,x \right)  = - \partial_x J_e \left( t,x \right)
+    \end{equation*} \\
+    \begin{itemize}
+        \item Density of cars: $\rho_e \colon  \left( 0, T \right)  \times \left[ 0, \ell_e \right] \to \left[0, 1\right]$.
+        \item Flux of cars: $J_e \colon  \left( 0,T \right)  \times \left[ 0, \ell_e \right] \to \mathbb{R}$.
+    \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Drift-Diffusion Equation}
+    \begin{equation*} 
+        J_e \left( t,x \right)  \coloneqq - \underbrace{\varepsilon \partial_x \rho_e  \left( t, x \right)}_{\text{diffusion}}  + \underbrace{f \left( \rho_e \left( t, x \right)  \right)  \partial_x V_e \left( t, x \right)}_{\text{drift}} 
+    \end{equation*}
+    \vspace{3mm}
+    \begin{itemize}
+        \item Diffusion coefficient $\varepsilon > 0$ (typically small).
+        \item Potential $V_e \colon  \left( 0,T \right)  \times \left[ 0, \ell_e \right] \to \mathbb{R}_{+}$, that may vary from edge to edge.
+        \item Mobility $f \colon \mathbb{R}_{+} \to \mathbb{R}_{+}, \; f \left( \rho_e \right)  =  \left( 1-\rho_e \right)  \rho_e \Rightarrow f \left( 0 \right)  = f \left( 1 \right)  = 0$. 
+    \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Drift-Diffusion equations on a Metric Graph}
+    Metric graph $\Gamma =  \left( \mathcal{V}, \mathcal{E} \right) $, where each edge $e \in \mathcal{E}$ is equipped with a length $\ell_e > 0$ and the following differential equation
+    \begin{equation*} 
+        \partial_t \rho_e  \left( t,x \right)  = \partial_x  \left( \varepsilon \partial_x \rho_e  \left( t,x \right)  - f \left( \rho_e  \left( t,x \right)   \right)  \partial_x V_e  \left( t,x \right)  \right).
+    \end{equation*}
+    $\Rightarrow$ For a well-posed problem we need initial and boundary conditions.
+
+    \vspace{5mm}
+
+    \textbf{Initial conditions}:
+    \begin{equation*}
+        \forall e \in \mathcal{E} \colon \; \rho_e \left( 0,x \right)  = \rho_{e, 0} \left( x \right) \in L^2 \left( e \right).
+    \end{equation*}
+
+    \vspace{3mm}
+
+    The boundary conditions on a metric graph are vertex conditions!
+\end{frame}
+
+
+
+\begin{frame}{Conditions on interior vertices}
+    \textbf{Normal vector}: \\
+    $e = \left( v^{\operatorname{o}}_e, v^{\operatorname{t}}_e \right) \in \mathcal{E} \Rightarrow n_e \left( v^{\operatorname{o}}_e \right)  = -1, n_e \left( v^{\operatorname{t}}_e \right)  = 1$. \\
+
+    \vspace{3mm} 
+
+    \textbf{Interior vertices}: \\
+    $\forall v \in \mathcal{V}_\mathcal{K} \subset \mathcal{V} \colon \; \exists \ e_1 = \left( v^{\operatorname{o}}_{e_1}, v^{\operatorname{t}}_{e_1} \right), e_2 = \left( v^{\operatorname{o}}_{e_2}, v^{\operatorname{t}}_{e_2} \right) \in \mathcal{E}$ \\ s.t. $v^{\operatorname{t}}_{e_1} = v$ and $v^{\operatorname{o}}_{e_2} = v$. \\
+
+    \vspace{3mm} 
+
+    \textbf{Kirchhoff-Neumann conditions}:
+    \begin{equation*}
+        \forall v \in \mathcal{V}_\mathcal{K} \colon \; \sum_{e\in \mathcal{E}_v} J_e \left( t,v \right)  n_e  \left( v \right) =0,
+    \end{equation*}
+    where $\mathcal{E}_v$ the set of all edges incident to the vertex $v$. \\
+
+    \vspace{3mm}
+
+    \textbf{Continuity conditions}:
+    \begin{equation*}
+        \forall v \in \mathcal{V}_\mathcal{K} \colon \; \rho_e \left( v \right)  = \rho_{e'} \left( v \right), \; e,\,e' \in \mathcal{E}_v.
+    \end{equation*}
+\end{frame}
+
+
+
+\begin{frame}{Conditions on exterior vertices}
+    \textbf{Exterior vertices}: \\
+    $\forall v \in \mathcal{V}_\mathcal{D} = \mathcal{V} \setminus \mathcal{V}_\mathcal{K} \colon$ either $v^{\operatorname{t}}_{e} = v$ or $v^{\operatorname{o}}_{e} = v$ holds $\forall e = \left(v^{\operatorname{o}}_{e}, v^{\operatorname{t}}_{e}\right) \in \mathcal{E}_v$ \\
+
+    \vspace{3mm} 
+
+    \textbf{Flux boundary conditions}:
+    \begin{equation*}
+        \forall v \in \mathcal{V}_\mathcal{D} \colon \; \sum_{e\in \mathcal{E}_v}J_e \left( t, v \right)  n_e  \left( v \right) =-\alpha_v \left( t \right)   \left( 1-\rho_e \left(t, v \right) \right)  + \beta_v \left( t \right)  \rho_e \left(t, v \right),
+    \end{equation*}
+    where 
+    \begin{itemize}
+        \item $\rho_e \left(t, v \right) = \rho_e \left(t, 0 \right)$ or $\rho_e \left(t, v \right) = \rho_e \left(t, \ell_e \right)$,
+        \item $\alpha_v \colon  \left( 0,T \right)  \to \mathbb{R}_{+}$ influx rate,
+        \item $\beta_v \colon  \left( 0,T \right)  \to \mathbb{R}_{+}$ outflux rate.
+    \end{itemize}
+    In typical situations: $\alpha_v \left( t \right)  \beta_v \left( t \right)  \equiv 0$ for all $v \in \mathcal{V}_\mathcal{D}$ and $t \in  \left( 0,T \right) $.
+\end{frame}
+
+
+
+\subsection{Neural Networks}
+
+
+
+\begin{frame}{Artificial Neuron}
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[scale=0.15]{img/diagram-20220205_1.png}
+        \end{center}
+    \end{figure}
+    \begin{equation*}
+        y = \sigma \left( \sum^{n}_{i=1} w_i x_i + b \right) = \sigma \left( w^{\mathrm{T}} x + b \right) = \sigma(a).
+    \end{equation*}
+    \begin{equation*}
+        \begin{aligned}
+            \sigma(y) &=\max \{y, 0\} & & \text{ rectified linear unit (ReLU) } \\
+            \sigma(y) &=\frac{1}{1+\exp (-y)} & & \text{ sigmoid }  \\
+            \sigma(y) &=\tanh (y)=\frac{\exp (y)-\exp (-y)}{\exp (y)+\exp (-y)} & & \text{ hyperbolic tangent }
+        \end{aligned}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Feed-Forward Neural Network}
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[scale=0.35]{img/Neural Network.png}
+        \end{center}
+        \caption{“Neurons that fire together, wire together.” - Donald Hebb}
+    \end{figure}
+    \begin{equation*}
+        \begin{gathered}
+            f_{\theta} \colon \mathbb{R}^{n_0} \to \mathbb{R}^{n_L}, \quad f_{\theta} \left( x^{0}\right) = x^{L} \\
+            x^{l} = \sigma_l \left( W^l x^{l-1} + b^l \right) \quad \text{for} \quad l = 1, \ldots, L, 
+        \end{gathered}
+    \end{equation*}
+    where 
+    \begin{itemize}
+        \item weights $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$, biases $b^l \in \mathbb{R}^{n_l}$,
+        \item trainable parameters $\theta = \left\{ \left\{ W^l \right\}_{l=1, \ldots, L}, \left\{ b^l \right\}_{l=1, \ldots, L} \right\}$,
+        \item hyperparameter $L \in \mathbb{N}$ (depth), $n_l \in \mathbb{N}$ (width), $\sigma_l \colon \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$.
+    \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Machine Learning}
+    \textbf{Supervised learning}:
+    Training data $\left\{ \left(x_i, y_i \right) \right\}_{i = 1, \ldots, N}$ with $y_i = f(x_i)$.
+    \begin{equation*}
+        \minimize_{\theta} \frac{1}{N} \sum_{i=1}^{N} \lVert f_{\theta} \left(x_{i}\right) - y_{i} \rVert^{2}_2 =  MSE \left( \left\{ \left(x_i, y_i \right) \right\}_{i = 1, \ldots, N}, \theta \right).  
+    \end{equation*}
+
+    \vspace{3mm}
+
+    \textbf{Stochastic gradient descent}: 
+
+    \begin{equation*}
+        \label{Gradient Descent}
+        \theta_{k+1} = \theta_k - \lambda \cdot \nabla_{\theta} MSE \left( \left(x_j, y_j \right), \theta_k \right),
+    \end{equation*}
+    where
+    \begin{itemize}
+        \item $\theta_k$ iterate in search space (large),
+        \item $\lambda > 0$ learning rate,
+        \item $\left(x_j, y_j \right)$ randomly chosen pair from $\left\{ \left(x_i, y_i \right) \right\}_{i = 1, \ldots, N}$.
+    \end{itemize}
+\end{frame}
+
+
+\subsection{Physics Informed Neural Networks}
+
+
+
+\begin{frame}{Machine Learning}
+    Partial differential equation:
+    \begin{equation*}
+        \partial_t u\left(t,x\right) + \mathcal{H} \left[ u \right] \left(t, x\right) = 0, \quad x \in \Omega, \quad t \in \left[ 0, T \right], 
+    \end{equation*}
+
+    \textbf{Surrogate network}: $u_\theta \left(t, x \right) \sim u\left(t,x\right)$ for all $\left(t, x \right) \in \left[ 0, T \right] \times \Omega$. \\
+    
+    \textbf{Residual network}:
+    \begin{equation*}
+        r_{\theta} \left(t,x\right) = \partial_t u_{\theta} \left(t,x\right) + \mathcal{H} \left[ u_{\theta} \right] \left(t, x\right).
+    \end{equation*}
+
+    \textbf{Cost function}:
+    \begin{equation*}
+        \begin{gathered}
+            MSE = MSE_u + MSE_r, \\
+            MSE_r = \frac{1}{N_r} \sum^{N_r}_{i = 1} \lVert r_\theta \left(t^{r}_i, x^{r}_i\right) \rVert^{2}_{2}, \\
+            MSE_u = \frac{1}{N_u} \sum^{N_u}_{i = 1} \lVert u_\theta\left(t^{u}_i, x^{u}_i\right) - u_i \rVert^{2}_{2},
+        \end{gathered}
+    \end{equation*}
+
+\end{frame}
+
+\begin{comment}
+        
+    
+    
+
+    \textbf{Residual network}:
+    \begin{equation*}
+        r_{\theta} \left(t,x\right) = \partial_t u_{\theta} \left(t,x\right) + \mathcal{H} \left[ u_{\theta} \right] \left(t, x\right).
+    \end{equation*}
+
+    \textbf{Cost function}:
+    \begin{equation*}
+        \begin{gathered}
+            MSE = MSE_u + MSE_r, \\
+            MSE_r = \frac{1}{N_r} \sum^{N_r}_{i = 1} \lVert r_\theta \left(t^{r}_i, x^{r}_i\right) \rVert^{2}_{2}, \\
+            MSE_u = \frac{1}{N_u} \sum^{N_u}_{i = 1} \lVert u_\theta\left(t^{u}_i, x^{u}_i\right) - u_i \rVert^{2}_{2},
+        \end{gathered}
+        
+    \end{equation*}
+\end{comment}
+
+\section{A PINN approach}
+
+
+
+\begin{frame}{The “All at once” approach}
+    \textbf{Idea}: the drift-diffusion equations on all edges and all initial and vertex conditions are considered at once in the learning phase. \\
+    \vspace{5mm}
+    $\Rightarrow$ We construct one single cost function $\Phi_{\theta}$ for this approach, which combines the deviation to\dots
+    \begin{itemize}
+        \item \dots the drift-diffusion equation on each edge $e \in \mathcal{E}$,
+        \item \dots the initial condition on each edge $e \in \mathcal{E}$,
+        \item \dots the Kirchhoff-Neumann condition on each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$,
+        \item \dots the continuity condition on each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$,
+        \item \dots the flux boundary condition on each exterior vertex $v \in \mathcal{V}_{\mathcal{D}}$.
+    \end{itemize} 
+\end{frame}
+
+
+
+\begin{frame}{Deviation to the Drift-Diffusion Equation}
+    \textbf{Surrogate network} $\rho_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}$ approximates $\rho_e$ on edge $e \in \mathcal{E}$. \\
+    $\Rightarrow \; \theta_e$ \\
+
+    \vspace{3mm}
+
+    \textbf{Residual network} for each edge $e \in \mathcal{E}$
+    \begin{equation*}
+        r_{\theta_e} \left( t,x \right)=\partial_t \rho_{\theta_e} \left( t,x \right) - \partial_x   \left(  \varepsilon \partial_x  \rho_{\theta_e} \left( t,x \right) - f \left( \rho_{\theta_e} \left( t,x \right) \right) \partial_x V \left( t,x \right) \right).
+    \end{equation*}
+
+    \vspace{3mm}
+
+    \textbf{Residual misfit term} for each edge $e \in \mathcal{E}$
+    \begin{equation*} 
+        \phi_{e,r}  \left( X_e \right) \coloneqq \frac{1}{n_e} \sum_{i=1}^{n_e} r_{\theta_e}  \left( t_e^i, x_e^i  \right)^2,
+    \end{equation*} 
+    where $X_e = \left\{ \left( t_e^i, x_e^i \right) \right\}_{i=1}^{n_e} \subset \left( 0, T \right) \times \left[0, \ell_e\right]$ set of time-space collocation points. \\
+\end{frame}
+
+
+
+\begin{frame}{Deviation to the Initial condition}
+    \textbf{Initial conditions}:
+    \begin{equation*}
+        \forall e \in \mathcal{E} \colon \; \rho_e \left( 0,x \right)  = \rho_{e, 0} \left( x \right) \in L^2 \left( e \right).
+    \end{equation*}
+
+    \vspace{3mm}
+
+    \textbf{Initial misfit term} for each edge $e \in \mathcal{E}$:
+    \begin{equation*} 
+        \phi_{e,0}  \left( X_{e,0} \right) \coloneqq \frac{1}{n_0} \sum_{i=1}^{n_0}  \left( \rho_{\theta_e}  \left( 0,x_{e,0}^i \right) - \rho_{e,0} \left( x_{e,0}^i \right) \right)^2, 
+    \end{equation*} 
+    where $X_{e,0} = \left\{ x_{e,0}^i \right\}_{i=1}^{n_0} \subset \left[0, \ell_e\right]$ is a set of collocation points along $t=0$.
+\end{frame}
+
+
+
+\begin{frame}{Deviation to the Kirchhoff-Neumann condition}
+    \textbf{Kirchhoff-Neumann conditions}:
+    \begin{equation*}
+        \forall v \in \mathcal{V}_\mathcal{K} \colon \; \sum_{e\in \mathcal{E}_v} J_e \left( t,v \right)  n_e  \left( v \right) =0.
+    \end{equation*}
+    
+
+    \vspace{3mm}
+
+    \textbf{Kirchhoff-Neumann misfit term} for each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$:
+    \begin{equation*} 
+        \phi_{v,K}  \left( X_{v,b} \right) \coloneqq \frac{1}{n_b} \sum_{i=1}^{n_b}  \left( \sum_{e \in \mathcal{E}_v}  J_{\theta_e}\left( t_{v,b}^i, v \right)  n_e  \left( v \right) \right)^2, 
+    \end{equation*} 
+    with 
+    \begin{equation*} 
+        J_{\theta_e}\left( t_{v,b}^i, v \right) = \left( - \varepsilon \partial_x \rho_{\theta_e}  \left( t_{v,b}^i, v \right) + f \left( \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \right) \partial_x V_e \left( t_{v,b}^i, v \right) \right),
+    \end{equation*}
+    where $X_{v,b} = \left\{ t_{v,b}^i \right\}_{i=1}^{n_b} \subset \left( 0,T \right)$ set of time snapshots where the Kirchhoff-Neumann conditions are enforced.
+\end{frame}
+
+
+
+\begin{frame}{Deviation to the Continuity condition}
+    \textbf{Continuity conditions}:
+    \begin{equation*}
+        \forall v \in \mathcal{V}_\mathcal{K} \colon \; \rho_e \left( v \right)  = \rho_{e'} \left( v \right), \; e,\,e' \in \mathcal{E}_v.
+    \end{equation*}
+
+    \vspace{3mm}
+
+    \textbf{Continuity misfit term} for each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$:
+    \begin{equation*} 
+        \phi_{v,c}  \left( X_{v,b} \right) \coloneqq \frac{1}{n_b} \sum_{e \in \mathcal{E}_v} \sum_{i=1}^{n_b} \left(  \rho_{\theta_e}  \left( t_{v,b}^i, v \right) - \rho_{v}^i \right)^2,
+    \end{equation*} 
+    with $X_{v,b} = \left\{ t_{v,b}^i \right\}_{i=1}^{n_b}$ and $\left\{ \rho_{v}^i \right\}_{i=1}^{n_b}$ additional trainable parameters for each $v \in \mathcal{V}_{\mathcal{K}}$, appended to $\theta$.
+\end{frame}
+
+
+
+\begin{frame}{Deviation to the Flux boundary condition}
+    \textbf{Flux boundary conditions}:
+    \begin{equation*}
+        \forall v \in \mathcal{V}_\mathcal{D} \colon \; \sum_{e\in \mathcal{E}_v}J_e \left( t, v \right)  n_e  \left( v \right) =-\alpha_v \left( t \right)   \left( 1-\rho_e \left(t, v \right) \right)  + \beta_v \left( t \right)  \rho_e \left(t, v \right).
+    \end{equation*}
+
+    \vspace{3mm}
+
+    \textbf{Flux boundary misfit term} for each exterior vertex $v \in \mathcal{V}_{\mathcal{D}}$:
+    \begin{equation*}
+        \begin{aligned} 
+            \phi_{v,D}  \left( X_{v,b} \right) \coloneqq & \frac{1}{n_b} \sum_{i=1}^{n_b} \bigg( \sum_{e \in \mathcal{E}_v} J_{\theta_e}\left( t_{v,b}^i, v \right) n_e  \left( v \right) + \\
+            & \alpha_v \left( t_{v,b}^i \right)  \left( 1- \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \right) - \beta_v \left( t_{v,b}^i \right) \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \bigg)^2,
+        \end{aligned}
+    \end{equation*}
+    with $X_{v,b} = \{t_{v,b}^i\}_{i=1}^{n_b}$ as introduced before.
+\end{frame}
+
+
+
+\begin{frame}{Final cost funktion}
+    \begin{equation*}
+        \begin{aligned} 
+            \Phi_{\theta} \left( \operatorname{X} \right)  = & \quad \sum_{e \in \mathcal{E}}  \left(  \phi_{e,r}  \left( X_{e,r} \right) + \phi_{e,0}  \left( X_{e,0} \right)  \right) + \\
+            & + \sum_{v \in \mathcal{V}_\mathcal{K}}  \left(  \phi_{v,K}  \left( X_{v,b} \right) + \phi_{v,c} \left( X_{v,b} \right)  \right) + \\
+            & + \sum_{v \in \mathcal{V}_\mathcal{D}} \phi_{v,D} \left( X_{v,b} \right),
+        \end{aligned}
+    \end{equation*}
+    where $\operatorname{X}$ union of the different collocation points $X_e$, $X_{v,b}$ and $X_{e,0}$. \\
+
+    \vspace{3mm}
+
+    $\Rightarrow$ The minimization of $\Phi_{\theta} \left( \operatorname{X} \right)$ with respect to the learnable parameters $\theta$ should ensure that the surrogate network $\rho_{\theta_e}$ approximates $\rho_{e}$ appropriately under the given conditions. 
+\end{frame}
+
+
+
+\begin{frame}{“One for each” or “one for all”}
+    We have as many surrogate networks $\left\{ \rho_{\theta_e} \right\}_{e \in \mathcal{E}}$ as we have edges of the metric graph. \\
+    
+    
+    \vspace{5mm}
+
+    $\Rightarrow$ One can use$\ldots$
+    \begin{itemize}
+        \item $\ldots$one single neural network $f_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}$ for each $\rho_{\theta_e}$, or$\ldots$
+        \item $\ldots$one single neural network $F_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^E$.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{One for each edge: FNN}
+    Each surrogate network $\rho_{\theta_e}$ is a $FNN$ with one-dimensional output, i.e.  
+    \begin{equation*} 
+        \label{one_for_each}
+        \begin{gathered}
+            \rho_{\theta_e} \left(t, x \right) = \operatorname{fnn}_{\theta_e} \left( x^0 \right) = x^L, \\
+            \\
+            x^l = \sigma_l \left(W^l_e x^{l-1} + b^{l}_e\right), \quad l = 1, \ldots, L,
+        \end{gathered} 
+    \end{equation*} 
+    where $x^0 = \left(t, x\right)^{\mathrm{T}} \in \left(0, T\right) \times \left[0, \ell_e\right]$ and $\theta_e = \left\{ \left\{ W^l_e \right\}_{l = 1, \ldots, L}, \left\{ b^l_e \right\}_{l = 1, \ldots, L} \right\}$. \\
+    \vspace{3mm}
+    $\Rightarrow \; \theta = \bigcup_{e \in \mathcal{E}} \ \theta_e$.
+\end{frame}
+
+
+
+\begin{frame}{One for each edge: ResNet}
+    Each surrogate network $\rho_{\theta_e}$ is a $ResNet$ with one-dimensional output, i.e.  
+    \begin{equation*} 
+        \label{Resnet1}
+        \begin{gathered}
+            \rho_{\theta_e} \left(t, x \right) = \operatorname{R}_{\theta_e}\left(x^0\right) = \frac{1}{2} {x^0}^{\mathrm{T}} A_e x^0 + {x^{L}}^{\mathrm{T}} w_e + c^{\mathrm{T}}_e x^0, \\
+            \\
+            x^l = x^{l-1} + h \, \sigma_l\left(W^l_e x^{l-1} + b^l_e\right) \in \mathbb{R}^m, \quad l = 2, \ldots, L, \\
+            \\
+            x^1 = \sigma_1\left(W^1_e x^{0} + b^1_e\right) \in \mathbb{R}^m,
+        \end{gathered} 
+    \end{equation*}
+    where $h > 0$ stepsize (hyperparameter), $x^0$ as before and \\
+    $\theta_e = \left\{ \left\{ W^l_e \right\}_{l = 1, \ldots, L}, \left\{ b^l_e \right\}_{l = 1, \ldots, L}, A_e, w_e, c_e \right\}$ and 
+    \vspace{3mm}
+    $\Rightarrow \; \theta = \bigcup_{e \in \mathcal{E}} \ \theta_e$.
+\end{frame}
+
+
+
+
+\begin{frame}{One for all edges}
+    Each surrogate network $\rho_{\theta_e}()$ is a $ResNet$ with one-dimensional output, i.e.  
+    
+    \vspace{3mm}
+
+    $\Rightarrow$ One can use$\ldots$
+    \begin{itemize}
+        \item $\ldots$one single neural network $f_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}$ for each $\rho_{\theta_e}$, or$\ldots$
+        \item $\ldots$one single neural network $F_{\theta} \colon \mathbb{R}^2 \to \mathbb{R}^E$.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Numerical Experiment}
+    
+\end{frame}
+
+
+
+\section{Explicit Derivatives vs. Automatic Differentiation}
+
+
+
+\begin{frame}{The desire to make the code work faster}
+    \begin{itemize}
+        \item Hi
+    \end{itemize}
+\end{frame}
+
+
+
+\section{Conclusion \& Outlook}
+
+
+
+\begin{frame}{Conclusion}
+    \begin{itemize}
+        \item Hi
+    \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Outlook}
+    \textbf{We're not done yet!}
+\end{frame}
+
+\begin{frame}
+    \begin{center}
+        \textbf{Thank you for your attention!} \\
+        Questions?
+    \end{center}
+\end{frame}
+
+
+\begin{frame}
+    \begin{itemize}
+        \item Adjacency: $v_1, v_2 \in \mathcal{V}$ \\ $v_1 \sim v_2 \Leftrightarrow \exists e \in \mathcal{E}$ s.t. $v_2$ can be reached from $v_1$ via this edge $e$. \\
+        \begin{equation*}
+          A^{\Gamma} = 
+          \begin{blockarray}{ccccc}
+              v_1 & v_2 & v_3 & v_4 \\
+              \begin{block}{(cccc)c}
+                  0 & 1 & 0 & 0 & v_1 \\
+                  0 & 0 & 0 & 1 & v_2 \\
+                  0 & 1 & 0 & 1 & v_3 \\
+                  0 & 1 & 0 & 0 & v_4 \\
+              \end{block}
+          \end{blockarray}
+      \end{equation*}
+    \end{itemize}
+    \textbf{Metric Graph}:
+        \begin{itemize}
+            \item $\forall e \in \mathcal{E} \colon \, \exists \ell_e > 0$.
+            \item $\ell_{e_1} = \ell_{\overline{e_1}} = \ell_{e_2} = \ell_{\tilde{e}}$.
+            \item $x_{e_1} \in [0, \ell_{e_1}] \colon \, x_{e_1} = \ell_{e_2} - x_{e_2}$.
+            \item $\operatorname{dist}(v_i, v_j) = \sum^{N}_{k = 1} \ell_{e_k}$, \\ where $\left\{ e_k \right\}_{k = 1, \ldots, N}$ is path of minimal length.
+        \end{itemize}
 \end{frame}
 
 \end{document}
