@@ -46,8 +46,13 @@
 
 \section{Introduction}
 
-\begin{frame}{Introduction}
-    Keine Ahnung
+\begin{frame}{Yamal–Europe pipeline}
+    \vspace{-1\baselineskip}\hfill{\tiny{[Wikipedia: Samuel Bailey (sam.bailus@gmail.com)]}}
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[scale=0.45]{img/Yamal-europe.png}
+        \end{center}
+    \end{figure}
 \end{frame}
 
 \section{Preliminaries}
@@ -59,8 +64,8 @@
         \begin{itemize}
             \item $\Gamma = \left(\mathcal{V}, \mathcal{E} \right),$ \\ $\mathcal{V} = \left\{ v_i \right\}_{i = 1, \ldots, V}, \; V = \abs{\mathcal{V}} \in \mathbb{N},$ \\
             $\mathcal{E} = \left\{ e_i \right\}_{i = 1, \ldots, E}, \; E = \abs{\mathcal{E}} \in \mathbb{N}$.
-            \item directed: $\forall e \in \mathcal{E} \colon \; e = \left( v^{\operatorname{o}}, v^{\operatorname{t}} \right)$, \\
-            $v^{\operatorname{o}}, v^{\operatorname{t}} \in \mathcal{V}$.
+            \item directed: $\forall e \in \mathcal{E} \colon \; e = \left( v^{\operatorname{o}}, v^{\operatorname{t}} \right)$ \\
+            unique $v^{\operatorname{o}}, v^{\operatorname{t}} \in \mathcal{V}$.
             \item Reversal: $e_1, e_2 \in \mathcal{E} \colon e_1 = \overline{e_2}$ \\
             $\Leftrightarrow e_1 = \left( v_1, v_2 \right), e_2 = \left( v_2, v_1 \right)$.
         \end{itemize}
@@ -86,8 +91,8 @@
 
                     % edges
                     \path [->](v3) edge node[below] {$e_4$} (v1);
-                    \path [->](v2) edge [bend left = 10] node[right]{$e_2$} (v1);
-                    \path [->](v1) edge [bend left = 10] node[left]{$e_1$} (v2);
+                    \path [->](v2) edge [bend left = 15] node[right]{$e_2$} (v1);
+                    \path [->](v1) edge [bend left = 15] node[left]{$e_1$} (v2);
                     \path [->](v3) edge node[right] {$e_3$} (v2);
                     \path [->](v4) edge node[above] {$e_5$} (v2);
                 \end{tikzpicture}
@@ -120,23 +125,20 @@
 
 
 
-\begin{frame}{Metric Graphs}
-    $L_2(e)$:
+\begin{frame}{Function spaces}
+    $L_2(e)$: \\
     \begin{equation*}
         \lVert f \rVert^{2}_{L_2(e)} \coloneqq \int_e \lvert f(x) \rvert^2 \, \textup{d} x < \infty.
-    \end{equation*}
-    \vspace{2mm}
-    $L_2(\Gamma) = \bigotimes_{e \in \mathcal{E}} L_2(e)$:
+    \end{equation*} \\
+    $L_2(\Gamma) = \bigotimes_{e \in \mathcal{E}} L_2(e)$: \\
     \begin{equation*}
         \lVert f \rVert^{2}_{L_2(\Gamma)} \coloneqq \sum_{e \in \mathcal{E}} \lVert f \rVert^{2}_{L_2(e)} < \infty.
-    \end{equation*}
-    \vspace{2mm}
-    $H^1 (e)$:
+    \end{equation*} \\
+    $H^1 (e)$: \\
     \begin{equation*}
         \lVert f \rVert^{2}_{H^1(e)} \coloneqq \int_e \lvert f(x) \rvert^2 + \lvert f^{\prime}(x) \rvert^2 \, dx < \infty.
-    \end{equation*}
-    \vspace{2mm}
-    $H^1 (\Gamma) =  \bigotimes_{e \in \mathcal{E}} H^1 (e) \cap C^{0}(\Gamma)$:
+    \end{equation*} \\
+    $H^1 (\Gamma) =  \bigotimes_{e \in \mathcal{E}} H^1 (e) \cap C^{0}(\Gamma)$: \\
     \begin{equation*}
         \lVert f \rVert^{2}_{H^1 (\Gamma)} \coloneqq \sum_{e \in \mathcal{E}} \lVert f \rVert^{2}_{H^1 (e)} < \infty.
     \end{equation*}
@@ -167,9 +169,9 @@
 
 
 
-\begin{frame}{Drift-Diffusion Equation}
+\begin{frame}{Flux of cars}
     \begin{equation*} 
-        J_e \left( t,x \right)  \coloneqq - \underbrace{\varepsilon \partial_x \rho_e  \left( t, x \right)}_{\text{diffusion}}  + \underbrace{f \left( \rho_e \left( t, x \right)  \right)  \partial_x V_e \left( t, x \right)}_{\text{drift}} 
+        J_e \left( t,x \right)  \coloneqq \underbrace{- \varepsilon \partial_x \rho_e  \left( t, x \right)}_{\text{diffusion}}  + \underbrace{f \left( \rho_e \left( t, x \right)  \right)  \partial_x V_e \left( t, x \right)}_{\text{drift}} 
     \end{equation*}
     \vspace{3mm}
     \begin{itemize}
@@ -198,20 +200,21 @@
     \vspace{3mm}
 
     The boundary conditions on a metric graph are vertex conditions!
+
+    \vspace{3mm}
+
+    \textbf{Normal vector}: \\
+    $e = \left( v^{\operatorname{o}}_e, v^{\operatorname{t}}_e \right) \in \mathcal{E} \Rightarrow n_e \left( v^{\operatorname{o}}_e \right)  = -1, n_e \left( v^{\operatorname{t}}_e \right)  = 1$. \\
+
 \end{frame}
 
 
 
 \begin{frame}{Conditions on interior vertices}
-    \textbf{Normal vector}: \\
-    $e = \left( v^{\operatorname{o}}_e, v^{\operatorname{t}}_e \right) \in \mathcal{E} \Rightarrow n_e \left( v^{\operatorname{o}}_e \right)  = -1, n_e \left( v^{\operatorname{t}}_e \right)  = 1$. \\
-
-    \vspace{3mm} 
-
     \textbf{Interior vertices}: \\
     $\forall v \in \mathcal{V}_\mathcal{K} \subset \mathcal{V} \colon \; \exists \ e_1 = \left( v^{\operatorname{o}}_{e_1}, v^{\operatorname{t}}_{e_1} \right), e_2 = \left( v^{\operatorname{o}}_{e_2}, v^{\operatorname{t}}_{e_2} \right) \in \mathcal{E}$ \\ s.t. $v^{\operatorname{t}}_{e_1} = v$ and $v^{\operatorname{o}}_{e_2} = v$. \\
 
-    \vspace{3mm} 
+    \vspace{5mm} 
 
     \textbf{Kirchhoff-Neumann conditions}:
     \begin{equation*}
@@ -219,7 +222,7 @@
     \end{equation*}
     where $\mathcal{E}_v$ the set of all edges incident to the vertex $v$. \\
 
-    \vspace{3mm}
+    \vspace{5mm}
 
     \textbf{Continuity conditions}:
     \begin{equation*}
@@ -233,7 +236,7 @@
     \textbf{Exterior vertices}: \\
     $\forall v \in \mathcal{V}_\mathcal{D} = \mathcal{V} \setminus \mathcal{V}_\mathcal{K} \colon$ either $v^{\operatorname{t}}_{e} = v$ or $v^{\operatorname{o}}_{e} = v$ holds $\forall e = \left(v^{\operatorname{o}}_{e}, v^{\operatorname{t}}_{e}\right) \in \mathcal{E}_v$ \\
 
-    \vspace{3mm} 
+    \vspace{5mm} 
 
     \textbf{Flux boundary conditions}:
     \begin{equation*}
@@ -297,77 +300,77 @@
 
 
 \begin{frame}{Machine Learning}
-    \textbf{Supervised learning}:
-    Training data $\left\{ \left(x_i, y_i \right) \right\}_{i = 1, \ldots, N}$ with $y_i = f(x_i)$.
+    \textbf{Supervised learning}: \\
+    Training data $\left\{ \left(x_i, y_i \right) \right\}_{i = 1, \ldots, N}$ with $y_i = f(x_i)$. \\
     \begin{equation*}
-        \minimize_{\theta} \frac{1}{N} \sum_{i=1}^{N} \lVert f_{\theta} \left(x_{i}\right) - y_{i} \rVert^{2}_2 =  MSE \left( \left\{ \left(x_i, y_i \right) \right\}_{i = 1, \ldots, N}, \theta \right).  
+        \minimize_{\theta} \; \frac{1}{N} \sum_{i=1}^{N} \lVert f_{\theta} \left(x_{i}\right) - y_{i} \rVert^{2}_2 =  MSE \left( \left\{ \left(x_i, y_i \right) \right\}_{i = 1, \ldots, N}, \theta \right).  
     \end{equation*}
 
     \vspace{3mm}
 
-    \textbf{Stochastic gradient descent}: 
-
+    \textbf{Stochastic gradient descent}: \\
     \begin{equation*}
         \label{Gradient Descent}
         \theta_{k+1} = \theta_k - \lambda \cdot \nabla_{\theta} MSE \left( \left(x_j, y_j \right), \theta_k \right),
     \end{equation*}
     where
     \begin{itemize}
-        \item $\theta_k$ iterate in search space (large),
-        \item $\lambda > 0$ learning rate,
-        \item $\left(x_j, y_j \right)$ randomly chosen pair from $\left\{ \left(x_i, y_i \right) \right\}_{i = 1, \ldots, N}$.
+        \item iterate $\theta_k$ in (large) search space,
+        \item learning rate $\lambda > 0$,
+        \item randomly chosen pair $\left(x_j, y_j \right)$ from $\left\{ \left(x_i, y_i \right) \right\}_{i = 1, \ldots, N}$,
+        \item computation of $MSE \left( \left(x_j, y_j \right), \theta_k \right)$ with \textbf{back-propagation}. 
     \end{itemize}
 \end{frame}
+
 
 
 \subsection{Physics Informed Neural Networks}
 
 
 
-\begin{frame}{Machine Learning}
-    Partial differential equation:
+\begin{frame}{Surrogate and Residual Network}
+    \vspace{-1\baselineskip}\hfill{\tiny{[Raissi, Perdikaris, Karniadakis, 2017]}} \\
+    Partial differential equation: \\
     \begin{equation*}
-        \partial_t u\left(t,x\right) + \mathcal{H} \left[ u \right] \left(t, x\right) = 0, \quad x \in \Omega, \quad t \in \left[ 0, T \right], 
+        \partial_t u\left(t,x\right) + \mathcal{H} \left[ u \right] \left(t, x\right) = 0, \quad x \in \Omega, \quad t \in \left[ 0, T \right].
     \end{equation*}
 
-    \textbf{Surrogate network}: $u_\theta \left(t, x \right) \sim u\left(t,x\right)$ for all $\left(t, x \right) \in \left[ 0, T \right] \times \Omega$. \\
+    \vspace{3mm}
+
+    \textbf{Surrogate network}: \\
+    \begin{equation*}
+        u_\theta \left(t, x \right) \sim u\left(t,x\right) \; \text{ for all } \; \left(t, x \right) \in \left[ 0, T \right] \times \Omega.
+    \end{equation*}
     
-    \textbf{Residual network}:
-    \begin{equation*}
-        r_{\theta} \left(t,x\right) = \partial_t u_{\theta} \left(t,x\right) + \mathcal{H} \left[ u_{\theta} \right] \left(t, x\right).
-    \end{equation*}
+    \vspace{3mm}
 
-    \textbf{Cost function}:
+    \textbf{Residual network}: \\
     \begin{equation*}
-        \begin{gathered}
-            MSE = MSE_u + MSE_r, \\
-            MSE_r = \frac{1}{N_r} \sum^{N_r}_{i = 1} \lVert r_\theta \left(t^{r}_i, x^{r}_i\right) \rVert^{2}_{2}, \\
-            MSE_u = \frac{1}{N_u} \sum^{N_u}_{i = 1} \lVert u_\theta\left(t^{u}_i, x^{u}_i\right) - u_i \rVert^{2}_{2},
-        \end{gathered}
+        r_{\theta} \left(t,x\right) = \partial_t u_{\theta} \left(t,x\right) + \mathcal{H} \left[ u_{\theta} \right] \left(t, x\right)
     \end{equation*}
+    by using \textbf{automatic differentiation}.
 
 \end{frame}
 
-\begin{comment}
-        
-    
-    
 
-    \textbf{Residual network}:
-    \begin{equation*}
-        r_{\theta} \left(t,x\right) = \partial_t u_{\theta} \left(t,x\right) + \mathcal{H} \left[ u_{\theta} \right] \left(t, x\right).
-    \end{equation*}
 
-    \textbf{Cost function}:
-    \begin{equation*}
-        \begin{gathered}
-            MSE = MSE_u + MSE_r, \\
-            MSE_r = \frac{1}{N_r} \sum^{N_r}_{i = 1} \lVert r_\theta \left(t^{r}_i, x^{r}_i\right) \rVert^{2}_{2}, \\
-            MSE_u = \frac{1}{N_u} \sum^{N_u}_{i = 1} \lVert u_\theta\left(t^{u}_i, x^{u}_i\right) - u_i \rVert^{2}_{2},
-        \end{gathered}
-        
-    \end{equation*}
-\end{comment}
+\begin{frame}{Machine Learning}
+
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[scale=0.15]{img/PINN.png}
+        \end{center}
+    \end{figure}
+
+    \textbf{Residual misfit term}: $MSE_r = \frac{1}{N_r} \sum^{N_r}_{i = 1} \lVert r_\theta \left(t^{r}_i, x^{r}_i\right) \rVert^{2}_{2}$ \\ 
+    with collocation points $\left\{t^{r}_i, x^{r}_i \right\}_{i = 1, \ldots, N_r}$. 
+
+    \textbf{Initial/Boundary misfit term}: $MSE_u = \frac{1}{N_u} \sum^{N_u}_{i = 1} \lVert u_\theta\left(t^{u}_i, x^{u}_i\right) - u_i \rVert^{2}_{2}$ \\
+    with data $\left\{t^{u}_i, x^{u}_i, u_i \right\}_{i = 1, \ldots, N_u}$ (e.g. $u_i = u_0 \left(x^{u}_i\right)$). 
+
+\end{frame}
+
+
 
 \section{A PINN approach}
 
@@ -376,21 +379,21 @@
 \begin{frame}{The “All at once” approach}
     \textbf{Idea}: the drift-diffusion equations on all edges and all initial and vertex conditions are considered at once in the learning phase. \\
     \vspace{5mm}
-    $\Rightarrow$ We construct one single cost function $\Phi_{\theta}$ for this approach, which combines the deviation to\dots
+    $\Rightarrow$ We construct one single cost function $\Phi_{\theta}$ for this approach, which combines the deviation to$\ldots$
     \begin{itemize}
-        \item \dots the drift-diffusion equation on each edge $e \in \mathcal{E}$,
-        \item \dots the initial condition on each edge $e \in \mathcal{E}$,
-        \item \dots the Kirchhoff-Neumann condition on each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$,
-        \item \dots the continuity condition on each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$,
-        \item \dots the flux boundary condition on each exterior vertex $v \in \mathcal{V}_{\mathcal{D}}$.
+        \item $\ldots$the drift-diffusion equation on each edge $e \in \mathcal{E}$,
+        \item $\ldots$the initial condition on each edge $e \in \mathcal{E}$,
+        \item $\ldots$the Kirchhoff-Neumann condition on each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$,
+        \item $\ldots$the continuity condition on each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$,
+        \item $\ldots$the flux boundary condition on each exterior vertex $v \in \mathcal{V}_{\mathcal{D}}$.
     \end{itemize} 
 \end{frame}
 
 
 
 \begin{frame}{Deviation to the Drift-Diffusion Equation}
-    \textbf{Surrogate network} $\rho_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}$ approximates $\rho_e$ on edge $e \in \mathcal{E}$. \\
-    $\Rightarrow \; \theta_e$ \\
+    \textbf{Surrogate network} $\rho_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}$ approximates $\rho_e$ on each edge $e \in \mathcal{E}$. \\
+    $\Rightarrow \; \theta_e$ are the trainable parameters that are involved in the approximation of $\rho_e$ on an individual edge $e \in \mathcal{E}$. \\
 
     \vspace{3mm}
 
@@ -405,7 +408,7 @@
     \begin{equation*} 
         \phi_{e,r}  \left( X_e \right) \coloneqq \frac{1}{n_e} \sum_{i=1}^{n_e} r_{\theta_e}  \left( t_e^i, x_e^i  \right)^2,
     \end{equation*} 
-    where $X_e = \left\{ \left( t_e^i, x_e^i \right) \right\}_{i=1}^{n_e} \subset \left( 0, T \right) \times \left[0, \ell_e\right]$ set of time-space collocation points. \\
+    where $X_e = \left\{ \left( t_e^i, x_e^i \right) \right\}_{i=1}^{n_e} \subset \left( 0, T \right) \times \left[0, \ell_e\right]$ is a set of time-space collocation points. \\
 \end{frame}
 
 
@@ -433,7 +436,6 @@
         \forall v \in \mathcal{V}_\mathcal{K} \colon \; \sum_{e\in \mathcal{E}_v} J_e \left( t,v \right)  n_e  \left( v \right) =0.
     \end{equation*}
     
-
     \vspace{3mm}
 
     \textbf{Kirchhoff-Neumann misfit term} for each interior vertex $v \in \mathcal{V}_{\mathcal{K}}$:
@@ -444,7 +446,7 @@
     \begin{equation*} 
         J_{\theta_e}\left( t_{v,b}^i, v \right) = \left( - \varepsilon \partial_x \rho_{\theta_e}  \left( t_{v,b}^i, v \right) + f \left( \rho_{\theta_e}  \left( t_{v,b}^i, v \right) \right) \partial_x V_e \left( t_{v,b}^i, v \right) \right),
     \end{equation*}
-    where $X_{v,b} = \left\{ t_{v,b}^i \right\}_{i=1}^{n_b} \subset \left( 0,T \right)$ set of time snapshots where the Kirchhoff-Neumann conditions are enforced.
+    where $X_{v,b} = \left\{ t_{v,b}^i \right\}_{i=1}^{n_b} \subset \left( 0,T \right)$ is a set of time snapshots where the Kirchhoff-Neumann conditions are enforced.
 \end{frame}
 
 
@@ -504,9 +506,8 @@
 
 
 \begin{frame}{“One for each” or “one for all”}
-    We have as many surrogate networks $\left\{ \rho_{\theta_e} \right\}_{e \in \mathcal{E}}$ as we have edges of the metric graph. \\
-    
-    
+    We have as many surrogate networks $\left\{ \rho_{\theta_e} \right\}_{e \in \mathcal{E}}$ as we have edges of the graph. \\
+
     \vspace{5mm}
 
     $\Rightarrow$ One can use$\ldots$
