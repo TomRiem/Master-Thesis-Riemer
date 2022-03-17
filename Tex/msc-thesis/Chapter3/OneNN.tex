@@ -93,7 +93,7 @@ The graph $\Gamma$ consists of $6$ vertices $\mathcal{V} = \left\{ v_i \right\}_
             \path [->](v4) edge node[below] {$e_5$} (v6);
         \end{tikzpicture}
     \end{center}
-    \caption{The metric graph $\Gamma$ defined by equation \cref{NumericalExperimentGraph} plotted.}
+    \caption{The metric graph $\Gamma$ defined by \cref{NumericalExperimentGraph} plotted.}
     \label{fig7}
 \end{figure}
 As we can see, the vertices $v_1$, $v_2$, $v_5$ and $v_6$ are the exterior vertices, i.e. $\mathcal{V}_{\mathcal{D}} = \left\{v_1, v_2, v_5, v_6 \right\}$, and the vertices $v_3$ and $v_4$ are the interior vertices, i.e. $\mathcal{V}_{\mathcal{K}} = \left\{v_3, v_4 \right \}$, of the graph $\Gamma$. \\
@@ -271,5 +271,5 @@ Although the error of the neural network $FNN$ $\operatorname{fnn}_{\theta_e}$ s
 In conclusion, it has been shown that the solutions of the drift-diffusion equations given by \cref{Drift-Diffusion-equation} on the edges $e \in \mathcal{E}$ of a metric graph $\Gamma = \left(\mathcal{V}, \mathcal{E} \right)$ can be approximated with this $PINN$ approach. The construction of the cost function $\Phi_{\theta}$ follows the usual principle for this purpose and by minimising it, a appropriately selected neural network can be trained. The comparison of the measured $L^2$-Error with the $FVM$ at the same grid points has shown that the choice of a suitable neural network and also the choice whether one uses one neural network for all edges or one neural network for each edge can have an effect on the approximation quality. Finally, we note that of course other $PINN$ approaches can be designed for this or similar problems, in which the cost function can have a different form or the structure of the graph can be exploited differently. Also, the selection of the used neural network can be improved by $NAS$ methods and the topology of the neural network can be refined by hyperparameter optimization. \\
 
 %fnn: Experiment 1: Loss $3.63346069e-04$ , STOP: TOTAL NO. of ITERATIONS REACHED LIMIT, L2 Error 275.6428860459677, Sup Error 0.5521403415528678
-%Resnet: Loss  $3.05133775e-02$   4212.47, STOP: TOTAL NO. of ITERATIONS REACHED LIMIT, L2 Error 1530.2266754494092, Sup Error 0.8705551259854093
-% FNN: $4.46322321e-04$  5247.55, STOP: TOTAL NO. of ITERATIONS REACHED LIMIT, L2 Error 430.4514416907528, Sup Error 0.7684574683811376
+%Resnet: Loss  $3.05133775e-02$   4212,47, STOP: TOTAL NO. of ITERATIONS REACHED LIMIT, L2 Error 1530.2266754494092, Sup Error 0.8705551259854093
+% FNN: $4.46322321e-04$  5247,55, STOP: TOTAL NO. of ITERATIONS REACHED LIMIT, L2 Error 430.4514416907528, Sup Error 0.7684574683811376
