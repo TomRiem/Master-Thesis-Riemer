@@ -294,9 +294,9 @@
     \end{equation*}
     where 
     \begin{itemize}
+        \item hyperparameter $L \in \mathbb{N}$ (depth), $n_l \in \mathbb{N}$ (width), $\sigma_l \colon \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$,
         \item weights $W^l \in \mathbb{R}^{n_l \times n_{l-1}}$, biases $b^l \in \mathbb{R}^{n_l}$,
-        \item trainable parameters $\theta = \left\{ \left\{ W^l \right\}_{l=1, \ldots, L}, \left\{ b^l \right\}_{l=1, \ldots, L} \right\}$,
-        \item hyperparameter $L \in \mathbb{N}$ (depth), $n_l \in \mathbb{N}$ (width), $\sigma_l \colon \mathbb{R}^{n_l} \to \mathbb{R}^{n_l}$.
+        \item trainable parameters $\theta = \left\{ \left\{ W^l \right\}_{l=1, \ldots, L}, \left\{ b^l \right\}_{l=1, \ldots, L} \right\}$.
     \end{itemize}
 
 \end{frame}
@@ -382,10 +382,8 @@
 \begin{frame}{The “all at once” approach}
     \textbf{Surrogate network} $\rho_{\theta_e} \colon \mathbb{R}^2 \to \mathbb{R}$ approximates $\rho_e$ on each edge $e \in \mathcal{E}$. \\
     $\Rightarrow \; \theta_e$ are the trainable parameters that are involved in the approximation of $\rho_e$ on an individual edge $e \in \mathcal{E}$. \\
-    \vspace{5mm}
-    \textbf{Idea}: the set of drift-diffusion equations on all edges and all initial and vertex conditions are considered at once in the learning phase. \\
-    \vspace{5mm}
-    $\Rightarrow$ We construct one single cost function $\Phi_{\theta}$, which incorporates the deviations of all surrogate networks $\left\{\rho_{\theta_e} \right\}_{e \in \mathcal{E}}$ to$\ldots$
+    \vspace{7mm}
+    \textbf{Idea}: We construct one single cost function $\Phi_{\theta}$, which incorporates the deviations of all surrogate networks $\left\{\rho_{\theta_e} \right\}_{e \in \mathcal{E}}$ to$\ldots$
     \begin{itemize}
         \item $\ldots$the set of drift-diffusion equations on all edges $\mathcal{E}$,
         \item $\ldots$the initial conditions on all edges $e \in \mathcal{E}$,
